@@ -10,8 +10,8 @@ func TestSelect(t *testing.T) {
 	assert.NotNil(t, c)
 
 	foo := Table("foo")
-	bar := VarcharField("bar")
-	baz := VarcharField("baz")
+	bar := Varchar("bar")
+	baz := Varchar("baz")
 
 	c.Select(bar).From(foo).Where(baz.Eq("quux"))
 

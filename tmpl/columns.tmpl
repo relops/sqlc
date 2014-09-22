@@ -21,7 +21,7 @@ func (c *{{ toLower $t.Prefix }}Column) Eq(pred {{ $t.Literal }}) Condition {
 	return Condition{Binding: ColumnBinding{Value: pred, Column: c}}
 }
 
-func {{ $t.Prefix }}Field(name {{ $t.Literal }}) {{ $t.Prefix }}Column {
+func {{ $t.Prefix }}(name {{ $t.Literal }}) {{ $t.Prefix }}Column {
 	return &{{ toLower $t.Prefix }}Column{name: name}
 }
 

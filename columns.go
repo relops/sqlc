@@ -21,7 +21,7 @@ func (c *varcharColumn) Eq(pred string) Condition {
 	return Condition{Binding: ColumnBinding{Value: pred, Column: c}}
 }
 
-func VarcharField(name string) VarcharColumn {
+func Varchar(name string) VarcharColumn {
 	return &varcharColumn{name: name}
 }
 
