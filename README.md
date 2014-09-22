@@ -8,6 +8,8 @@ sqlc
 	c := NewContext()	
 
 	foo := Table("foo")
-	bar := Field("bar")
+	bar := Varchar("bar")
+	baz := Varchar("baz")
 
-	sql, _ := c.Select(bar).From(foo).Render() // Renders `SELECT bar FROM foo`
+	// Renders `SELECT bar FROM foo WHERE baz = ?`
+	sql, _ := c.Select(bar).From(foo).Where(baz.Eq("quux")).Render()
