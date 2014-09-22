@@ -7,6 +7,14 @@ import (
 	"strings"
 )
 
+var predicateTypes = map[PredicateType]string{
+	EqPredicate: "=",
+	GtPredicate: ">",
+	GePredicate: ">=",
+	LtPredicate: "<",
+	LePredicate: "<=",
+}
+
 func renderSelect(ctx *Context, buf *bytes.Buffer) error {
 
 	fmt.Fprint(buf, "SELECT ")
@@ -27,6 +35,11 @@ func renderSelect(ctx *Context, buf *bytes.Buffer) error {
 
 	fmt.Fprintf(buf, " FROM %s", ctx.Table.TableName())
 
+	if ctx.hasConditions() {
+		fmt.Fprint(buf, " ")
+		renderWhereClause(ctx, buf)
+	}
+
 	return nil
 }
 
@@ -36,4 +49,18 @@ func columnClause(cols []Column) string {
 		colFragments[i] = col.ColumnName()
 	}
 	return strings.Join(colFragments, ", ")
+}
+
+func renderWhereClause(ctx *Context, buf *bytes.Buffer) {
+	fmt.Fprint(buf, "WHERE ")
+
+	whereFragments := make([]string, len(ctx.Conditions))
+	for i, condition := range ctx.Conditions {
+		col := condition.Binding.Column.ColumnName()
+		pred := condition.Predicate
+		whereFragments[i] = fmt.Sprintf("%s %s ?", col, predicateTypes[pred])
+	}
+
+	whereClause := strings.Join(whereFragments, " AND ")
+	fmt.Fprint(buf, whereClause)
 }

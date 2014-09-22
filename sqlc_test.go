@@ -10,12 +10,13 @@ func TestSelect(t *testing.T) {
 	assert.NotNil(t, c)
 
 	foo := Table("foo")
-	bar := Field("bar")
+	bar := VarcharField("bar")
+	baz := VarcharField("baz")
 
-	c.Select(bar).From(foo)
+	c.Select(bar).From(foo).Where(baz.Eq("quux"))
 
 	sql, err := c.Render()
 	assert.NoError(t, err)
 
-	assert.Equal(t, "SELECT bar FROM foo", sql)
+	assert.Equal(t, "SELECT bar FROM foo WHERE baz = ?", sql)
 }
