@@ -30,6 +30,18 @@ func TestSelect(t *testing.T) {
 
 }
 
+func TestSelectStar(t *testing.T) {
+
+	foo := Table("foo")
+
+	c := NewContext()
+
+	c.Select().From(foo)
+	sql, err := c.RenderSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "SELECT * FROM foo", sql)
+}
+
 func TestIntegration(t *testing.T) {
 
 	db, err := sql.Open("sqlite3", "sqlc.db")

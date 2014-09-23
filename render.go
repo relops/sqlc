@@ -21,7 +21,12 @@ func renderSelect(ctx *Context, buf *bytes.Buffer) error {
 
 	var colClause string
 	if len(ctx.Columns) == 0 {
-		colClause = columnClause(ctx.Table.ColumnDefinitions())
+		cols := ctx.Table.ColumnDefinitions()
+		if len(cols) == 0 {
+			fmt.Fprint(buf, "*")
+		} else {
+			colClause = columnClause(ctx.Table.ColumnDefinitions())
+		}
 
 	} else {
 		colClause = columnClause(ctx.Columns)
