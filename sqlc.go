@@ -2,6 +2,7 @@ package sqlc
 
 import (
 	"bytes"
+	"database/sql"
 )
 
 type PredicateType int
@@ -54,6 +55,7 @@ type SelectWhereStep interface {
 }
 
 type Queryable interface {
+	QueryRow(*sql.DB) (*sql.Row, error)
 }
 
 func (c *Context) Select(cols ...Column) SelectFromStep {
@@ -70,6 +72,14 @@ func (c *Context) From(t TableLike) SelectWhereStep {
 func (c *Context) Where(cond ...Condition) Queryable {
 	c.Conditions = cond
 	return c
+}
+
+func (c *Context) QueryRow(db *sql.DB) (*sql.Row, error) {
+	stmt, _, err := c.Build()
+	if err != nil {
+		return nil, err
+	}
+	return db.QueryRow(stmt, "quux"), nil
 }
 
 func (c *Context) RenderSQL() (string, error) {
