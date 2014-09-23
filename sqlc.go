@@ -75,11 +75,11 @@ func (c *Context) Where(cond ...Condition) Queryable {
 }
 
 func (c *Context) QueryRow(db *sql.DB) (*sql.Row, error) {
-	stmt, _, err := c.Build()
+	stmt, args, err := c.Build()
 	if err != nil {
 		return nil, err
 	}
-	return db.QueryRow(stmt, "quux"), nil
+	return db.QueryRow(stmt, args...), nil
 }
 
 func (c *Context) RenderSQL() (string, error) {
