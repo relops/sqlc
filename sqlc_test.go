@@ -15,8 +15,15 @@ func TestSelect(t *testing.T) {
 
 	c.Select(bar).From(foo).Where(baz.Eq("quux"))
 
-	sql, err := c.Render()
+	sql, err := c.RenderSQL()
 	assert.NoError(t, err)
 
 	assert.Equal(t, "SELECT bar FROM foo WHERE baz = ?", sql)
+
+	stmt, placeholders, err := c.Build()
+	assert.NoError(t, err)
+
+	assert.Equal(t, "SELECT bar FROM foo WHERE baz = ?", stmt)
+	assert.Equal(t, []interface{}{"quux"}, placeholders)
+
 }

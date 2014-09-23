@@ -19,6 +19,7 @@ type Context struct {
 	Table      TableLike
 	Columns    []Column
 	Conditions []Condition
+	Bindings   []ColumnBinding
 }
 
 func NewContext() *Context {
@@ -71,13 +72,50 @@ func (c *Context) Where(cond ...Condition) Queryable {
 	return c
 }
 
-func (c *Context) Render() (string, error) {
+func (c *Context) RenderSQL() (string, error) {
 	var buf bytes.Buffer
 	if err := renderSelect(c, &buf); err != nil {
 		return "", err
 	} else {
 		return buf.String(), nil
 	}
+}
+
+func (c *Context) Build() (stmt string, placeHolders []interface{}, err error) {
+	stmt, err = c.RenderSQL()
+	if err != nil {
+		return stmt, nil, err
+	}
+
+	bindings := len(c.Bindings) // TODO check whether this is nil
+	conditions := 0
+
+	if c.Conditions != nil {
+		conditions = len(c.Conditions)
+	}
+
+	placeHolders = make([]interface{}, bindings+conditions)
+
+	for i, bind := range c.Bindings {
+		placeHolders[i] = bind.Value
+	}
+
+	if c.Conditions != nil {
+		for i, cond := range c.Conditions {
+			placeHolders[i+bindings] = cond.Binding.Value
+		}
+	}
+
+	c.Dispose()
+
+	return stmt, placeHolders, nil
+}
+
+func (c *Context) Dispose() {
+	c.Columns = nil
+	c.Table = nil
+	c.Bindings = nil
+	c.Conditions = nil
 }
 
 func (c *Context) hasConditions() bool {
