@@ -22,12 +22,21 @@ func (s *selection) String() string {
 }
 
 func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
+
+	var alias string
+
+	// TODO This type switch is used twice, consider refactoring
+	switch sub := s.selection.(type) {
+	case table:
+		alias = sub.name
+	}
+
 	fmt.Fprint(w, "SELECT ")
 
 	if len(s.projection) == 0 {
 		fmt.Fprint(w, "*")
 	} else {
-		colClause := columnClause(s.projection)
+		colClause := columnClause(alias, s.projection)
 		fmt.Fprint(w, colClause)
 	}
 
@@ -50,36 +59,36 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 
 	if len(s.predicate) > 0 {
 		fmt.Fprint(w, " ")
-		placeholders = renderWhereClause(s.predicate, w)
+		placeholders = renderWhereClause(alias, s.predicate, w)
 	} else {
 		placeholders = []interface{}{}
 	}
 
 	if (len(s.groups)) > 0 {
 		fmt.Fprint(w, " GROUP BY ")
-		colClause := columnClause(s.groups)
+		colClause := columnClause(alias, s.groups)
 		fmt.Fprint(w, colClause)
 	}
 
 	// TODO eliminate copy and paste
 	if (len(s.ordering)) > 0 {
 		fmt.Fprint(w, " ORDER BY ")
-		colClause := columnClause(s.ordering)
+		colClause := columnClause(alias, s.ordering)
 		fmt.Fprint(w, colClause)
 	}
 
 	return placeholders
 }
 
-func columnClause(cols []Field) string {
+func columnClause(alias string, cols []Field) string {
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
-		colFragments[i] = col.Name()
+		colFragments[i] = fmt.Sprintf("%s.%s", alias, col.Name())
 	}
 	return strings.Join(colFragments, ", ")
 }
 
-func renderWhereClause(conds []Condition, w io.Writer) []interface{} {
+func renderWhereClause(alias string, conds []Condition, w io.Writer) []interface{} {
 	fmt.Fprint(w, "WHERE ")
 
 	whereFragments := make([]string, len(conds))
@@ -88,7 +97,7 @@ func renderWhereClause(conds []Condition, w io.Writer) []interface{} {
 	for i, condition := range conds {
 		col := condition.Binding.Field.Name()
 		pred := condition.Predicate
-		whereFragments[i] = fmt.Sprintf("%s %s ?", col, predicateTypes[pred])
+		whereFragments[i] = fmt.Sprintf("%s.%s %s ?", alias, col, predicateTypes[pred])
 		values[i] = condition.Binding.Value
 	}
 

@@ -23,23 +23,27 @@ var rendered = []struct {
 	},
 	{
 		Select(bar, baz).From(foo),
-		"SELECT bar, baz FROM foo",
+		"SELECT foo.bar, foo.baz FROM foo",
 	},
 	{
 		Select(bar).From(foo).Where(baz.Eq("quux")),
-		"SELECT bar FROM foo WHERE baz = ?",
+		"SELECT foo.bar FROM foo WHERE foo.baz = ?",
+	},
+	{
+		Select(bar).From(foo).Where(baz.Eq("quux")),
+		"SELECT foo.bar FROM foo WHERE foo.baz = ?",
 	},
 	{
 		Select(bar).From(foo).GroupBy(bar).OrderBy(bar),
-		"SELECT bar FROM foo GROUP BY bar ORDER BY bar",
+		"SELECT foo.bar FROM foo GROUP BY foo.bar ORDER BY foo.bar",
 	},
 	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
-		"SELECT bar FROM foo JOIN quux ON id = bar",
+		"SELECT foo.bar FROM foo JOIN quux ON id = bar",
 	},
 	{
 		Select().From(Select(bar).From(foo)),
-		"SELECT * FROM (SELECT bar FROM foo)",
+		"SELECT * FROM (SELECT foo.bar FROM foo)",
 	},
 }
 
