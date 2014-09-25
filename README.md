@@ -18,6 +18,18 @@ If you don't want to use `database/sql`, you don't have to. `String()` is an API
 	// Renders `SELECT bar FROM foo WHERE baz = ?`
 	sql := Select(bar).From(foo).Where(baz.Eq("quux")).String()
 
+Features
+--------
+
+* SELECT ... FROM ... WHERE
+* GROUP BY
+* ORDER BY
+* Data types:
+  * VARCHAR
+* Statement rendering
+* Querying via database/sql
+
+
 Status
 ------
 
