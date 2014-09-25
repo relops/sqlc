@@ -24,6 +24,7 @@ Features
 * SELECT ... FROM ... WHERE
 * GROUP BY
 * ORDER BY
+* INNER JOINS
 * Data types:
   * VARCHAR
 * Statement rendering
