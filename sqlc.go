@@ -53,6 +53,15 @@ type SelectGroupByStep interface {
 }
 
 type SelectHavingStep interface {
+	SelectOrderByStep
+	Query
+}
+
+type SelectOrderByStep interface {
+	OrderBy(...Field) SelectLimitStep
+}
+
+type SelectLimitStep interface {
 	Query
 }
 
@@ -80,6 +89,7 @@ type selection struct {
 	projection []Field
 	predicate  []Condition
 	groups     []Field
+	ordering   []Field
 }
 
 func (s *selection) isSelectable() {}
@@ -100,6 +110,11 @@ func (sl *selection) From(s Selectable) SelectWhereStep {
 
 func (sl *selection) GroupBy(f ...Field) SelectHavingStep {
 	sl.groups = f
+	return sl
+}
+
+func (sl *selection) OrderBy(f ...Field) SelectLimitStep {
+	sl.ordering = f
 	return sl
 }
 

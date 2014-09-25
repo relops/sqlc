@@ -28,8 +28,8 @@ var rendered = []struct {
 		"SELECT bar FROM foo WHERE baz = ?",
 	},
 	{
-		Select(bar).From(foo).GroupBy(bar),
-		"SELECT bar FROM foo GROUP BY bar",
+		Select(bar).From(foo).GroupBy(bar).OrderBy(bar),
+		"SELECT bar FROM foo GROUP BY bar ORDER BY bar",
 	},
 	{
 		Select().From(Select(bar).From(foo)),
@@ -50,11 +50,12 @@ var trees = []struct {
 		selection{selection: table{name: "foo"}, projection: []Field{bar, baz}},
 	},
 	{
-		Select(bar).From(foo).GroupBy(bar),
+		Select(bar).From(foo).GroupBy(bar).OrderBy(bar),
 		selection{
 			selection:  table{name: "foo"},
 			projection: []Field{bar},
 			groups:     []Field{bar},
+			ordering:   []Field{bar},
 		},
 	},
 	{

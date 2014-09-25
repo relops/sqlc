@@ -55,6 +55,13 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 		fmt.Fprint(w, colClause)
 	}
 
+	// TODO eliminate copy and paste
+	if (len(s.ordering)) > 0 {
+		fmt.Fprint(w, " ORDER BY ")
+		colClause := columnClause(s.ordering)
+		fmt.Fprint(w, colClause)
+	}
+
 	return placeholders
 }
 
