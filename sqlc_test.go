@@ -1,7 +1,6 @@
 package sqlc
 
 import (
-	"bytes"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
@@ -64,9 +63,7 @@ func TestTrees(t *testing.T) {
 
 func TestRendered(t *testing.T) {
 	for _, rendered := range rendered {
-		var buf bytes.Buffer
-		rendered.Constructed.Render(&buf)
-		assert.Equal(t, rendered.Expected, buf.String())
+		assert.Equal(t, rendered.Expected, rendered.Constructed.String())
 	}
 }
 

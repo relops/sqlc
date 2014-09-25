@@ -1,6 +1,7 @@
 package sqlc
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strings"
@@ -12,6 +13,12 @@ var predicateTypes = map[PredicateType]string{
 	GePredicate: ">=",
 	LtPredicate: "<",
 	LePredicate: "<=",
+}
+
+func (s *selection) String() string {
+	var buf bytes.Buffer
+	s.Render(&buf)
+	return buf.String()
 }
 
 func (s *selection) Render(w io.Writer) []interface{} {

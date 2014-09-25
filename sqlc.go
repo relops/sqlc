@@ -49,6 +49,7 @@ type SelectWhereStep interface {
 
 type Renderable interface {
 	Render(io.Writer) []interface{}
+	String() string
 }
 
 type Queryable interface {
