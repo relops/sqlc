@@ -3,6 +3,7 @@ package sqlc
 import (
 	"bytes"
 	"database/sql"
+	"io"
 )
 
 type PredicateType int
@@ -16,24 +17,14 @@ const (
 	InPredicate
 )
 
-type Context struct {
-	Table      TableLike
-	Columns    []Column
-	Conditions []Condition
-	Bindings   []ColumnBinding
-}
-
-func NewContext() *Context {
-	return &Context{}
-}
-
 type TableLike interface {
-	TableName() string
-	ColumnDefinitions() []Column
+	Selectable
+	Name() string
+	Queryable
 }
 
 type Column interface {
-	ColumnName() string
+	Name() string
 }
 
 type ColumnBinding struct {
@@ -47,87 +38,56 @@ type Condition struct {
 }
 
 type SelectFromStep interface {
-	From(table TableLike) SelectWhereStep
+	From(Selectable) SelectWhereStep
 }
 
 type SelectWhereStep interface {
-	Where(conditions ...Condition) Queryable
+	Renderable
+	Selectable
+	Where(conditions ...Condition) Query
+}
+
+type Renderable interface {
+	Render(io.Writer) []interface{}
 }
 
 type Queryable interface {
+	Columns() []Column
+}
+
+type Query interface {
+	Renderable
 	QueryRow(*sql.DB) (*sql.Row, error)
 }
 
-func (c *Context) Select(cols ...Column) SelectFromStep {
-	c.Columns = cols
-	//c.Operation = ReadOperation
-	return c
+type Selectable interface {
+	isSelectable()
 }
 
-func (c *Context) From(t TableLike) SelectWhereStep {
-	c.Table = t
-	return c
+type selection struct {
+	selection  Selectable
+	projection []Column
+	predicate  []Condition
 }
 
-func (c *Context) Where(cond ...Condition) Queryable {
-	c.Conditions = cond
-	return c
+func (s *selection) isSelectable() {}
+
+func (s *selection) Where(c ...Condition) Query {
+	s.predicate = c
+	return s
 }
 
-func (c *Context) QueryRow(db *sql.DB) (*sql.Row, error) {
-	stmt, args, err := c.Build()
-	if err != nil {
-		return nil, err
-	}
-	return db.QueryRow(stmt, args...), nil
+func Select(c ...Column) SelectFromStep {
+	return &selection{projection: c}
 }
 
-func (c *Context) RenderSQL() (string, error) {
+func (sl *selection) From(s Selectable) SelectWhereStep {
+	sl.selection = s
+	return sl
+}
+
+func (s *selection) QueryRow(db *sql.DB) (*sql.Row, error) {
 	var buf bytes.Buffer
-	if err := renderSelect(c, &buf); err != nil {
-		return "", err
-	} else {
-		return buf.String(), nil
-	}
-}
-
-func (c *Context) Build() (stmt string, placeHolders []interface{}, err error) {
-	stmt, err = c.RenderSQL()
-	if err != nil {
-		return stmt, nil, err
-	}
-
-	bindings := len(c.Bindings) // TODO check whether this is nil
-	conditions := 0
-
-	if c.Conditions != nil {
-		conditions = len(c.Conditions)
-	}
-
-	placeHolders = make([]interface{}, bindings+conditions)
-
-	for i, bind := range c.Bindings {
-		placeHolders[i] = bind.Value
-	}
-
-	if c.Conditions != nil {
-		for i, cond := range c.Conditions {
-			placeHolders[i+bindings] = cond.Binding.Value
-		}
-	}
-
-	c.Dispose()
-
-	return stmt, placeHolders, nil
-}
-
-func (c *Context) Dispose() {
-	c.Columns = nil
-	c.Table = nil
-	c.Bindings = nil
-	c.Conditions = nil
-}
-
-func (c *Context) hasConditions() bool {
-	return len(c.Conditions) > 0
+	args := s.Render(&buf)
+	return db.QueryRow(buf.String(), args...), nil
 }

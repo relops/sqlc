@@ -1,45 +1,73 @@
 package sqlc
 
 import (
+	"bytes"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestSelect(t *testing.T) {
-	c := NewContext()
-	assert.NotNil(t, c)
+var foo = Table("foo")
+var bar = Varchar("bar")
+var baz = Varchar("baz")
 
-	foo := Table("foo")
-	bar := Varchar("bar")
-	baz := Varchar("baz")
-
-	c.Select(bar).From(foo).Where(baz.Eq("quux"))
-
-	sql, err := c.RenderSQL()
-	assert.NoError(t, err)
-
-	assert.Equal(t, "SELECT bar FROM foo WHERE baz = ?", sql)
-
-	stmt, placeholders, err := c.Build()
-	assert.NoError(t, err)
-
-	assert.Equal(t, "SELECT bar FROM foo WHERE baz = ?", stmt)
-	assert.Equal(t, []interface{}{"quux"}, placeholders)
-
+var rendered = []struct {
+	Constructed Renderable
+	Expected    string
+}{
+	{
+		Select().From(foo),
+		"SELECT * FROM foo",
+	},
+	{
+		Select(bar, baz).From(foo),
+		"SELECT bar, baz FROM foo",
+	},
+	{
+		Select(bar).From(foo).Where(baz.Eq("quux")),
+		"SELECT bar FROM foo WHERE baz = ?",
+	},
+	{
+		Select().From(Select(bar).From(foo)),
+		"SELECT * FROM (SELECT bar FROM foo)",
+	},
 }
 
-func TestSelectStar(t *testing.T) {
+var trees = []struct {
+	Constructed Selectable
+	Expected    selection
+}{
+	{
+		Select().From(foo),
+		selection{selection: table{name: "foo"}},
+	},
+	{
+		Select(bar, baz).From(foo),
+		selection{selection: table{name: "foo"}, projection: []Column{bar, baz}},
+	},
+	{
+		Select().From(Select(bar).From(foo)),
+		selection{
+			selection: &selection{
+				selection: table{name: "foo"}, projection: []Column{bar},
+			},
+		},
+	},
+}
 
-	foo := Table("foo")
+func TestTrees(t *testing.T) {
+	for _, tree := range trees {
+		assert.Equal(t, &tree.Expected, tree.Constructed)
+	}
+}
 
-	c := NewContext()
-
-	c.Select().From(foo)
-	sql, err := c.RenderSQL()
-	assert.NoError(t, err)
-	assert.Equal(t, "SELECT * FROM foo", sql)
+func TestRendered(t *testing.T) {
+	for _, rendered := range rendered {
+		var buf bytes.Buffer
+		rendered.Constructed.Render(&buf)
+		assert.Equal(t, rendered.Expected, buf.String())
+	}
 }
 
 func TestIntegration(t *testing.T) {
@@ -56,13 +84,7 @@ func TestIntegration(t *testing.T) {
 	_, err = db.Exec(`INSERT INTO foo (baz, bar) VALUES (?,?)`, "quux", "gorp")
 	assert.NoError(t, err)
 
-	foo := Table("foo")
-	bar := Varchar("bar")
-	baz := Varchar("baz")
-
-	c := NewContext()
-
-	row, err := c.Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
+	row, err := Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
 	var barScan string

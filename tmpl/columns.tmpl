@@ -13,7 +13,7 @@ type {{ $t.Prefix }}Column interface {
 	Eq(value {{ $t.Literal }}) Condition
 }
 
-func (c *{{ toLower $t.Prefix }}Column) ColumnName() string {
+func (c *{{ toLower $t.Prefix }}Column) Name() string {
 	return c.name
 }
 

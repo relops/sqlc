@@ -5,14 +5,16 @@ type table struct {
 	cols []Column
 }
 
-func (t *table) TableName() string {
+func (t table) isSelectable() {}
+
+func (t table) Name() string {
 	return t.name
 }
 
-func (t *table) ColumnDefinitions() []Column {
+func (t table) Columns() []Column {
 	return t.cols
 }
 
 func Table(name string) TableLike {
-	return &table{name: name}
+	return table{name: name}
 }

@@ -1,9 +1,8 @@
 package sqlc
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -15,57 +14,58 @@ var predicateTypes = map[PredicateType]string{
 	LePredicate: "<=",
 }
 
-func renderSelect(ctx *Context, buf *bytes.Buffer) error {
+func (s *selection) Render(w io.Writer) []interface{} {
+	fmt.Fprint(w, "SELECT ")
 
-	fmt.Fprint(buf, "SELECT ")
-
-	var colClause string
-	if len(ctx.Columns) == 0 {
-		cols := ctx.Table.ColumnDefinitions()
-		if len(cols) == 0 {
-			fmt.Fprint(buf, "*")
-		} else {
-			colClause = columnClause(ctx.Table.ColumnDefinitions())
-		}
-
+	if len(s.projection) == 0 {
+		fmt.Fprint(w, "*")
 	} else {
-		colClause = columnClause(ctx.Columns)
+		colClause := columnClause(s.projection)
+		fmt.Fprint(w, colClause)
 	}
 
-	fmt.Fprint(buf, colClause)
+	fmt.Fprintf(w, " FROM ")
 
-	if ctx.Table == nil {
-		return errors.New("No table supplied")
+	switch sub := s.selection.(type) {
+	case table:
+		fmt.Fprint(w, sub.name)
+	case *selection:
+		fmt.Fprint(w, "(")
+		sub.Render(w)
+		fmt.Fprint(w, ")")
 	}
 
-	fmt.Fprintf(buf, " FROM %s", ctx.Table.TableName())
-
-	if ctx.hasConditions() {
-		fmt.Fprint(buf, " ")
-		renderWhereClause(ctx, buf)
+	if len(s.predicate) > 0 {
+		fmt.Fprint(w, " ")
+		return renderWhereClause(s.predicate, w)
+	} else {
+		return []interface{}{}
 	}
-
-	return nil
 }
 
 func columnClause(cols []Column) string {
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
-		colFragments[i] = col.ColumnName()
+		colFragments[i] = col.Name()
 	}
 	return strings.Join(colFragments, ", ")
 }
 
-func renderWhereClause(ctx *Context, buf *bytes.Buffer) {
-	fmt.Fprint(buf, "WHERE ")
+func renderWhereClause(conds []Condition, w io.Writer) []interface{} {
+	fmt.Fprint(w, "WHERE ")
 
-	whereFragments := make([]string, len(ctx.Conditions))
-	for i, condition := range ctx.Conditions {
-		col := condition.Binding.Column.ColumnName()
+	whereFragments := make([]string, len(conds))
+	values := make([]interface{}, len(conds))
+
+	for i, condition := range conds {
+		col := condition.Binding.Column.Name()
 		pred := condition.Predicate
 		whereFragments[i] = fmt.Sprintf("%s %s ?", col, predicateTypes[pred])
+		values[i] = condition.Binding.Value
 	}
 
 	whereClause := strings.Join(whereFragments, " AND ")
-	fmt.Fprint(buf, whereClause)
+	fmt.Fprint(w, whereClause)
+
+	return values
 }

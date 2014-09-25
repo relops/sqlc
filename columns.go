@@ -13,7 +13,7 @@ type VarcharColumn interface {
 	Eq(value string) Condition
 }
 
-func (c *varcharColumn) ColumnName() string {
+func (c *varcharColumn) Name() string {
 	return c.name
 }
 
