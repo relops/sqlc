@@ -11,6 +11,7 @@ type varcharField struct {
 type VarcharField interface {
 	Field
 	Eq(value string) Condition
+	IsEq(value VarcharField) Condition
 }
 
 func (c *varcharField) Name() string {
@@ -19,6 +20,10 @@ func (c *varcharField) Name() string {
 
 func (c *varcharField) Eq(pred string) Condition {
 	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *varcharField) IsEq(pred VarcharField) Condition {
+	return Condition{Binding: FieldBinding{Value: pred.Name(), Field: c}}
 }
 
 func Varchar(name string) VarcharField {

@@ -8,8 +8,10 @@ import (
 )
 
 var foo = Table("foo")
+var quux = Table("quux")
 var bar = Varchar("bar")
 var baz = Varchar("baz")
+var id = Varchar("id")
 
 var rendered = []struct {
 	Constructed Renderable
@@ -32,6 +34,10 @@ var rendered = []struct {
 		"SELECT bar FROM foo GROUP BY bar ORDER BY bar",
 	},
 	{
+		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
+		"SELECT bar FROM foo JOIN quux ON id = bar",
+	},
+	{
 		Select().From(Select(bar).From(foo)),
 		"SELECT * FROM (SELECT bar FROM foo)",
 	},
@@ -48,6 +54,21 @@ var trees = []struct {
 	{
 		Select(bar, baz).From(foo),
 		selection{selection: table{name: "foo"}, projection: []Field{bar, baz}},
+	},
+	{
+		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
+		selection{
+			selection:  table{name: "foo"},
+			projection: []Field{bar},
+			joinTarget: nil,
+			joins: []join{
+				join{
+					target:   table{name: "quux"},
+					joinType: Join,
+					conds:    []Condition{id.IsEq(bar)},
+				},
+			},
+		},
 	},
 	{
 		Select(bar).From(foo).GroupBy(bar).OrderBy(bar),

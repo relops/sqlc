@@ -7,6 +7,7 @@ import (
 )
 
 type PredicateType int
+type JoinType int
 
 const (
 	EqPredicate PredicateType = iota
@@ -15,6 +16,10 @@ const (
 	LtPredicate
 	LePredicate
 	InPredicate
+)
+
+const (
+	Join JoinType = iota
 )
 
 type TableLike interface {
@@ -41,10 +46,20 @@ type SelectFromStep interface {
 	From(Selectable) SelectWhereStep
 }
 
+type SelectJoinStep interface {
+	Join(TableLike) SelectOnStep
+}
+
+type SelectOnStep interface {
+	On(...Condition) SelectWhereStep
+	Query
+}
+
 type SelectWhereStep interface {
 	Renderable
 	Selectable
 	SelectGroupByStep
+	SelectJoinStep
 	Where(conditions ...Condition) Query
 }
 
@@ -90,6 +105,14 @@ type selection struct {
 	predicate  []Condition
 	groups     []Field
 	ordering   []Field
+	joins      []join
+	joinTarget TableLike
+}
+
+type join struct {
+	target   TableLike
+	joinType JoinType
+	conds    []Condition
 }
 
 func (s *selection) isSelectable() {}
@@ -106,6 +129,22 @@ func Select(f ...Field) SelectFromStep {
 func (sl *selection) From(s Selectable) SelectWhereStep {
 	sl.selection = s
 	return sl
+}
+
+func (s *selection) Join(t TableLike) SelectOnStep {
+	s.joinTarget = t
+	return s
+}
+
+func (s *selection) On(c ...Condition) SelectWhereStep {
+	j := join{
+		target:   s.joinTarget,
+		joinType: Join,
+		conds:    c,
+	}
+	s.joinTarget = nil
+	s.joins = append(s.joins, j)
+	return s
 }
 
 func (sl *selection) GroupBy(f ...Field) SelectHavingStep {

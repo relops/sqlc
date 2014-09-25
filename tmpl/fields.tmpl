@@ -11,6 +11,7 @@ type {{ toLower $t.Prefix }}Field struct {
 type {{ $t.Prefix }}Field interface {
 	Field
 	Eq(value {{ $t.Literal }}) Condition
+	IsEq(value {{ $t.Prefix }}Field) Condition
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Name() string {
@@ -19,6 +20,10 @@ func (c *{{ toLower $t.Prefix }}Field) Name() string {
 
 func (c *{{ toLower $t.Prefix }}Field) Eq(pred {{ $t.Literal }}) Condition {
 	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *{{ toLower $t.Prefix }}Field) IsEq(pred {{ $t.Prefix }}Field) Condition {
+	return Condition{Binding: FieldBinding{Value: pred.Name(), Field: c}}
 }
 
 func {{ $t.Prefix }}(name {{ $t.Literal }}) {{ $t.Prefix }}Field {

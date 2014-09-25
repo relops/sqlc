@@ -42,6 +42,12 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 		fmt.Fprint(w, ")")
 	}
 
+	// TODO Support more than one join
+	if len(s.joins) == 1 {
+		join := s.joins[0]
+		fmt.Fprintf(w, " JOIN %s ON %s = %s", join.target.Name(), join.conds[0].Binding.Field.Name(), join.conds[0].Binding.Value)
+	}
+
 	if len(s.predicate) > 0 {
 		fmt.Fprint(w, " ")
 		placeholders = renderWhereClause(s.predicate, w)
