@@ -32,6 +32,11 @@ type Field interface {
 	Name() string
 }
 
+type TableField interface {
+	Field
+	Table() string
+}
+
 type FieldBinding struct {
 	Field Field
 	Value interface{}
@@ -51,7 +56,7 @@ type SelectJoinStep interface {
 }
 
 type SelectOnStep interface {
-	On(...Condition) SelectWhereStep
+	On(...JoinCondition) SelectWhereStep
 	Query
 }
 
@@ -109,10 +114,15 @@ type selection struct {
 	joinTarget TableLike
 }
 
+type JoinCondition struct {
+	Lhs, Rhs  TableField
+	Predicate PredicateType
+}
+
 type join struct {
 	target   TableLike
 	joinType JoinType
-	conds    []Condition
+	conds    []JoinCondition
 }
 
 func (s *selection) isSelectable() {}
@@ -136,7 +146,7 @@ func (s *selection) Join(t TableLike) SelectOnStep {
 	return s
 }
 
-func (s *selection) On(c ...Condition) SelectWhereStep {
+func (s *selection) On(c ...JoinCondition) SelectWhereStep {
 	j := join{
 		target:   s.joinTarget,
 		joinType: Join,

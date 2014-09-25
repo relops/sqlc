@@ -9,9 +9,9 @@ import (
 
 var foo = Table("foo")
 var quux = Table("quux")
-var bar = Varchar("bar")
-var baz = Varchar("baz")
-var id = Varchar("id")
+var bar = Varchar(foo, "bar")
+var baz = Varchar(foo, "baz")
+var id = Varchar(quux, "id")
 
 var rendered = []struct {
 	Constructed Renderable
@@ -39,7 +39,7 @@ var rendered = []struct {
 	},
 	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
-		"SELECT foo.bar FROM foo JOIN quux ON id = bar",
+		"SELECT foo.bar FROM foo JOIN quux ON quux.id = foo.bar",
 	},
 	{
 		Select().From(Select(bar).From(foo)),
@@ -69,7 +69,7 @@ var trees = []struct {
 				join{
 					target:   table{name: "quux"},
 					joinType: Join,
-					conds:    []Condition{id.IsEq(bar)},
+					conds:    []JoinCondition{id.IsEq(bar)},
 				},
 			},
 		},

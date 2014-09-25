@@ -6,28 +6,33 @@ package sqlc
 
 type {{ toLower $t.Prefix }}Field struct {
 	name string
+	table TableLike
 }
 
 type {{ $t.Prefix }}Field interface {
-	Field
+	TableField
 	Eq(value {{ $t.Literal }}) Condition
-	IsEq(value {{ $t.Prefix }}Field) Condition
+	IsEq(value {{ $t.Prefix }}Field) JoinCondition
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Name() string {
 	return c.name
 }
 
+func (c *{{ toLower $t.Prefix }}Field) Table() string {
+	return c.table.Name()
+}
+
 func (c *{{ toLower $t.Prefix }}Field) Eq(pred {{ $t.Literal }}) Condition {
 	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
 }
 
-func (c *{{ toLower $t.Prefix }}Field) IsEq(pred {{ $t.Prefix }}Field) Condition {
-	return Condition{Binding: FieldBinding{Value: pred.Name(), Field: c}}
+func (c *{{ toLower $t.Prefix }}Field) IsEq(pred {{ $t.Prefix }}Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
-func {{ $t.Prefix }}(name {{ $t.Literal }}) {{ $t.Prefix }}Field {
-	return &{{ toLower $t.Prefix }}Field{name: name}
+func {{ $t.Prefix }}(table TableLike, name string) {{ $t.Prefix }}Field {
+	return &{{ toLower $t.Prefix }}Field{name: name, table:table}
 }
 
 {{ end }}

@@ -54,7 +54,11 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 	// TODO Support more than one join
 	if len(s.joins) == 1 {
 		join := s.joins[0]
-		fmt.Fprintf(w, " JOIN %s ON %s = %s", join.target.Name(), join.conds[0].Binding.Field.Name(), join.conds[0].Binding.Value)
+		lhsAlias := join.conds[0].Lhs.Table()
+		lhsField := join.conds[0].Lhs.Name()
+		rhsAlias := join.conds[0].Rhs.Table()
+		rhsField := join.conds[0].Rhs.Name()
+		fmt.Fprintf(w, " JOIN %s ON %s.%s = %s.%s", join.target.Name(), lhsAlias, lhsField, rhsAlias, rhsField)
 	}
 
 	if len(s.predicate) > 0 {
