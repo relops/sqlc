@@ -3,7 +3,7 @@ sqlc
 
 [![Build Status](https://travis-ci.org/relops/sqlc.png?branch=master)](https://travis-ci.org/relops/sqlc)
 
-`sqlc` generates SQL for you:
+`sqlc` generates SQL queries for you:
 	
 	foo := Table("foo")
 	bar := Varchar(foo, "bar")
@@ -25,10 +25,18 @@ Features
 * GROUP BY
 * ORDER BY
 * INNER JOINS
+* Sub queries
 * Data types:
   * VARCHAR
 * Statement rendering
 * Querying via database/sql
+
+Goals
+-----
+
+* Create a composable type safe fluent API to generate nested and complex SQL queries
+* Generate SQL for different dialects (currently sqlite is the target dialect)
+* Although the current focus is query generation, we might consider supporting INSERTs and UPDATEs some day 
 
 
 Status
