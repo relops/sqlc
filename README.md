@@ -6,8 +6,8 @@ sqlc
 `sqlc` generates SQL for you:
 	
 	foo := Table("foo")
-	bar := Varchar("bar")
-	baz := Varchar("baz")
+	bar := Varchar(foo, "bar")
+	baz := Varchar(foo, "baz")
 
 	var db *db.DB // For integration with database/sql
 
@@ -15,7 +15,7 @@ sqlc
 
 If you don't want to use `database/sql`, you don't have to. `String()` is an API call to just produce the SQL string that you use in any way that you want to:
 
-	// Renders `SELECT bar FROM foo WHERE baz = ?`
+	// Renders `SELECT foo.bar FROM foo WHERE foo.baz = ?`
 	sql := Select(bar).From(foo).Where(baz.Eq("quux")).String()
 
 Features
