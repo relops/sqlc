@@ -58,7 +58,7 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 	return placeholders
 }
 
-func columnClause(cols []Column) string {
+func columnClause(cols []Field) string {
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
 		colFragments[i] = col.Name()
@@ -73,7 +73,7 @@ func renderWhereClause(conds []Condition, w io.Writer) []interface{} {
 	values := make([]interface{}, len(conds))
 
 	for i, condition := range conds {
-		col := condition.Binding.Column.Name()
+		col := condition.Binding.Field.Name()
 		pred := condition.Predicate
 		whereFragments[i] = fmt.Sprintf("%s %s ?", col, predicateTypes[pred])
 		values[i] = condition.Binding.Value

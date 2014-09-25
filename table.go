@@ -1,8 +1,8 @@
 package sqlc
 
 type table struct {
-	name string
-	cols []Column
+	name   string
+	fields []Field
 }
 
 func (t table) isSelectable() {}
@@ -11,8 +11,8 @@ func (t table) Name() string {
 	return t.name
 }
 
-func (t table) Columns() []Column {
-	return t.cols
+func (t table) Fields() []Field {
+	return t.fields
 }
 
 func Table(name string) TableLike {

@@ -47,21 +47,21 @@ var trees = []struct {
 	},
 	{
 		Select(bar, baz).From(foo),
-		selection{selection: table{name: "foo"}, projection: []Column{bar, baz}},
+		selection{selection: table{name: "foo"}, projection: []Field{bar, baz}},
 	},
 	{
 		Select(bar).From(foo).GroupBy(bar),
 		selection{
 			selection:  table{name: "foo"},
-			projection: []Column{bar},
-			groups:     []Column{bar},
+			projection: []Field{bar},
+			groups:     []Field{bar},
 		},
 	},
 	{
 		Select().From(Select(bar).From(foo)),
 		selection{
 			selection: &selection{
-				selection: table{name: "foo"}, projection: []Column{bar},
+				selection: table{name: "foo"}, projection: []Field{bar},
 			},
 		},
 	},

@@ -23,17 +23,17 @@ type TableLike interface {
 	Queryable
 }
 
-type Column interface {
+type Field interface {
 	Name() string
 }
 
-type ColumnBinding struct {
-	Column Column
-	Value  interface{}
+type FieldBinding struct {
+	Field Field
+	Value interface{}
 }
 
 type Condition struct {
-	Binding   ColumnBinding
+	Binding   FieldBinding
 	Predicate PredicateType
 }
 
@@ -49,7 +49,7 @@ type SelectWhereStep interface {
 }
 
 type SelectGroupByStep interface {
-	GroupBy(...Column) SelectHavingStep
+	GroupBy(...Field) SelectHavingStep
 }
 
 type SelectHavingStep interface {
@@ -62,7 +62,7 @@ type Renderable interface {
 }
 
 type Queryable interface {
-	Columns() []Column
+	Fields() []Field
 }
 
 type Query interface {
@@ -77,9 +77,9 @@ type Selectable interface {
 
 type selection struct {
 	selection  Selectable
-	projection []Column
+	projection []Field
 	predicate  []Condition
-	groups     []Column
+	groups     []Field
 }
 
 func (s *selection) isSelectable() {}
@@ -89,8 +89,8 @@ func (s *selection) Where(c ...Condition) Query {
 	return s
 }
 
-func Select(c ...Column) SelectFromStep {
-	return &selection{projection: c}
+func Select(f ...Field) SelectFromStep {
+	return &selection{projection: f}
 }
 
 func (sl *selection) From(s Selectable) SelectWhereStep {
@@ -98,8 +98,8 @@ func (sl *selection) From(s Selectable) SelectWhereStep {
 	return sl
 }
 
-func (sl *selection) GroupBy(c ...Column) SelectHavingStep {
-	sl.groups = c
+func (sl *selection) GroupBy(f ...Field) SelectHavingStep {
+	sl.groups = f
 	return sl
 }
 
