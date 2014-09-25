@@ -44,7 +44,16 @@ type SelectFromStep interface {
 type SelectWhereStep interface {
 	Renderable
 	Selectable
+	SelectGroupByStep
 	Where(conditions ...Condition) Query
+}
+
+type SelectGroupByStep interface {
+	GroupBy(...Column) SelectHavingStep
+}
+
+type SelectHavingStep interface {
+	Query
 }
 
 type Renderable interface {
@@ -58,6 +67,7 @@ type Queryable interface {
 
 type Query interface {
 	Renderable
+	Selectable
 	QueryRow(*sql.DB) (*sql.Row, error)
 }
 
@@ -69,6 +79,7 @@ type selection struct {
 	selection  Selectable
 	projection []Column
 	predicate  []Condition
+	groups     []Column
 }
 
 func (s *selection) isSelectable() {}
@@ -84,6 +95,11 @@ func Select(c ...Column) SelectFromStep {
 
 func (sl *selection) From(s Selectable) SelectWhereStep {
 	sl.selection = s
+	return sl
+}
+
+func (sl *selection) GroupBy(c ...Column) SelectHavingStep {
+	sl.groups = c
 	return sl
 }
 

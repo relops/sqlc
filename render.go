@@ -21,7 +21,7 @@ func (s *selection) String() string {
 	return buf.String()
 }
 
-func (s *selection) Render(w io.Writer) []interface{} {
+func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 	fmt.Fprint(w, "SELECT ")
 
 	if len(s.projection) == 0 {
@@ -44,10 +44,18 @@ func (s *selection) Render(w io.Writer) []interface{} {
 
 	if len(s.predicate) > 0 {
 		fmt.Fprint(w, " ")
-		return renderWhereClause(s.predicate, w)
+		placeholders = renderWhereClause(s.predicate, w)
 	} else {
-		return []interface{}{}
+		placeholders = []interface{}{}
 	}
+
+	if (len(s.groups)) > 0 {
+		fmt.Fprint(w, " GROUP BY ")
+		colClause := columnClause(s.groups)
+		fmt.Fprint(w, colClause)
+	}
+
+	return placeholders
 }
 
 func columnClause(cols []Column) string {
