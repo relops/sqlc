@@ -13,10 +13,10 @@ sqlc
 
 	row, err := Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
 
-If you don't want to use `database/sql`, you don't have to. `RenderSQL()` is an API call to just produce the SQL string that you use in any way that you want to:
+If you don't want to use `database/sql`, you don't have to. `String()` is an API call to just produce the SQL string that you use in any way that you want to:
 
 	// Renders `SELECT bar FROM foo WHERE baz = ?`
-	sql, _ := Select(bar).From(foo).Where(baz.Eq("quux")).Render()
+	sql := Select(bar).From(foo).Where(baz.Eq("quux")).String()
 
 Status
 ------
