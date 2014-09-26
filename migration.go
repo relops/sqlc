@@ -5,6 +5,18 @@ import (
 	log "github.com/cihub/seelog"
 )
 
+func LoadBindata(assets []string, r func(string) ([]byte, error)) []string {
+
+	steps := make([]string, len(assets))
+
+	for i, asset := range assets {
+		stepBin, _ := r(asset)
+		steps[i] = string(stepBin)
+	}
+
+	return steps
+}
+
 func Migrate(db *sql.DB, steps []string) error {
 
 	var current int
