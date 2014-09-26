@@ -100,9 +100,15 @@ var insertTrees = []struct {
 	Expected    insert
 }{
 	{
-		InsertInto(foo),
+		InsertInto(foo).Set(bar, "quux"),
 		insert{
 			table: table{name: "foo"},
+			bindings: []TableFieldBinding{
+				TableFieldBinding{
+					Field: bar,
+					Value: "quux",
+				},
+			},
 		},
 	},
 }
