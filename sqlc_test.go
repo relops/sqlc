@@ -43,9 +43,13 @@ var rendered = []struct {
 		Select().From(Select(bar).From(foo)),
 		"SELECT * FROM (SELECT foo.bar FROM foo)",
 	},
+	{
+		InsertInto(foo).Set(bar, "quux"),
+		"INSERT INTO foo (bar) VALUES (?)",
+	},
 }
 
-var trees = []struct {
+var selectTrees = []struct {
 	Constructed Selectable
 	Expected    selection
 }{
@@ -91,8 +95,26 @@ var trees = []struct {
 	},
 }
 
-func TestTrees(t *testing.T) {
-	for _, tree := range trees {
+var insertTrees = []struct {
+	Constructed InsertSetStep
+	Expected    insert
+}{
+	{
+		InsertInto(foo),
+		insert{
+			table: table{name: "foo"},
+		},
+	},
+}
+
+func TestInsertTrees(t *testing.T) {
+	for _, tree := range insertTrees {
+		assert.Equal(t, &tree.Expected, tree.Constructed)
+	}
+}
+
+func TestSelectTrees(t *testing.T) {
+	for _, tree := range selectTrees {
 		assert.Equal(t, &tree.Expected, tree.Constructed)
 	}
 }

@@ -42,6 +42,11 @@ type FieldBinding struct {
 	Value interface{}
 }
 
+type TableFieldBinding struct {
+	Field TableField
+	Value interface{}
+}
+
 type Condition struct {
 	Binding   FieldBinding
 	Predicate PredicateType
@@ -85,6 +90,15 @@ type SelectLimitStep interface {
 	Query
 }
 
+type InsertSetStep interface {
+	Set(f TableField, v interface{}) InsertSetMoreStep
+}
+
+type InsertSetMoreStep interface {
+	Executable
+	InsertSetStep
+}
+
 type Renderable interface {
 	Render(io.Writer) []interface{}
 	String() string
@@ -98,6 +112,10 @@ type Query interface {
 	Renderable
 	Selectable
 	QueryRow(*sql.DB) (*sql.Row, error)
+}
+
+type Executable interface {
+	Renderable
 }
 
 type Selectable interface {
@@ -125,6 +143,11 @@ type join struct {
 	conds    []JoinCondition
 }
 
+type insert struct {
+	table    TableLike
+	bindings []TableFieldBinding
+}
+
 func (s *selection) isSelectable() {}
 
 func (s *selection) Where(c ...Condition) Query {
@@ -134,6 +157,16 @@ func (s *selection) Where(c ...Condition) Query {
 
 func Select(f ...Field) SelectFromStep {
 	return &selection{projection: f}
+}
+
+func InsertInto(t TableLike) InsertSetStep {
+	return &insert{table: t}
+}
+
+func (i *insert) Set(f TableField, v interface{}) InsertSetMoreStep {
+	binding := TableFieldBinding{Field: f, Value: v}
+	i.bindings = append(i.bindings, binding)
+	return i
 }
 
 func (sl *selection) From(s Selectable) SelectWhereStep {

@@ -15,10 +15,38 @@ var predicateTypes = map[PredicateType]string{
 	LePredicate: "<=",
 }
 
+func (i *insert) String() string {
+	return toString(i)
+}
+
+func (i *insert) Render(w io.Writer) (placeholders []interface{}) {
+	fmt.Fprintf(w, "INSERT INTO %s (", i.table.Name())
+	colFragments := make([]string, len(i.bindings))
+	for i, binding := range i.bindings {
+		col := binding.Field.Name()
+		colFragments[i] = col
+	}
+	colClause := strings.Join(colFragments, ", ")
+	fmt.Fprint(w, colClause)
+
+	fmt.Fprint(w, ") VALUES (")
+
+	placeHolderFragments := make([]string, len(i.bindings))
+	values := make([]interface{}, len(i.bindings))
+	for i, binding := range i.bindings {
+		placeHolderFragments[i] = "?"
+		values[i] = binding.Value
+	}
+
+	placeHolderClause := strings.Join(placeHolderFragments, ",")
+	fmt.Fprint(w, placeHolderClause)
+	fmt.Fprint(w, ")")
+
+	return values
+}
+
 func (s *selection) String() string {
-	var buf bytes.Buffer
-	s.Render(&buf)
-	return buf.String()
+	return toString(s)
 }
 
 func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
@@ -109,4 +137,10 @@ func renderWhereClause(alias string, conds []Condition, w io.Writer) []interface
 	fmt.Fprint(w, whereClause)
 
 	return values
+}
+
+func toString(r Renderable) string {
+	var buf bytes.Buffer
+	r.Render(&buf)
+	return buf.String()
 }
