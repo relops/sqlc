@@ -1,11 +1,18 @@
-package sqlc
+package main
 
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	. "github.com/relops/sqlc"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+var foo = Table("foo")
+var quux = Table("quux")
+var bar = Varchar(foo, "bar")
+var baz = Varchar(foo, "baz")
+var id = Varchar(quux, "id")
 
 func TestIntegration(t *testing.T) {
 

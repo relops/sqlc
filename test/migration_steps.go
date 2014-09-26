@@ -1,4 +1,4 @@
-package sqlc
+package main
 
 import (
 	"bytes"
@@ -25,7 +25,7 @@ func bindata_read(data []byte, name string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func db_001_initial_schema_sql() ([]byte, error) {
+func test_db_001_initial_schema_sql() ([]byte, error) {
 	return bindata_read([]byte{
 		0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x00, 0xff, 0x72, 0x0e,
 		0x72, 0x75, 0x0c, 0x71, 0x55, 0x08, 0x71, 0x74, 0xf2, 0x71, 0x55, 0xf0,
@@ -37,11 +37,11 @@ func db_001_initial_schema_sql() ([]byte, error) {
 		0xfb, 0x82, 0xb4, 0x59, 0x73, 0x01, 0x02, 0x00, 0x00, 0xff, 0xff, 0x61,
 		0xe1, 0xbe, 0x13, 0x57, 0x00, 0x00, 0x00,
 	},
-		"db/001_initial_schema.sql",
+		"test/db/001_initial_schema.sql",
 	)
 }
 
-func db_002_populate_table_sql() ([]byte, error) {
+func test_db_002_populate_table_sql() ([]byte, error) {
 	return bindata_read([]byte{
 		0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x00, 0xff, 0xf2, 0xf4,
 		0x0b, 0x76, 0x0d, 0x0a, 0x51, 0xf0, 0xf4, 0x0b, 0xf1, 0x57, 0x48, 0xcb,
@@ -51,7 +51,7 @@ func db_002_populate_table_sql() ([]byte, error) {
 		0xb4, 0xe6, 0x02, 0x04, 0x00, 0x00, 0xff, 0xff, 0xda, 0x67, 0x8e, 0xdf,
 		0x34, 0x00, 0x00, 0x00,
 	},
-		"db/002_populate_table.sql",
+		"test/db/002_populate_table.sql",
 	)
 }
 
@@ -77,8 +77,8 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() ([]byte, error){
-	"db/001_initial_schema.sql": db_001_initial_schema_sql,
-	"db/002_populate_table.sql": db_002_populate_table_sql,
+	"test/db/001_initial_schema.sql": test_db_001_initial_schema_sql,
+	"test/db/002_populate_table.sql": test_db_002_populate_table_sql,
 }
 // AssetDir returns the file names below a certain
 // directory embedded in the file by go-bindata.
@@ -120,10 +120,12 @@ type _bintree_t struct {
 	Children map[string]*_bintree_t
 }
 var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
-	"db": &_bintree_t{nil, map[string]*_bintree_t{
-		"001_initial_schema.sql": &_bintree_t{db_001_initial_schema_sql, map[string]*_bintree_t{
-		}},
-		"002_populate_table.sql": &_bintree_t{db_002_populate_table_sql, map[string]*_bintree_t{
+	"test": &_bintree_t{nil, map[string]*_bintree_t{
+		"db": &_bintree_t{nil, map[string]*_bintree_t{
+			"001_initial_schema.sql": &_bintree_t{test_db_001_initial_schema_sql, map[string]*_bintree_t{
+			}},
+			"002_populate_table.sql": &_bintree_t{test_db_002_populate_table_sql, map[string]*_bintree_t{
+			}},
 		}},
 	}},
 }}
