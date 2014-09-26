@@ -39,6 +39,11 @@ Goals
 * Although the current focus is query generation, we might consider supporting INSERTs and UPDATEs some day 
 
 
+Pre-requisites
+--------------
+
+The integration tests depend on [go-bindata](https://github.com/jteeuwen/go-bindata).
+
 Status
 ------
 
