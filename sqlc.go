@@ -116,6 +116,7 @@ type Query interface {
 
 type Executable interface {
 	Renderable
+	Exec(db *sql.DB) (sql.Result, error)
 }
 
 type Selectable interface {
@@ -198,6 +199,12 @@ func (sl *selection) GroupBy(f ...Field) SelectHavingStep {
 func (sl *selection) OrderBy(f ...Field) SelectLimitStep {
 	sl.ordering = f
 	return sl
+}
+
+func (s *insert) Exec(db *sql.DB) (sql.Result, error) {
+	var buf bytes.Buffer
+	args := s.Render(&buf)
+	return db.Exec(buf.String(), args...)
 }
 
 func (s *selection) QueryRow(db *sql.DB) (*sql.Row, error) {

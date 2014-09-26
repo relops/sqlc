@@ -23,6 +23,9 @@ func TestIntegration(t *testing.T) {
 	err = Migrate(db, steps)
 	assert.NoError(t, err)
 
+	_, err = InsertInto(foo).Set(baz, "quux").Set(bar, "gorp").Exec(db)
+	assert.NoError(t, err)
+
 	row, err := Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 

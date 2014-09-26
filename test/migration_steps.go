@@ -41,20 +41,6 @@ func test_db_001_initial_schema_sql() ([]byte, error) {
 	)
 }
 
-func test_db_002_populate_table_sql() ([]byte, error) {
-	return bindata_read([]byte{
-		0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x00, 0xff, 0xf2, 0xf4,
-		0x0b, 0x76, 0x0d, 0x0a, 0x51, 0xf0, 0xf4, 0x0b, 0xf1, 0x57, 0x48, 0xcb,
-		0xcf, 0x57, 0xd0, 0x48, 0x4a, 0xac, 0xd2, 0x51, 0x48, 0x4a, 0x2c, 0xd2,
-		0x54, 0x08, 0x73, 0xf4, 0x09, 0x75, 0x0d, 0x56, 0xd0, 0x50, 0x2a, 0x2c,
-		0x2d, 0xad, 0x50, 0xd2, 0x51, 0x50, 0x4a, 0xcf, 0x2f, 0x2a, 0x50, 0xd2,
-		0xb4, 0xe6, 0x02, 0x04, 0x00, 0x00, 0xff, 0xff, 0xda, 0x67, 0x8e, 0xdf,
-		0x34, 0x00, 0x00, 0x00,
-	},
-		"test/db/002_populate_table.sql",
-	)
-}
-
 // Asset loads and returns the asset for the given name.
 // It returns an error if the asset could not be found or
 // could not be loaded.
@@ -78,7 +64,6 @@ func AssetNames() []string {
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() ([]byte, error){
 	"test/db/001_initial_schema.sql": test_db_001_initial_schema_sql,
-	"test/db/002_populate_table.sql": test_db_002_populate_table_sql,
 }
 // AssetDir returns the file names below a certain
 // directory embedded in the file by go-bindata.
@@ -123,8 +108,6 @@ var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
 	"test": &_bintree_t{nil, map[string]*_bintree_t{
 		"db": &_bintree_t{nil, map[string]*_bintree_t{
 			"001_initial_schema.sql": &_bintree_t{test_db_001_initial_schema_sql, map[string]*_bintree_t{
-			}},
-			"002_populate_table.sql": &_bintree_t{test_db_002_populate_table_sql, map[string]*_bintree_t{
 			}},
 		}},
 	}},
