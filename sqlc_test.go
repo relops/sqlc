@@ -105,6 +105,14 @@ func TestRendered(t *testing.T) {
 	}
 }
 
+func TestMigration(t *testing.T) {
+	db, err := sql.Open("sqlite3", "migration.db")
+	assert.NoError(t, err)
+
+	err = Migrate(db)
+	assert.NoError(t, err)
+}
+
 func TestIntegration(t *testing.T) {
 
 	db, err := sql.Open("sqlite3", "sqlc.db")
