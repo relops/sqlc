@@ -5,7 +5,7 @@ import (
 	log "github.com/cihub/seelog"
 )
 
-func Migrate(db *sql.DB) error {
+func Migrate(db *sql.DB, steps []string) error {
 
 	var current int
 	// TODO Eat our own dogfood
@@ -26,7 +26,7 @@ func Migrate(db *sql.DB) error {
 
 	log.Infof("Current DB version: %d", current)
 
-	for i, step := range AssetNames() {
+	for i, stmt := range steps {
 
 		version := i + 1
 
@@ -38,9 +38,6 @@ func Migrate(db *sql.DB) error {
 		if err != nil {
 			return err
 		}
-
-		stepBin, _ := Asset(step)
-		stmt := string(stepBin)
 
 		log.Infof("Step %d: Applying statement:\n %s", version, stmt)
 

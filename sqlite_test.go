@@ -12,7 +12,15 @@ func TestIntegration(t *testing.T) {
 	db, err := sql.Open("sqlite3", "sqlc.db")
 	assert.NoError(t, err)
 
-	err = Migrate(db)
+	names := AssetNames()
+	steps := make([]string, len(names))
+
+	for i, name := range names {
+		stepBin, _ := Asset(name)
+		steps[i] = string(stepBin)
+	}
+
+	err = Migrate(db, steps)
 	assert.NoError(t, err)
 
 	row, err := Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
