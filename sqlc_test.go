@@ -1,8 +1,6 @@
 package sqlc
 
 import (
-	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -103,37 +101,4 @@ func TestRendered(t *testing.T) {
 	for _, rendered := range rendered {
 		assert.Equal(t, rendered.Expected, rendered.Constructed.String())
 	}
-}
-
-func TestMigration(t *testing.T) {
-	db, err := sql.Open("sqlite3", "migration.db")
-	assert.NoError(t, err)
-
-	err = Migrate(db)
-	assert.NoError(t, err)
-}
-
-func TestIntegration(t *testing.T) {
-
-	db, err := sql.Open("sqlite3", "sqlc.db")
-	assert.NoError(t, err)
-
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS foo (baz TEXT PRIMARY KEY, bar TEXT);`)
-	assert.NoError(t, err)
-
-	_, err = db.Exec(`DELETE FROM foo;`)
-	assert.NoError(t, err)
-
-	_, err = db.Exec(`INSERT INTO foo (baz, bar) VALUES (?,?)`, "quux", "gorp")
-	assert.NoError(t, err)
-
-	row, err := Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
-	assert.NoError(t, err)
-
-	var barScan string
-	err = row.Scan(&barScan)
-	assert.NoError(t, err)
-
-	assert.Equal(t, "gorp", barScan)
-
 }
