@@ -2,6 +2,7 @@ sqlc
 ----
 
 [![Build Status](https://travis-ci.org/relops/sqlc.png?branch=master)](https://travis-ci.org/relops/sqlc)
+[![GoDoc](http://godoc.org/_?status.png)](http://godoc.org/github.com/relops/sqlc)
 
 `sqlc` generates SQL queries for you:
 	
