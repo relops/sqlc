@@ -5,6 +5,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	. "github.com/relops/sqlc"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -16,7 +17,11 @@ var id = Varchar(quux, "id")
 
 func TestIntegration(t *testing.T) {
 
-	db, err := sql.Open("sqlite3", "sqlc.db")
+	dbFile := "sqlc.db"
+
+	os.Remove(dbFile)
+
+	db, err := sql.Open("sqlite3", dbFile)
 	assert.NoError(t, err)
 
 	steps := LoadBindata(AssetNames(), Asset)
