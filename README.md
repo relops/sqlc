@@ -24,6 +24,8 @@ Features
 * SELECT ... FROM ... WHERE
 * GROUP BY
 * ORDER BY
+* INSERTs
+* UPDATEs
 * INNER JOINS
 * Sub queries
 * Data types:
