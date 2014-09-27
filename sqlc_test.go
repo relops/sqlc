@@ -113,6 +113,39 @@ var insertTrees = []struct {
 	},
 }
 
+var updateTrees = []struct {
+	Constructed Executable
+	Expected    update
+}{
+	{
+		Update(foo).Set(bar, "quux").Where(baz.Eq("gorp")),
+		update{
+			table: table{name: "foo"},
+			bindings: []TableFieldBinding{
+				TableFieldBinding{
+					Field: bar,
+					Value: "quux",
+				},
+			},
+			predicate: []Condition{
+				Condition{
+					Binding: FieldBinding{
+						Field: baz,
+						Value: "gorp",
+					},
+					Predicate: EqPredicate,
+				},
+			},
+		},
+	},
+}
+
+func TestUpdateTrees(t *testing.T) {
+	for _, tree := range updateTrees {
+		assert.Equal(t, &tree.Expected, tree.Constructed)
+	}
+}
+
 func TestInsertTrees(t *testing.T) {
 	for _, tree := range insertTrees {
 		assert.Equal(t, &tree.Expected, tree.Constructed)

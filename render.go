@@ -15,6 +15,14 @@ var predicateTypes = map[PredicateType]string{
 	LePredicate: "<=",
 }
 
+func (u *update) String() string {
+	return toString(u)
+}
+
+func (u *update) Render(w io.Writer) (placeholders []interface{}) {
+	return placeholders
+}
+
 func (i *insert) String() string {
 	return toString(i)
 }

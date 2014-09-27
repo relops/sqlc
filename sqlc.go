@@ -94,9 +94,19 @@ type InsertSetStep interface {
 	Set(f TableField, v interface{}) InsertSetMoreStep
 }
 
+type UpdateSetStep interface {
+	Set(f TableField, v interface{}) UpdateSetMoreStep
+}
+
 type InsertSetMoreStep interface {
 	Executable
 	InsertSetStep
+}
+
+type UpdateSetMoreStep interface {
+	Executable
+	UpdateSetStep
+	Where(conditions ...Condition) Executable
 }
 
 type Renderable interface {
@@ -149,6 +159,12 @@ type insert struct {
 	bindings []TableFieldBinding
 }
 
+type update struct {
+	table     TableLike
+	bindings  []TableFieldBinding
+	predicate []Condition
+}
+
 func (s *selection) isSelectable() {}
 
 func (s *selection) Where(c ...Condition) Query {
@@ -162,6 +178,21 @@ func Select(f ...Field) SelectFromStep {
 
 func InsertInto(t TableLike) InsertSetStep {
 	return &insert{table: t}
+}
+
+func Update(t TableLike) UpdateSetStep {
+	return &update{table: t}
+}
+
+func (u *update) Where(c ...Condition) Executable {
+	u.predicate = c
+	return u
+}
+
+func (u *update) Set(f TableField, v interface{}) UpdateSetMoreStep {
+	binding := TableFieldBinding{Field: f, Value: v}
+	u.bindings = append(u.bindings, binding)
+	return u
 }
 
 func (i *insert) Set(f TableField, v interface{}) InsertSetMoreStep {
@@ -204,6 +235,13 @@ func (sl *selection) OrderBy(f ...Field) SelectLimitStep {
 func (s *insert) Exec(db *sql.DB) (sql.Result, error) {
 	var buf bytes.Buffer
 	args := s.Render(&buf)
+	return db.Exec(buf.String(), args...)
+}
+
+// TOOD Try to get rid of copy and paste with *insert
+func (u *update) Exec(db *sql.DB) (sql.Result, error) {
+	var buf bytes.Buffer
+	args := u.Render(&buf)
 	return db.Exec(buf.String(), args...)
 }
 
