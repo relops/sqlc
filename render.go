@@ -20,6 +20,26 @@ func (u *update) String() string {
 }
 
 func (u *update) Render(w io.Writer) (placeholders []interface{}) {
+	fmt.Fprintf(w, "UPDATE %s SET ", u.table.Name())
+
+	setFragments := make([]string, len(u.bindings))
+	setValues := make([]interface{}, len(u.bindings))
+
+	for i, binding := range u.bindings {
+		col := binding.Field.Name()
+		setFragments[i] = fmt.Sprintf("%s = ?", col)
+		setValues[i] = binding.Value
+	}
+
+	setClause := strings.Join(setFragments, ", ")
+	fmt.Fprint(w, setClause)
+
+	fmt.Fprint(w, " ")
+
+	whereValues := renderWhereClause(u.table.Name(), u.predicate, w)
+
+	placeholders = append(setValues, whereValues...)
+
 	return placeholders
 }
 

@@ -47,6 +47,10 @@ var rendered = []struct {
 		InsertInto(foo).Set(bar, "quux"),
 		"INSERT INTO foo (bar) VALUES (?)",
 	},
+	{
+		Update(foo).Set(bar, "quux").Where(baz.Eq("gorp")),
+		"UPDATE foo SET bar = ? WHERE foo.baz = ?",
+	},
 }
 
 var selectTrees = []struct {
