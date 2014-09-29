@@ -250,3 +250,9 @@ func (s *selection) QueryRow(db *sql.DB) (*sql.Row, error) {
 	args := s.Render(&buf)
 	return db.QueryRow(buf.String(), args...), nil
 }
+
+func exec(r Renderable, db *sql.DB) (sql.Result, error) {
+	var buf bytes.Buffer
+	args := r.Render(&buf)
+	return db.Exec(buf.String(), args...)
+}

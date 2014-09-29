@@ -51,4 +51,12 @@ func TestIntegration(t *testing.T) {
 
 	assert.Equal(t, "porg", barScan)
 
+	_, err = Delete(foo).Where(baz.Eq("quux")).Exec(db)
+	assert.NoError(t, err)
+
+	row, err = Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
+	assert.NoError(t, err)
+
+	err = row.Scan(&barScan)
+	assert.Equal(t, err, sql.ErrNoRows)
 }

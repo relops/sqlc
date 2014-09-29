@@ -51,6 +51,10 @@ var rendered = []struct {
 		Update(foo).Set(bar, "quux").Where(baz.Eq("gorp")),
 		"UPDATE foo SET bar = ? WHERE foo.baz = ?",
 	},
+	{
+		Delete(foo).Where(baz.Eq("gorp")),
+		"DELETE FROM foo WHERE foo.baz = ?",
+	},
 }
 
 var selectTrees = []struct {
@@ -142,6 +146,33 @@ var updateTrees = []struct {
 			},
 		},
 	},
+}
+
+var deleteTrees = []struct {
+	Constructed Executable
+	Expected    deletion
+}{
+	{
+		Delete(foo).Where(baz.Eq("gorp")),
+		deletion{
+			table: table{name: "foo"},
+			predicate: []Condition{
+				Condition{
+					Binding: FieldBinding{
+						Field: baz,
+						Value: "gorp",
+					},
+					Predicate: EqPredicate,
+				},
+			},
+		},
+	},
+}
+
+func TestDeleteTrees(t *testing.T) {
+	for _, tree := range deleteTrees {
+		assert.Equal(t, &tree.Expected, tree.Constructed)
+	}
 }
 
 func TestUpdateTrees(t *testing.T) {
