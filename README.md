@@ -10,12 +10,12 @@ Taking heavy inspiration from [JOOQ][], `sqlc` generates SQL queries for you:
 	
 	var db *db.DB // For integration with database/sql
 
-	row, err := Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
+	row, err := sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
 
 If you don't want to use `database/sql`, you don't have to. `String()` is an API call to just produce the SQL string that you use in any way that you want to:
 
 	// Renders `SELECT foo.bar FROM foo WHERE foo.baz = ?`
-	sql := Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).String()
+	sql := sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).String()
 
 Code Generation
 ---------------
