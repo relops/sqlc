@@ -23,35 +23,44 @@ func TestIntegration(t *testing.T) {
 	err = sqlc.Migrate(db, steps)
 	assert.NoError(t, err)
 
-	_, err = sqlc.InsertInto(FOO).Set(FOO.BAZ, "quux").Set(FOO.BAR, "gorp").Exec(db)
+	_, err = sqlc.InsertInto(CALL_RECORDS).
+		Set(CALL_RECORDS.IMSI, "230023741299234").
+		Set(CALL_RECORDS.TIMESTAMP, "20120803 22:21:31.000").
+		Set(CALL_RECORDS.DURATION, "10").
+		Set(CALL_RECORDS.REGION, "quux").
+		Set(CALL_RECORDS.CALLING_NUMBER, "220082769234739").
+		Set(CALL_RECORDS.CALLED_NUMBER, "275617294783934").
+		Exec(db)
+
 	assert.NoError(t, err)
 
-	row, err := sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
+	row, err := sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
-	var barScan string
-	err = row.Scan(&barScan)
+	var durationScan string
+	err = row.Scan(&durationScan)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "gorp", barScan)
+	assert.Equal(t, "10", durationScan)
 
-	_, err = sqlc.Update(FOO).Set(FOO.BAR, "porg").Where(FOO.BAZ.Eq("quux")).Exec(db)
+	_, err = sqlc.Update(CALL_RECORDS).Set(CALL_RECORDS.DURATION, "11").Where(CALL_RECORDS.REGION.Eq("quux")).Exec(db)
 	assert.NoError(t, err)
 
-	row, err = sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
-	err = row.Scan(&barScan)
+	err = row.Scan(&durationScan)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "porg", barScan)
+	assert.Equal(t, "11", durationScan)
 
-	_, err = sqlc.Delete(FOO).Where(FOO.BAZ.Eq("quux")).Exec(db)
+	_, err = sqlc.Delete(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).Exec(db)
 	assert.NoError(t, err)
 
-	row, err = sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select(CALL_RECORDS.IMSI).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
-	err = row.Scan(&barScan)
+	err = row.Scan(&durationScan)
 	assert.Equal(t, err, sql.ErrNoRows)
+
 }

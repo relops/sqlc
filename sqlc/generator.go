@@ -52,8 +52,8 @@ func Generate(db *sql.DB, opts *Options) error {
 		fields := make([]FieldMeta, 0)
 
 		for rows.Next() {
-			var notNull, pk sql.NullBool
-			var id sql.NullInt64
+			var notNull sql.NullBool
+			var id, pk sql.NullInt64
 			var colName, colType, defaultValue sql.NullString
 			err = rows.Scan(&id, &colName, &colType, &notNull, &defaultValue, &pk)
 			if err != nil {
