@@ -27,6 +27,7 @@ Features
 * ORDER BY
 * INSERTs
 * UPDATEs
+* DELETEs
 * INNER JOINS
 * Sub queries
 * Data types:
