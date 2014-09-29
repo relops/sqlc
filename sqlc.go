@@ -232,23 +232,18 @@ func (sl *selection) OrderBy(f ...Field) SelectLimitStep {
 	return sl
 }
 
-func (s *insert) Exec(db *sql.DB) (sql.Result, error) {
-	var buf bytes.Buffer
-	args := s.Render(&buf)
-	return db.Exec(buf.String(), args...)
-}
-
-// TOOD Try to get rid of copy and paste with *insert
-func (u *update) Exec(db *sql.DB) (sql.Result, error) {
-	var buf bytes.Buffer
-	args := u.Render(&buf)
-	return db.Exec(buf.String(), args...)
-}
-
 func (s *selection) QueryRow(db *sql.DB) (*sql.Row, error) {
 	var buf bytes.Buffer
 	args := s.Render(&buf)
 	return db.QueryRow(buf.String(), args...), nil
+}
+
+func (s *insert) Exec(db *sql.DB) (sql.Result, error) {
+	return exec(s, db)
+}
+
+func (u *update) Exec(db *sql.DB) (sql.Result, error) {
+	return exec(u, db)
 }
 
 func exec(r Renderable, db *sql.DB) (sql.Result, error) {
