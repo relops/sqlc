@@ -40,7 +40,7 @@ Goals
 
 * Create a composable type safe fluent API to generate nested and complex SQL queries
 * Generate SQL for different dialects (currently sqlite is the target dialect)
-* Although the current focus is query generation, we might consider supporting INSERTs and UPDATEs some day 
+* Consider generating code from DB metadata
 
 
 Pre-requisites
