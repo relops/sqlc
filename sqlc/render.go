@@ -83,8 +83,8 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 
 	// TODO This type switch is used twice, consider refactoring
 	switch sub := s.selection.(type) {
-	case table:
-		alias = sub.name
+	case TableLike:
+		alias = sub.Name()
 	}
 
 	fmt.Fprint(w, "SELECT ")
@@ -99,8 +99,8 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 	fmt.Fprintf(w, " FROM ")
 
 	switch sub := s.selection.(type) {
-	case table:
-		fmt.Fprint(w, sub.name)
+	case TableLike:
+		fmt.Fprint(w, sub.Name())
 	case *selection:
 		fmt.Fprint(w, "(")
 		sub.Render(w)

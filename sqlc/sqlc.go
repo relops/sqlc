@@ -130,7 +130,7 @@ type Executable interface {
 }
 
 type Selectable interface {
-	isSelectable()
+	IsSelectable()
 }
 
 type selection struct {
@@ -165,7 +165,7 @@ type update struct {
 	predicate []Condition
 }
 
-func (s *selection) isSelectable() {}
+func (s *selection) IsSelectable() {}
 
 func (s *selection) Where(c ...Condition) Query {
 	s.predicate = c

@@ -1,19 +1,13 @@
-package main
+package test
 
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	. "github.com/relops/sqlc"
+	"github.com/relops/sqlc/sqlc"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
-
-var foo = Table("foo")
-var quux = Table("quux")
-var bar = Varchar(foo, "bar")
-var baz = Varchar(foo, "baz")
-var id = Varchar(quux, "id")
 
 func TestIntegration(t *testing.T) {
 
@@ -24,14 +18,14 @@ func TestIntegration(t *testing.T) {
 	db, err := sql.Open("sqlite3", dbFile)
 	assert.NoError(t, err)
 
-	steps := LoadBindata(AssetNames(), Asset)
-	err = Migrate(db, steps)
+	steps := sqlc.LoadBindata(AssetNames(), Asset)
+	err = sqlc.Migrate(db, steps)
 	assert.NoError(t, err)
 
-	_, err = InsertInto(foo).Set(baz, "quux").Set(bar, "gorp").Exec(db)
+	_, err = sqlc.InsertInto(FOO).Set(FOO.BAZ, "quux").Set(FOO.BAR, "gorp").Exec(db)
 	assert.NoError(t, err)
 
-	row, err := Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
+	row, err := sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
 	var barScan string
@@ -40,10 +34,10 @@ func TestIntegration(t *testing.T) {
 
 	assert.Equal(t, "gorp", barScan)
 
-	_, err = Update(foo).Set(bar, "porg").Where(baz.Eq("quux")).Exec(db)
+	_, err = sqlc.Update(FOO).Set(FOO.BAR, "porg").Where(FOO.BAZ.Eq("quux")).Exec(db)
 	assert.NoError(t, err)
 
-	row, err = Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
 	err = row.Scan(&barScan)
@@ -51,10 +45,10 @@ func TestIntegration(t *testing.T) {
 
 	assert.Equal(t, "porg", barScan)
 
-	_, err = Delete(foo).Where(baz.Eq("quux")).Exec(db)
+	_, err = sqlc.Delete(FOO).Where(FOO.BAZ.Eq("quux")).Exec(db)
 	assert.NoError(t, err)
 
-	row, err = Select(bar).From(foo).Where(baz.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
 	err = row.Scan(&barScan)

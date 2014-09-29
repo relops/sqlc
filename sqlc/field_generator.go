@@ -50,7 +50,7 @@ func main() {
 		"toLower": strings.ToLower,
 	}
 
-	t, err := template.New("fields.tmpl").Funcs(m).ParseFiles("tmpl/fields.tmpl")
+	t, err := template.New("fields.tmpl").Funcs(m).ParseFiles("sqlc/tmpl/fields.tmpl")
 	if err != nil {
 		log.Errorf("Could not open template: %s", err)
 		return
@@ -59,7 +59,7 @@ func main() {
 	var b bytes.Buffer
 	t.Execute(&b, params)
 
-	if err := ioutil.WriteFile("fields.go", b.Bytes(), os.ModePerm); err != nil {
+	if err := ioutil.WriteFile("sqlc/fields.go", b.Bytes(), os.ModePerm); err != nil {
 		log.Errorf("Could not write templated file: %s", err)
 		return
 	}

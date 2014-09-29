@@ -5,7 +5,7 @@ type table struct {
 	fields []Field
 }
 
-func (t table) isSelectable() {}
+func (t table) IsSelectable() {}
 
 func (t table) Name() string {
 	return t.name
