@@ -7,4 +7,5 @@ before_install:
   - go get github.com/jteeuwen/go-bindata/...
   - go get github.com/stretchr/testify/assert
   - go get github.com/cihub/seelog
-  - go get github.com/mattn/go-sqlite3 
+  - go get github.com/mattn/go-sqlite3
+  - export PATH=$HOME/gopath/bin:$PATH
