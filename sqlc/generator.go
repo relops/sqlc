@@ -62,7 +62,7 @@ func Generate(db *sql.DB) error {
 	params := make(map[string]interface{})
 	params["Tables"] = tables
 	// TODO unhardcode this
-	params["Package"] = "test"
+	params["Package"] = "generated"
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,
@@ -76,7 +76,7 @@ func Generate(db *sql.DB) error {
 	t.Execute(&b, params)
 
 	// TODO unhardcode this
-	if err := ioutil.WriteFile("test/generated_objects.go", b.Bytes(), os.ModePerm); err != nil {
+	if err := ioutil.WriteFile("test/generated/generated_objects.go", b.Bytes(), os.ModePerm); err != nil {
 		log.Fatalf("Could not write templated file: %s", err)
 		return err
 	}

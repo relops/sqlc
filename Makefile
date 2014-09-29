@@ -1,10 +1,16 @@
 MIGRATION_DIR := test/db
 MIGRATION_SCRIPTS := $(foreach dir, $(MIGRATION_DIR), $(wildcard $(dir)/*))
 
-tests: test/migration_steps.go test/generated_objects.go sqlc/fields.go sqlc/schema.go
+test/test.db: test/migration_steps.go
+	go run test/migrate_db.go
+
+tests: test/generated/generated_objects.go sqlc/fields.go sqlc/schema.go
 	go test -v ./...
 
-test/generated_objects.go: test/object_generator.go
+test/generated:
+	mkdir - $@
+
+test/generated/generated_objects.go: test/generated test/test.db test/object_generator.go
 	go run test/object_generator.go
 
 sqlc/fields.go: sqlc/tmpl/fields.tmpl sqlc/field_generator.go
