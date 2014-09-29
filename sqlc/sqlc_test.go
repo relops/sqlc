@@ -7,9 +7,9 @@ import (
 
 var foo = Table("foo")
 var quux = Table("quux")
-var bar = Varchar(foo, "bar")
-var baz = Varchar(foo, "baz")
-var id = Varchar(quux, "id")
+var bar = String(foo, "bar")
+var baz = String(foo, "baz")
+var id = String(quux, "id")
 
 var rendered = []struct {
 	Constructed Renderable

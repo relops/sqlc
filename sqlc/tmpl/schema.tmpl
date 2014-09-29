@@ -9,7 +9,7 @@ import (
 
 type {{ toLower $t.Name }} struct {
 	{{ range $_, $f := $t.Fields }}
-	{{ toUpper $f.Name }} sqlc.VarcharField
+	{{ toUpper $f.Name }} sqlc.StringField
 	{{ end }}
 }
 
@@ -22,7 +22,7 @@ func (t *{{ toLower $t.Name }}) Name() string {
 func (t *{{ toLower $t.Name }}) Fields() []sqlc.Field {
 	return []sqlc.Field{
 		{{ range $_, $f := $t.Fields }}
-		sqlc.Varchar({{ toUpper $t.Name }}, "{{ toUpper $f.Name }}"),
+		sqlc.String({{ toUpper $t.Name }}, "{{ toUpper $f.Name }}"),
 		{{ end }}
 	}
 }
@@ -34,7 +34,7 @@ var __{{ toLower $t.Name }} = &{{ toLower $t.Name }}{}
 var {{ toUpper $t.Name }} = &{{ toLower $t.Name }} {
 	
 {{ range $_, $f := $t.Fields }}
-	{{ toUpper $f.Name }}: sqlc.Varchar(__{{ toLower $t.Name }}, "{{ toUpper $f.Name }}"),
+	{{ toUpper $f.Name }}: sqlc.String(__{{ toLower $t.Name }}, "{{ toUpper $f.Name }}"),
 {{ end }}
 
 }

@@ -4,34 +4,34 @@ package sqlc
 
 
 
-type varcharField struct {
+type stringField struct {
 	name string
 	table TableLike
 }
 
-type VarcharField interface {
+type StringField interface {
 	TableField
 	Eq(value string) Condition
-	IsEq(value VarcharField) JoinCondition
+	IsEq(value StringField) JoinCondition
 }
 
-func (c *varcharField) Name() string {
+func (c *stringField) Name() string {
 	return c.name
 }
 
-func (c *varcharField) Table() string {
+func (c *stringField) Table() string {
 	return c.table.Name()
 }
 
-func (c *varcharField) Eq(pred string) Condition {
+func (c *stringField) Eq(pred string) Condition {
 	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
 }
 
-func (c *varcharField) IsEq(pred VarcharField) JoinCondition {
+func (c *stringField) IsEq(pred StringField) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
-func Varchar(table TableLike, name string) VarcharField {
-	return &varcharField{name: name, table:table}
+func String(table TableLike, name string) StringField {
+	return &stringField{name: name, table:table}
 }
 

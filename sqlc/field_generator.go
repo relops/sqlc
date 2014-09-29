@@ -39,7 +39,7 @@ type TypeInfo struct {
 }
 
 var types = []TypeInfo{
-	TypeInfo{Prefix: "Varchar", Literal: "string"},
+	TypeInfo{Prefix: "String", Literal: "string"},
 }
 
 func main() {
