@@ -21,7 +21,13 @@ type FieldMeta struct {
 	Type string
 }
 
-func Generate(db *sql.DB) error {
+type Options struct {
+	File    string `short:"f" long:"file" description:"The path to the sqlite file" required:"true"`
+	Output  string `short:"o" long:"output" description:"The path to save the generated objects to" required:"true"`
+	Package string `short:"p" long:"package" description:"The package to put the generated objects into" required:"true"`
+}
+
+func Generate(db *sql.DB, opts *Options) error {
 
 	rows, err := db.Query("SELECT name FROM sqlite_master where type = 'table' and name <> 'sqlite_sequence';")
 	if err != nil {
@@ -61,8 +67,7 @@ func Generate(db *sql.DB) error {
 
 	params := make(map[string]interface{})
 	params["Tables"] = tables
-	// TODO unhardcode this
-	params["Package"] = "generated"
+	params["Package"] = opts.Package
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,
@@ -76,7 +81,7 @@ func Generate(db *sql.DB) error {
 	t.Execute(&b, params)
 
 	// TODO unhardcode this
-	if err := ioutil.WriteFile("test/generated/generated_objects.go", b.Bytes(), os.ModePerm); err != nil {
+	if err := ioutil.WriteFile(opts.Output, b.Bytes(), os.ModePerm); err != nil {
 		log.Fatalf("Could not write templated file: %s", err)
 		return err
 	}
