@@ -3,6 +3,7 @@ package test
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/relops/sqlc/sqlc"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -13,4 +14,14 @@ func TestMysql(t *testing.T) {
 
 	err = db.Ping()
 	assert.NoError(t, err)
+
+	filtered := sqlc.FilterBindata("test/db/mysql", AssetDir)
+	steps := sqlc.LoadBindata(filtered, Asset)
+	err = sqlc.Migrate(db, sqlc.Sqlite, steps)
+	assert.NoError(t, err)
+
+	_, err = db.Exec("TRUNCATE call_records;")
+	assert.NoError(t, err)
+
+	runTests(t, db)
 }

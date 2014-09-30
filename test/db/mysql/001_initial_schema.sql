@@ -8,5 +8,3 @@ CREATE TABLE IF NOT EXISTS call_records
     called_number VARCHAR(15) NOT NULL,
     PRIMARY KEY(imsi, timestamp)
 );
-
-DELETE FROM call_records;

@@ -25,7 +25,7 @@ const (
 
 const (
 	Sqlite Dialect = iota
-	Other
+	MySQL
 )
 
 type TableLike interface {
