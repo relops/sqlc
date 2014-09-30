@@ -34,6 +34,7 @@ const (
 const (
 	Sqlite Dialect = iota
 	MySQL
+	Postgres
 )
 
 type TableLike interface {

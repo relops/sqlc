@@ -38,4 +38,4 @@ sqlc/schema.go: sqlc/fields.go sqlc/tmpl/schema.tmpl
 	go-bindata -pkg=sqlc -o=$@ sqlc/tmpl
 
 test/migration_steps.go: $(MIGRATION_SCRIPTS)
-	go-bindata -pkg=test -o=$@ test/db/mysql test/db/sqlite
+	go-bindata -pkg=test -o=$@ test/db/mysql test/db/sqlite test/db/postgres
