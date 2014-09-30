@@ -9,6 +9,7 @@ before_install:
   - go get github.com/cihub/seelog
   - go get github.com/mattn/go-sqlite3
   - go get github.com/jessevdk/go-flags
+  - go get github.com/go-sql-driver/mysql
   - export PATH=$HOME/gopath/bin:$PATH
   - mysql -e "CREATE DATABASE sqlc;"
   - mysql -e "CREATE USER 'sqlc'@'%' IDENTIFIED BY 'sqlc';"
