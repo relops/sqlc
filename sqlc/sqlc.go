@@ -131,17 +131,6 @@ type Selectable interface {
 	IsSelectable()
 }
 
-type selection struct {
-	selection  Selectable
-	projection []Field
-	predicate  []Condition
-	groups     []Field
-	ordering   []Field
-	joins      []join
-	joinTarget TableLike
-	count      bool
-}
-
 type JoinCondition struct {
 	Lhs, Rhs  TableField
 	Predicate PredicateType
@@ -162,17 +151,6 @@ type update struct {
 	table     TableLike
 	bindings  []TableFieldBinding
 	predicate []Condition
-}
-
-func (s *selection) IsSelectable() {}
-
-func (s *selection) Where(c ...Condition) Query {
-	s.predicate = c
-	return s
-}
-
-func Select(f ...Field) SelectFromStep {
-	return &selection{projection: f}
 }
 
 func InsertInto(t TableLike) InsertSetStep {
@@ -198,43 +176,6 @@ func (i *insert) set(f TableField, v interface{}) InsertSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	i.bindings = append(i.bindings, binding)
 	return i
-}
-
-func (sl *selection) From(s Selectable) SelectWhereStep {
-	sl.selection = s
-	return sl
-}
-
-func (s *selection) Join(t TableLike) SelectOnStep {
-	s.joinTarget = t
-	return s
-}
-
-func (s *selection) On(c ...JoinCondition) SelectWhereStep {
-	j := join{
-		target:   s.joinTarget,
-		joinType: Join,
-		conds:    c,
-	}
-	s.joinTarget = nil
-	s.joins = append(s.joins, j)
-	return s
-}
-
-func (sl *selection) GroupBy(f ...Field) SelectHavingStep {
-	sl.groups = f
-	return sl
-}
-
-func (sl *selection) OrderBy(f ...Field) SelectLimitStep {
-	sl.ordering = f
-	return sl
-}
-
-func (s *selection) QueryRow(db *sql.DB) (*sql.Row, error) {
-	var buf bytes.Buffer
-	args := s.Render(&buf)
-	return db.QueryRow(buf.String(), args...), nil
 }
 
 func (s *insert) Exec(db *sql.DB) (sql.Result, error) {
