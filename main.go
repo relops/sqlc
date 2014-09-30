@@ -24,6 +24,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	opts.Dialect = sqlc.Sqlite
+
 	err = sqlc.Generate(db, &opts)
 	if err != nil {
 		log.Fatal(err)

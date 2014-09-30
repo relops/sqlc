@@ -3,6 +3,7 @@ package sqlc
 import (
 	"bytes"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -25,44 +26,14 @@ type Options struct {
 	File    string `short:"f" long:"file" description:"The path to the sqlite file" required:"true"`
 	Output  string `short:"o" long:"output" description:"The path to save the generated objects to" required:"true"`
 	Package string `short:"p" long:"package" description:"The package to put the generated objects into" required:"true"`
+	Dialect Dialect
 }
 
 func Generate(db *sql.DB, opts *Options) error {
 
-	rows, err := db.Query("SELECT name FROM sqlite_master where type = 'table' and name <> 'sqlite_sequence';")
+	tables, err := opts.Dialect.metadata(db)
 	if err != nil {
 		return err
-	}
-
-	tables := make([]TableMeta, 0)
-
-	for rows.Next() {
-		var t TableMeta
-		rows.Scan(&t.Name)
-		tables = append(tables, t)
-	}
-
-	for i, table := range tables {
-		pragma := fmt.Sprintf("PRAGMA table_info(%s);", table.Name)
-		rows, err = db.Query(pragma)
-		if err != nil {
-			return err
-		}
-
-		fields := make([]FieldMeta, 0)
-
-		for rows.Next() {
-			var notNull sql.NullBool
-			var id, pk sql.NullInt64
-			var colName, colType, defaultValue sql.NullString
-			err = rows.Scan(&id, &colName, &colType, &notNull, &defaultValue, &pk)
-			if err != nil {
-				return err
-			}
-			field := FieldMeta{Name: colName.String, Type: colType.String}
-			fields = append(fields, field)
-		}
-		tables[i].Fields = fields
 	}
 
 	params := make(map[string]interface{})
@@ -80,11 +51,59 @@ func Generate(db *sql.DB, opts *Options) error {
 	var b bytes.Buffer
 	t.Execute(&b, params)
 
-	// TODO unhardcode this
 	if err := ioutil.WriteFile(opts.Output, b.Bytes(), os.ModePerm); err != nil {
 		log.Fatalf("Could not write templated file: %s", err)
 		return err
 	}
 
 	return nil
+}
+
+func (d Dialect) metadata(db *sql.DB) ([]TableMeta, error) {
+	switch d {
+	case Sqlite:
+		return sqlite(db)
+	default:
+		return nil, errors.New("Unsupported dialect")
+	}
+}
+
+func sqlite(db *sql.DB) ([]TableMeta, error) {
+	rows, err := db.Query("SELECT name FROM sqlite_master where type = 'table' and name <> 'sqlite_sequence';")
+	if err != nil {
+		return nil, err
+	}
+
+	tables := make([]TableMeta, 0)
+
+	for rows.Next() {
+		var t TableMeta
+		rows.Scan(&t.Name)
+		tables = append(tables, t)
+	}
+
+	for i, table := range tables {
+		pragma := fmt.Sprintf("PRAGMA table_info(%s);", table.Name)
+		rows, err = db.Query(pragma)
+		if err != nil {
+			return nil, err
+		}
+
+		fields := make([]FieldMeta, 0)
+
+		for rows.Next() {
+			var notNull sql.NullBool
+			var id, pk sql.NullInt64
+			var colName, colType, defaultValue sql.NullString
+			err = rows.Scan(&id, &colName, &colType, &notNull, &defaultValue, &pk)
+			if err != nil {
+				return nil, err
+			}
+			field := FieldMeta{Name: colName.String, Type: colType.String}
+			fields = append(fields, field)
+		}
+		tables[i].Fields = fields
+	}
+
+	return tables, nil
 }

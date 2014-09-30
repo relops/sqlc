@@ -8,6 +8,7 @@ import (
 
 type PredicateType int
 type JoinType int
+type Dialect int
 
 const (
 	EqPredicate PredicateType = iota
@@ -20,6 +21,11 @@ const (
 
 const (
 	Join JoinType = iota
+)
+
+const (
+	Sqlite Dialect = iota
+	Other
 )
 
 type TableLike interface {
