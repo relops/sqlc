@@ -24,8 +24,14 @@ func TestSqlite(t *testing.T) {
 	err = sqlc.Migrate(db, sqlc.Sqlite, steps)
 	assert.NoError(t, err)
 
-	_, err = db.Exec("DELETE FROM call_records;")
-	assert.NoError(t, err)
-
+	deleteSqlite(t, db)
 	generic.RunCallRecordTests(t, db)
+
+	deleteSqlite(t, db)
+	generic.RunCallRecordGroupTests(t, db)
+}
+
+func deleteSqlite(t *testing.T, db *sql.DB) {
+	_, err := db.Exec("DELETE FROM call_records;")
+	assert.NoError(t, err)
 }

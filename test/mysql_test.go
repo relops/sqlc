@@ -21,8 +21,14 @@ func TestMysql(t *testing.T) {
 	err = sqlc.Migrate(db, sqlc.Sqlite, steps)
 	assert.NoError(t, err)
 
-	_, err = db.Exec("TRUNCATE call_records;")
-	assert.NoError(t, err)
-
+	deleteMySQL(t, db)
 	generic.RunCallRecordTests(t, db)
+
+	deleteMySQL(t, db)
+	generic.RunCallRecordGroupTests(t, db)
+}
+
+func deleteMySQL(t *testing.T, db *sql.DB) {
+	_, err := db.Exec("TRUNCATE call_records;")
+	assert.NoError(t, err)
 }
