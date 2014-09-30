@@ -104,6 +104,10 @@ func String(table TableLike, name string) StringField {
 
 //////
 
+func (c *stringField) Avg() Field {	
+	return c.fct(Avg)
+}
+
 func (c *stringField) Max() Field {	
 	return c.fct(Max)
 }
@@ -161,6 +165,10 @@ func Int(table TableLike, name string) IntField {
 
 //////
 
+func (c *intField) Avg() Field {	
+	return c.fct(Avg)
+}
+
 func (c *intField) Max() Field {	
 	return c.fct(Max)
 }
@@ -217,6 +225,10 @@ func Time(table TableLike, name string) TimeField {
 }
 
 //////
+
+func (c *timeField) Avg() Field {	
+	return c.fct(Avg)
+}
 
 func (c *timeField) Max() Field {	
 	return c.fct(Max)

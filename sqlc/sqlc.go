@@ -13,6 +13,7 @@ type Function int
 
 const (
 	None Function = iota
+	Avg
 	Max
 	Min
 )
@@ -43,6 +44,7 @@ type TableLike interface {
 
 type Field interface {
 	Name() string
+	Avg() Field
 	Min() Field
 	Max() Field
 	Function() Function

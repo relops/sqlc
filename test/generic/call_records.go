@@ -41,19 +41,22 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 	row, err = sqlc.Select(
 		CALL_RECORDS.REGION,
 		CALL_RECORDS.DURATION.Min(),
-		CALL_RECORDS.DURATION.Max()).
+		CALL_RECORDS.DURATION.Max(),
+		CALL_RECORDS.DURATION.Avg()).
 		From(CALL_RECORDS).GroupBy(CALL_RECORDS.REGION).QueryRow(db)
 
 	assert.NoError(t, err)
 
 	var regionScan string
 	var min, max int
-	err = row.Scan(&regionScan, &min, &max)
+	var avg float32
+	err = row.Scan(&regionScan, &min, &max, &avg)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "quux", regionScan)
 	assert.Equal(t, start, min)
 	assert.Equal(t, start+records-1, max)
+	assert.Equal(t, 104.5, avg)
 
 }
 

@@ -78,6 +78,8 @@ func columnClause(alias string, cols []Field) string {
 	for i, col := range cols {
 		var f string
 		switch col.Function() {
+		case Avg:
+			f = fmt.Sprintf("AVG(%s.%s)", alias, col.Name())
 		case Max:
 			f = fmt.Sprintf("MAX(%s.%s)", alias, col.Name())
 		case Min:

@@ -80,6 +80,10 @@ func {{ $t.Prefix }}(table TableLike, name string) {{ $t.Prefix }}Field {
 
 //////
 
+func (c *{{ toLower $t.Prefix }}Field) Avg() Field {	
+	return c.fct(Avg)
+}
+
 func (c *{{ toLower $t.Prefix }}Field) Max() Field {	
 	return c.fct(Max)
 }
