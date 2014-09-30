@@ -36,12 +36,26 @@ func (u *update) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) 
 type {{ toLower $t.Prefix }}Field struct {
 	name string
 	table TableLike
+	fun Function
 }
 
 type {{ $t.Prefix }}Field interface {
 	TableField
 	Eq(value {{ $t.Literal }}) Condition
 	IsEq(value {{ $t.Prefix }}Field) JoinCondition
+}
+
+
+func (c *{{ toLower $t.Prefix }}Field) Function() Function {
+	return c.fun
+}
+
+func (c *{{ toLower $t.Prefix }}Field) fct(f Function) Field {
+	return &{{ toLower $t.Prefix }}Field{
+		name:  c.name,
+		table: c.table,
+		fun:   f,
+	}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Name() string {
@@ -62,6 +76,16 @@ func (c *{{ toLower $t.Prefix }}Field) IsEq(pred {{ $t.Prefix }}Field) JoinCondi
 
 func {{ $t.Prefix }}(table TableLike, name string) {{ $t.Prefix }}Field {
 	return &{{ toLower $t.Prefix }}Field{name: name, table:table}
+}
+
+//////
+
+func (c *{{ toLower $t.Prefix }}Field) Max() Field {	
+	return c.fct(Max)
+}
+
+func (c *{{ toLower $t.Prefix }}Field) Min() Field {
+	return c.fct(Min)
 }
 
 {{ end }}

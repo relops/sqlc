@@ -60,12 +60,26 @@ func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
 type stringField struct {
 	name string
 	table TableLike
+	fun Function
 }
 
 type StringField interface {
 	TableField
 	Eq(value string) Condition
 	IsEq(value StringField) JoinCondition
+}
+
+
+func (c *stringField) Function() Function {
+	return c.fun
+}
+
+func (c *stringField) fct(f Function) Field {
+	return &stringField{
+		name:  c.name,
+		table: c.table,
+		fun:   f,
+	}
 }
 
 func (c *stringField) Name() string {
@@ -88,17 +102,41 @@ func String(table TableLike, name string) StringField {
 	return &stringField{name: name, table:table}
 }
 
+//////
+
+func (c *stringField) Max() Field {	
+	return c.fct(Max)
+}
+
+func (c *stringField) Min() Field {
+	return c.fct(Min)
+}
+
 
 
 type intField struct {
 	name string
 	table TableLike
+	fun Function
 }
 
 type IntField interface {
 	TableField
 	Eq(value int) Condition
 	IsEq(value IntField) JoinCondition
+}
+
+
+func (c *intField) Function() Function {
+	return c.fun
+}
+
+func (c *intField) fct(f Function) Field {
+	return &intField{
+		name:  c.name,
+		table: c.table,
+		fun:   f,
+	}
 }
 
 func (c *intField) Name() string {
@@ -121,17 +159,41 @@ func Int(table TableLike, name string) IntField {
 	return &intField{name: name, table:table}
 }
 
+//////
+
+func (c *intField) Max() Field {	
+	return c.fct(Max)
+}
+
+func (c *intField) Min() Field {
+	return c.fct(Min)
+}
+
 
 
 type timeField struct {
 	name string
 	table TableLike
+	fun Function
 }
 
 type TimeField interface {
 	TableField
 	Eq(value time.Time) Condition
 	IsEq(value TimeField) JoinCondition
+}
+
+
+func (c *timeField) Function() Function {
+	return c.fun
+}
+
+func (c *timeField) fct(f Function) Field {
+	return &timeField{
+		name:  c.name,
+		table: c.table,
+		fun:   f,
+	}
 }
 
 func (c *timeField) Name() string {
@@ -152,5 +214,15 @@ func (c *timeField) IsEq(pred TimeField) JoinCondition {
 
 func Time(table TableLike, name string) TimeField {
 	return &timeField{name: name, table:table}
+}
+
+//////
+
+func (c *timeField) Max() Field {	
+	return c.fct(Max)
+}
+
+func (c *timeField) Min() Field {
+	return c.fct(Min)
 }
 

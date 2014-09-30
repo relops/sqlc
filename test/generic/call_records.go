@@ -11,13 +11,17 @@ import (
 )
 
 func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
-	for i := 0; i < 100; i++ {
+
+	records := 100
+	start := 55
+
+	for i := 0; i < records; i++ {
 
 		imsi := 230023741299234 + i
 		_, err := sqlc.InsertInto(CALL_RECORDS).
 			SetString(CALL_RECORDS.IMSI, fmt.Sprintf("%d", imsi)).
 			SetTime(CALL_RECORDS.TIMESTAMP, time.Now()).
-			SetInt(CALL_RECORDS.DURATION, i+1).
+			SetInt(CALL_RECORDS.DURATION, i+start).
 			SetString(CALL_RECORDS.REGION, "quux").
 			SetString(CALL_RECORDS.CALLING_NUMBER, "220082769234739").
 			SetString(CALL_RECORDS.CALLED_NUMBER, "275617294783934").
@@ -32,16 +36,24 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 	err = row.Scan(&count)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 100, count)
+	assert.Equal(t, records, count)
 
-	row, err = sqlc.Select(CALL_RECORDS.REGION).From(CALL_RECORDS).GroupBy(CALL_RECORDS.REGION).QueryRow(db)
+	row, err = sqlc.Select(
+		CALL_RECORDS.REGION,
+		CALL_RECORDS.DURATION.Min(),
+		CALL_RECORDS.DURATION.Max()).
+		From(CALL_RECORDS).GroupBy(CALL_RECORDS.REGION).QueryRow(db)
+
 	assert.NoError(t, err)
 
 	var regionScan string
-	err = row.Scan(&regionScan)
+	var min, max int
+	err = row.Scan(&regionScan, &min, &max)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "quux", regionScan)
+	assert.Equal(t, start, min)
+	assert.Equal(t, start+records-1, max)
 
 }
 

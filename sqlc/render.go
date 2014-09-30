@@ -76,7 +76,18 @@ func (i *insert) Render(w io.Writer) (placeholders []interface{}) {
 func columnClause(alias string, cols []Field) string {
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
-		colFragments[i] = fmt.Sprintf("%s.%s", alias, col.Name())
+		var f string
+		switch col.Function() {
+		case Max:
+			f = fmt.Sprintf("MAX(%s.%s)", alias, col.Name())
+		case Min:
+			f = fmt.Sprintf("MIN(%s.%s)", alias, col.Name())
+		default:
+			f = fmt.Sprintf("%s.%s", alias, col.Name())
+		}
+
+		colFragments[i] = f
+
 	}
 	return strings.Join(colFragments, ", ")
 }

@@ -9,6 +9,13 @@ import (
 type PredicateType int
 type JoinType int
 type Dialect int
+type Function int
+
+const (
+	None Function = iota
+	Max
+	Min
+)
 
 const (
 	EqPredicate PredicateType = iota
@@ -36,6 +43,9 @@ type TableLike interface {
 
 type Field interface {
 	Name() string
+	Min() Field
+	Max() Field
+	Function() Function
 }
 
 type TableField interface {
