@@ -44,11 +44,11 @@ var rendered = []struct {
 		"SELECT * FROM (SELECT foo.bar FROM foo)",
 	},
 	{
-		InsertInto(foo).Set(bar, "quux"),
+		InsertInto(foo).SetString(bar, "quux"),
 		"INSERT INTO foo (bar) VALUES (?)",
 	},
 	{
-		Update(foo).Set(bar, "quux").Where(baz.Eq("gorp")),
+		Update(foo).SetString(bar, "quux").Where(baz.Eq("gorp")),
 		"UPDATE foo SET bar = ? WHERE foo.baz = ?",
 	},
 	{
@@ -108,7 +108,7 @@ var insertTrees = []struct {
 	Expected    insert
 }{
 	{
-		InsertInto(foo).Set(bar, "quux"),
+		InsertInto(foo).SetString(bar, "quux"),
 		insert{
 			table: table{name: "foo"},
 			bindings: []TableFieldBinding{
@@ -126,7 +126,7 @@ var updateTrees = []struct {
 	Expected    update
 }{
 	{
-		Update(foo).Set(bar, "quux").Where(baz.Eq("gorp")),
+		Update(foo).SetString(bar, "quux").Where(baz.Eq("gorp")),
 		update{
 			table: table{name: "foo"},
 			bindings: []TableFieldBinding{

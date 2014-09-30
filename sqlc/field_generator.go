@@ -40,6 +40,8 @@ type TypeInfo struct {
 
 var types = []TypeInfo{
 	TypeInfo{Prefix: "String", Literal: "string"},
+	TypeInfo{Prefix: "Int", Literal: "int"},
+	TypeInfo{Prefix: "Time", Literal: "time.Time"},
 }
 
 func main() {

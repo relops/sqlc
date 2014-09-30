@@ -8,9 +8,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 	"text/template"
 )
+
+var integer = regexp.MustCompile("INT|INTEGER")
+var varchar = regexp.MustCompile("VARCHAR")
+var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
 
 type TableMeta struct {
 	Name   string
@@ -99,7 +104,19 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 			if err != nil {
 				return nil, err
 			}
-			field := FieldMeta{Name: colName.String, Type: colType.String}
+
+			var fieldType string
+
+			if integer.MatchString(colType.String) {
+				fieldType = "Int"
+			} else if varchar.MatchString(colType.String) {
+				fieldType = "String"
+			} else if ts.MatchString(colType.String) {
+				fieldType = "Time"
+			}
+
+			field := FieldMeta{Name: colName.String, Type: fieldType}
+			//fmt.Printf("Field type: %s\n", fieldType)
 			fields = append(fields, field)
 		}
 		tables[i].Fields = fields

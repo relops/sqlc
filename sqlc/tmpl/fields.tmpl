@@ -2,6 +2,35 @@
 
 package sqlc
 
+import (
+	"time"
+)
+
+type InsertSetStep interface {
+	{{ range $_, $t := .types }}
+ 	Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) InsertSetMoreStep
+ 	{{ end }}
+}
+
+type UpdateSetStep interface {
+	{{ range $_, $t := .types }}
+ 	Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) UpdateSetMoreStep
+ 	{{ end }}
+}
+
+{{ range $_, $t := .types }}
+func (i *insert) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) InsertSetMoreStep {
+	return i.set(f,v)
+}
+{{ end }}
+
+{{ range $_, $t := .types }}
+func (u *update) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+{{ end }}
+
+
 {{ range $_, $t := .types }}
 
 type {{ toLower $t.Prefix }}Field struct {

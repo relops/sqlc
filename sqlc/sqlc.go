@@ -96,14 +96,6 @@ type SelectLimitStep interface {
 	Query
 }
 
-type InsertSetStep interface {
-	Set(f TableField, v interface{}) InsertSetMoreStep
-}
-
-type UpdateSetStep interface {
-	Set(f TableField, v interface{}) UpdateSetMoreStep
-}
-
 type InsertSetMoreStep interface {
 	Executable
 	InsertSetStep
@@ -195,13 +187,13 @@ func (u *update) Where(c ...Condition) Executable {
 	return u
 }
 
-func (u *update) Set(f TableField, v interface{}) UpdateSetMoreStep {
+func (u *update) set(f TableField, v interface{}) UpdateSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	u.bindings = append(u.bindings, binding)
 	return u
 }
 
-func (i *insert) Set(f TableField, v interface{}) InsertSetMoreStep {
+func (i *insert) set(f TableField, v interface{}) InsertSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	i.bindings = append(i.bindings, binding)
 	return i

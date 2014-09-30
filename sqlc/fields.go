@@ -2,6 +2,59 @@
 
 package sqlc
 
+import (
+	"time"
+)
+
+type InsertSetStep interface {
+	
+ 	SetString(StringField, string) InsertSetMoreStep
+ 	
+ 	SetInt(IntField, int) InsertSetMoreStep
+ 	
+ 	SetTime(TimeField, time.Time) InsertSetMoreStep
+ 	
+}
+
+type UpdateSetStep interface {
+	
+ 	SetString(StringField, string) UpdateSetMoreStep
+ 	
+ 	SetInt(IntField, int) UpdateSetMoreStep
+ 	
+ 	SetTime(TimeField, time.Time) UpdateSetMoreStep
+ 	
+}
+
+
+func (i *insert) SetString(f StringField, v string) InsertSetMoreStep {
+	return i.set(f,v)
+}
+
+func (i *insert) SetInt(f IntField, v int) InsertSetMoreStep {
+	return i.set(f,v)
+}
+
+func (i *insert) SetTime(f TimeField, v time.Time) InsertSetMoreStep {
+	return i.set(f,v)
+}
+
+
+
+func (u *update) SetString(f StringField, v string) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+
+func (u *update) SetInt(f IntField, v int) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+
+func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+
+
+
 
 
 type stringField struct {
@@ -33,5 +86,71 @@ func (c *stringField) IsEq(pred StringField) JoinCondition {
 
 func String(table TableLike, name string) StringField {
 	return &stringField{name: name, table:table}
+}
+
+
+
+type intField struct {
+	name string
+	table TableLike
+}
+
+type IntField interface {
+	TableField
+	Eq(value int) Condition
+	IsEq(value IntField) JoinCondition
+}
+
+func (c *intField) Name() string {
+	return c.name
+}
+
+func (c *intField) Table() string {
+	return c.table.Name()
+}
+
+func (c *intField) Eq(pred int) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *intField) IsEq(pred IntField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+func Int(table TableLike, name string) IntField {
+	return &intField{name: name, table:table}
+}
+
+
+
+type timeField struct {
+	name string
+	table TableLike
+}
+
+type TimeField interface {
+	TableField
+	Eq(value time.Time) Condition
+	IsEq(value TimeField) JoinCondition
+}
+
+func (c *timeField) Name() string {
+	return c.name
+}
+
+func (c *timeField) Table() string {
+	return c.table.Name()
+}
+
+func (c *timeField) Eq(pred time.Time) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *timeField) IsEq(pred TimeField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+func Time(table TableLike, name string) TimeField {
+	return &timeField{name: name, table:table}
 }
 
