@@ -10,3 +10,6 @@ before_install:
   - go get github.com/mattn/go-sqlite3
   - go get github.com/jessevdk/go-flags
   - export PATH=$HOME/gopath/bin:$PATH
+  - mysql -e "CREATE DATABASE sqlc;"
+  - mysql -e "CREATE USER 'sqlc'@'%' IDENTIFIED BY 'sqlc';"
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'sqlc'@'%' WITH GRANT OPTION;" -uroot

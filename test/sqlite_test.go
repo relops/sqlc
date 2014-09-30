@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TestIntegration(t *testing.T) {
+func TestSqlite(t *testing.T) {
 
 	dbFile := "sqlc.db"
 
