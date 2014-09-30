@@ -40,7 +40,7 @@ func RunCallRecordTests(t *testing.T, db *sql.DB) {
 	err = row.Scan(&durationScan)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 11, durationScan)
+	assert.Equal(t, 12, durationScan)
 
 	_, err = sqlc.Delete(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).Exec(db)
 	assert.NoError(t, err)
