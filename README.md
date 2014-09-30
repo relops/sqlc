@@ -55,6 +55,8 @@ Features
 * Sub queries
 * Data types:
   * VARCHAR
+  * INTEGER
+  * TIMESTAMP
 * Statement rendering
 * Querying via database/sql
 * Code generation of table and field objects from an exising DB schema
