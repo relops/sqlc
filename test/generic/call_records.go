@@ -22,7 +22,16 @@ func RunCallRecordTests(t *testing.T, db *sql.DB) {
 
 	assert.NoError(t, err)
 
-	row, err := sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	assert.NoError(t, err)
+
+	var count int
+	err = row.Scan(&count)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 1, count)
+
+	row, err = sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
 	assert.NoError(t, err)
 
 	var durationScan int

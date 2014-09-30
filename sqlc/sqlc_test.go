@@ -28,6 +28,10 @@ var rendered = []struct {
 		"SELECT foo.bar FROM foo WHERE foo.baz = ?",
 	},
 	{
+		SelectCount().From(foo).Where(baz.Eq("quux")),
+		"SELECT COUNT(*) FROM foo WHERE foo.baz = ?",
+	},
+	{
 		Select(bar).From(foo).Where(baz.Eq("quux")),
 		"SELECT foo.bar FROM foo WHERE foo.baz = ?",
 	},

@@ -139,6 +139,7 @@ type selection struct {
 	ordering   []Field
 	joins      []join
 	joinTarget TableLike
+	count      bool
 }
 
 type JoinCondition struct {
