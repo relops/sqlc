@@ -66,6 +66,10 @@ Features
   * VARCHAR
   * INTEGER
   * TIMESTAMP
+* Functions:
+  * AVG
+  * MAX
+  * MIN
 * Statement rendering
 * Querying via database/sql
 * Code generation of table and field objects from an exising DB schema
