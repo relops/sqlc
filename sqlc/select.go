@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"database/sql"
 	"fmt"
+	"github.com/0x6e6562/gosnow"
 	"io"
 )
+
+var flake, _ = gosnow.Default()
 
 type selection struct {
 	selection  Selectable
@@ -105,7 +108,9 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 	case *selection:
 		fmt.Fprint(w, "(")
 		sub.Render(w)
-		fmt.Fprint(w, ")")
+		// TODO Probably shouldn't swallow this error ......
+		n, _ := flake.Next()
+		fmt.Fprintf(w, ") AS alias_%d", n)
 	}
 
 	// TODO Support more than one join

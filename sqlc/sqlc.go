@@ -84,8 +84,7 @@ type SelectOnStep interface {
 }
 
 type SelectWhereStep interface {
-	Renderable
-	Selectable
+	Query
 	SelectGroupByStep
 	SelectJoinStep
 	Where(conditions ...Condition) Query

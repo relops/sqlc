@@ -13,38 +13,44 @@ import (
 func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 
 	records := 100
-	start := 55
 
 	for i := 0; i < records; i++ {
+
+		var region = "VT"
+
+		if i%2 == 0 {
+			region = "NY"
+		}
 
 		imsi := 230023741299234 + i
 		_, err := sqlc.InsertInto(CALL_RECORDS).
 			SetString(CALL_RECORDS.IMSI, fmt.Sprintf("%d", imsi)).
 			SetTime(CALL_RECORDS.TIMESTAMP, time.Now()).
-			SetInt(CALL_RECORDS.DURATION, i+start).
-			SetString(CALL_RECORDS.REGION, "quux").
+			SetInt(CALL_RECORDS.DURATION, i).
+			SetString(CALL_RECORDS.REGION, region).
 			SetString(CALL_RECORDS.CALLING_NUMBER, "220082769234739").
 			SetString(CALL_RECORDS.CALLED_NUMBER, "275617294783934").
 			Exec(db)
 		assert.NoError(t, err)
 	}
 
-	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("VT")).QueryRow(db)
 	assert.NoError(t, err)
 
 	var count int
 	err = row.Scan(&count)
 	assert.NoError(t, err)
 
-	assert.Equal(t, records, count)
+	assert.Equal(t, records/2, count)
 
-	row, err = sqlc.Select(
+	q1 := sqlc.Select(
 		CALL_RECORDS.REGION,
 		CALL_RECORDS.DURATION.Min(),
 		CALL_RECORDS.DURATION.Max(),
 		CALL_RECORDS.DURATION.Avg()).
-		From(CALL_RECORDS).GroupBy(CALL_RECORDS.REGION).QueryRow(db)
+		From(CALL_RECORDS).GroupBy(CALL_RECORDS.REGION).OrderBy(CALL_RECORDS.REGION)
 
+	row, err = q1.QueryRow(db)
 	assert.NoError(t, err)
 
 	var regionScan string
@@ -53,10 +59,18 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 	err = row.Scan(&regionScan, &min, &max, &avg)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "quux", regionScan)
-	assert.Equal(t, start, min)
-	assert.Equal(t, start+records-1, max)
-	assert.Equal(t, 104.5, avg)
+	assert.Equal(t, "NY", regionScan)
+	assert.Equal(t, 0, min)
+	assert.Equal(t, 98, max)
+	assert.Equal(t, 49.0, avg)
+
+	row, err = sqlc.SelectCount().From(q1).QueryRow(db)
+	assert.NoError(t, err)
+
+	err = row.Scan(&count)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 2, count) // GROUP BY NY and VT
 
 }
 
