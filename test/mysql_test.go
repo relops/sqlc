@@ -2,29 +2,26 @@ package test
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/relops/sqlc/sqlc"
 	"github.com/relops/sqlc/test/generic"
 	"github.com/stretchr/testify/assert"
-	"os"
 	"testing"
 )
 
-func TestSqlite(t *testing.T) {
-
-	dbFile := "sqlc.db"
-
-	os.Remove(dbFile)
-
-	db, err := sql.Open("sqlite3", dbFile)
+func TestMysql(t *testing.T) {
+	db, err := sql.Open("mysql", "sqlc:sqlc@/sqlc")
 	assert.NoError(t, err)
 
-	filtered := sqlc.FilterBindata("test/db/sqlite", AssetDir)
+	err = db.Ping()
+	assert.NoError(t, err)
+
+	filtered := sqlc.FilterBindata("test/db/mysql", AssetDir)
 	steps := sqlc.LoadBindata(filtered, Asset)
 	err = sqlc.Migrate(db, sqlc.Sqlite, steps)
 	assert.NoError(t, err)
 
-	_, err = db.Exec("DELETE FROM call_records;")
+	_, err = db.Exec("TRUNCATE call_records;")
 	assert.NoError(t, err)
 
 	generic.RunCallRecordTests(t, db)
