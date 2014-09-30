@@ -30,12 +30,13 @@ Make sure `sqlc` is on your PATH (usually $GOPATH/bin).
 
 Then point `sqlc` at your sqlite DB file:
 
-	$ sqlc --help
+	$ sqlc -h
 	Usage:
-	  main [OPTIONS]
+	  sqlc [OPTIONS]
 
 	Application Options:
 	  -f, --file=    The path to the sqlite file
+	  -u, --url=     The DB URL
 	  -o, --output=  The path to save the generated objects to
 	  -p, --package= The package to put the generated objects into
 
