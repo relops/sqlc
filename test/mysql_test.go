@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/relops/sqlc/sqlc"
+	"github.com/relops/sqlc/test/generic"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -23,5 +24,5 @@ func TestMysql(t *testing.T) {
 	_, err = db.Exec("TRUNCATE call_records;")
 	assert.NoError(t, err)
 
-	runTests(t, db)
+	generic.RunCallRecordTests(t, db)
 }

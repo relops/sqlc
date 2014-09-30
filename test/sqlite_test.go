@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/relops/sqlc/sqlc"
+	"github.com/relops/sqlc/test/generic"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
@@ -26,5 +27,5 @@ func TestSqlite(t *testing.T) {
 	_, err = db.Exec("DELETE FROM call_records;")
 	assert.NoError(t, err)
 
-	runTests(t, db)
+	generic.RunCallRecordTests(t, db)
 }

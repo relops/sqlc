@@ -1,4 +1,4 @@
-package test
+package generic
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func runTests(t *testing.T, db *sql.DB) {
+func RunCallRecordTests(t *testing.T, db *sql.DB) {
 
 	_, err := sqlc.InsertInto(CALL_RECORDS).
 		SetString(CALL_RECORDS.IMSI, "230023741299234").
