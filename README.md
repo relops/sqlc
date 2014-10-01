@@ -79,9 +79,11 @@ Then point `sqlc` at your sqlite DB file:
 
 	Application Options:
 	  -f, --file=    The path to the sqlite file
-	  -u, --url=     The DB URL
-	  -o, --output=  The path to save the generated objects to
-	  -p, --package= The package to put the generated objects into
+      -u, --url=     The DB URL
+      -o, --output=  The path to save the generated objects to
+  	  -p, --package= The package to put the generated objects into
+      -t, --type=    The type of the DB (mysql,postgres,sqlite)
+      -s, --schema=  The target DB schema (required for MySQL and Postgres)
 
 	Help Options:
 	  -h, --help     Show this help message
