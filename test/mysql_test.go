@@ -22,10 +22,10 @@ func TestMysql(t *testing.T) {
 	assert.NoError(t, err)
 
 	deleteMySQL(t, db)
-	generic.RunCallRecordTests(t, db)
+	generic.RunCallRecordTests(t, sqlc.MySQL, db)
 
 	deleteMySQL(t, db)
-	generic.RunCallRecordGroupTests(t, db)
+	generic.RunCallRecordGroupTests(t, sqlc.MySQL, db)
 }
 
 func deleteMySQL(t *testing.T, db *sql.DB) {

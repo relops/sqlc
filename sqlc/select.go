@@ -67,17 +67,17 @@ func (sl *selection) OrderBy(f ...Field) SelectLimitStep {
 	return sl
 }
 
-func (s *selection) QueryRow(db *sql.DB) (*sql.Row, error) {
+func (s *selection) QueryRow(d Dialect, db *sql.DB) (*sql.Row, error) {
 	var buf bytes.Buffer
-	args := s.Render(&buf)
+	args := s.Render(d, &buf)
 	return db.QueryRow(buf.String(), args...), nil
 }
 
-func (s *selection) String() string {
-	return toString(s)
+func (s *selection) String(d Dialect) string {
+	return toString(d, s)
 }
 
-func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
+func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 
 	var alias string
 
@@ -107,7 +107,7 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 		fmt.Fprint(w, sub.Name())
 	case *selection:
 		fmt.Fprint(w, "(")
-		sub.Render(w)
+		sub.Render(d, w)
 		// TODO Probably shouldn't swallow this error ......
 		n, _ := flake.Next()
 		fmt.Fprintf(w, ") AS alias_%d", n)
@@ -125,7 +125,7 @@ func (s *selection) Render(w io.Writer) (placeholders []interface{}) {
 
 	if len(s.predicate) > 0 {
 		fmt.Fprint(w, " ")
-		placeholders = renderWhereClause(alias, s.predicate, w)
+		placeholders = renderWhereClause(alias, s.predicate, d, 0, w)
 	} else {
 		placeholders = []interface{}{}
 	}

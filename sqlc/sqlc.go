@@ -34,6 +34,7 @@ const (
 const (
 	Sqlite Dialect = iota
 	MySQL
+	Postgres
 )
 
 type TableLike interface {
@@ -119,8 +120,8 @@ type UpdateSetMoreStep interface {
 }
 
 type Renderable interface {
-	Render(io.Writer) []interface{}
-	String() string
+	Render(Dialect, io.Writer) []interface{}
+	String(Dialect) string
 }
 
 type Queryable interface {
@@ -130,12 +131,12 @@ type Queryable interface {
 type Query interface {
 	Renderable
 	Selectable
-	QueryRow(*sql.DB) (*sql.Row, error)
+	QueryRow(Dialect, *sql.DB) (*sql.Row, error)
 }
 
 type Executable interface {
 	Renderable
-	Exec(db *sql.DB) (sql.Result, error)
+	Exec(Dialect, *sql.DB) (sql.Result, error)
 }
 
 type Selectable interface {
@@ -189,16 +190,16 @@ func (i *insert) set(f TableField, v interface{}) InsertSetMoreStep {
 	return i
 }
 
-func (s *insert) Exec(db *sql.DB) (sql.Result, error) {
-	return exec(s, db)
+func (s *insert) Exec(d Dialect, db *sql.DB) (sql.Result, error) {
+	return exec(d, s, db)
 }
 
-func (u *update) Exec(db *sql.DB) (sql.Result, error) {
-	return exec(u, db)
+func (u *update) Exec(d Dialect, db *sql.DB) (sql.Result, error) {
+	return exec(d, u, db)
 }
 
-func exec(r Renderable, db *sql.DB) (sql.Result, error) {
+func exec(d Dialect, r Renderable, db *sql.DB) (sql.Result, error) {
 	var buf bytes.Buffer
-	args := r.Render(&buf)
+	args := r.Render(d, &buf)
 	return db.Exec(buf.String(), args...)
 }

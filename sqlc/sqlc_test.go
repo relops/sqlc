@@ -202,7 +202,7 @@ func TestRendered(t *testing.T) {
 	for _, rendered := range rendered {
 		// TODO This does a substring match because of the potential random alias name,
 		// should probably figure out a way to strip out the alias
-		contains := strings.Contains(rendered.Constructed.String(), rendered.Expected)
+		contains := strings.Contains(rendered.Constructed.String(Sqlite), rendered.Expected)
 		assert.True(t, contains)
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/relops/sqlc/sqlc"
 	"github.com/relops/sqlc/test"
@@ -37,9 +38,17 @@ var mysql = opts{
 	filter:  "mysql",
 }
 
+var postgres = opts{
+	driver:  "postgres",
+	url:     "postgres://sqlc:sqlc@localhost/sqlc?sslmode=disable",
+	dialect: sqlc.Postgres,
+	filter:  "postgres",
+}
+
 func main() {
 	migrate(sqlite)
 	migrate(mysql)
+	migrate(postgres)
 }
 
 func migrate(o opts) {

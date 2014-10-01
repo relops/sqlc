@@ -25,10 +25,10 @@ func TestSqlite(t *testing.T) {
 	assert.NoError(t, err)
 
 	deleteSqlite(t, db)
-	generic.RunCallRecordTests(t, db)
+	generic.RunCallRecordTests(t, sqlc.Sqlite, db)
 
 	deleteSqlite(t, db)
-	generic.RunCallRecordGroupTests(t, db)
+	generic.RunCallRecordGroupTests(t, sqlc.Sqlite, db)
 }
 
 func deleteSqlite(t *testing.T, db *sql.DB) {

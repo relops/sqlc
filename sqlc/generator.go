@@ -14,8 +14,9 @@ import (
 )
 
 var integer = regexp.MustCompile("INT|INTEGER")
-var varchar = regexp.MustCompile("VARCHAR")
+var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING")
 var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
+var dbType = regexp.MustCompile("mysql|postgres|sqlite")
 
 type TableMeta struct {
 	Name   string
@@ -32,10 +33,16 @@ type Options struct {
 	Url     string `short:"u" long:"url" description:"The DB URL"`
 	Output  string `short:"o" long:"output" description:"The path to save the generated objects to" required:"true"`
 	Package string `short:"p" long:"package" description:"The package to put the generated objects into" required:"true"`
+	Type    string `short:"t" long:"type" description:"The type of the DB (mysql,postgres,sqlite)" required:"true"`
 	Dialect Dialect
 }
 
 func (o *Options) Validate() error {
+
+	if !dbType.MatchString(o.Type) {
+		return errors.New("Invalid DB type")
+	}
+
 	if o.File == "" && o.Url == "" {
 		return errors.New("Must specify EITHER file path for sqlite OR url to DB")
 	}
@@ -81,15 +88,18 @@ func (d Dialect) metadata(db *sql.DB) ([]TableMeta, error) {
 	case Sqlite:
 		return sqlite(db)
 	case MySQL:
-		return mysql(db)
+		// TODO unhardcode this schema
+		return infoSchema(MySQL, "sqlc", db)
+	case Postgres:
+		return infoSchema(Postgres, "public", db)
 	default:
 		return nil, errors.New("Unsupported dialect")
 	}
 }
 
-func mysql(db *sql.DB) ([]TableMeta, error) {
-	schema := "sqlc"
-	rows, err := db.Query(mysqlTables, schema)
+func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
+
+	rows, err := db.Query(infoTableSQL(d), schema)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +114,7 @@ func mysql(db *sql.DB) ([]TableMeta, error) {
 
 	for i, table := range tables {
 
-		rows, err = db.Query(mysqlColumns, schema, table.Name)
+		rows, err = db.Query(infoColumnsSQL(d), schema, table.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -189,14 +199,22 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 	return tables, nil
 }
 
-const mysqlTables = `
+func infoTableSQL(d Dialect) string {
+	return fmt.Sprintf(infoTablesTmpl, d.renderPlaceholder(1))
+}
+
+func infoColumnsSQL(d Dialect) string {
+	return fmt.Sprintf(infoColumnsTmpl, d.renderPlaceholder(1), d.renderPlaceholder(2))
+}
+
+const infoTablesTmpl = `
 	select table_name
 	from information_schema.tables
-	where table_schema = ? AND table_name != 'schema_versions';
+	where table_schema = %s AND table_name != 'schema_versions';
 `
 
-const mysqlColumns = `
+const infoColumnsTmpl = `
 	SELECT column_name, UPPER(data_type)
 	FROM information_schema.columns 
-	WHERE table_schema = ? and table_name = ?;
+	WHERE table_schema = %s and table_name = %s;
 `

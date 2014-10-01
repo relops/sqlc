@@ -70,7 +70,7 @@ func Migrate(db *sql.DB, d Dialect, steps []string) error {
 			return txn.Rollback()
 		}
 
-		if _, err := txn.Exec(insertVersion, version); err != nil {
+		if _, err := txn.Exec(d.insertVersionSQL(), version); err != nil {
 			txn.Rollback()
 			return err
 		}
@@ -99,6 +99,8 @@ func initTable(db *sql.DB, d Dialect) error {
 		versionsTable = sqliteVersionsTable
 	case MySQL:
 		versionsTable = mysqlVersionsTable
+	case Postgres:
+		versionsTable = postgresVersionsTable
 	}
 
 	if _, err := txn.Exec(versionsTable); err != nil {
@@ -107,12 +109,22 @@ func initTable(db *sql.DB, d Dialect) error {
 	}
 
 	version := 0
-	if _, err := txn.Exec(insertVersion, version); err != nil {
+
+	if _, err := txn.Exec(d.insertVersionSQL(), version); err != nil {
 		txn.Rollback()
 		return err
 	}
 
 	return txn.Commit()
+}
+
+func (d Dialect) insertVersionSQL() string {
+	switch d {
+	case Postgres:
+		return insertVersionPostgres
+	default:
+		return insertVersion
+	}
 }
 
 const sqliteVersionsTable = `
@@ -129,4 +141,12 @@ CREATE TABLE schema_versions (
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`
 
+const postgresVersionsTable = `
+CREATE TABLE schema_versions (
+	id SERIAL PRIMARY KEY,
+    version INT NOT NULL,                
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`
+
 const insertVersion = "INSERT INTO schema_versions (version) VALUES (?);"
+const insertVersionPostgres = "INSERT INTO schema_versions (version) VALUES ($1);"
