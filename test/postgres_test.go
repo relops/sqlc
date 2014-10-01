@@ -19,6 +19,9 @@ func TestPostgres(t *testing.T) {
 
 	deletePostgres(t, db)
 	generic.RunCallRecordTests(t, sqlc.Postgres, db)
+
+	deletePostgres(t, db)
+	generic.RunCallRecordGroupTests(t, sqlc.Postgres, db)
 }
 
 func deletePostgres(t *testing.T, db *sql.DB) {
