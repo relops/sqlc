@@ -34,13 +34,39 @@ type Options struct {
 	Output  string `short:"o" long:"output" description:"The path to save the generated objects to" required:"true"`
 	Package string `short:"p" long:"package" description:"The package to put the generated objects into" required:"true"`
 	Type    string `short:"t" long:"type" description:"The type of the DB (mysql,postgres,sqlite)" required:"true"`
+	Schema  string `short:"s" long:"schema" description:"The target DB schema (required for MySQL and Postgres)"`
 	Dialect Dialect
+}
+
+func (o *Options) DbType() (Dialect, error) {
+	switch o.Type {
+	case "sqlite":
+		return Sqlite, nil
+	case "mysql":
+		return MySQL, nil
+	case "postgres":
+		return Postgres, nil
+	default:
+		return Sqlite, errors.New("Invalid Db type")
+	}
 }
 
 func (o *Options) Validate() error {
 
 	if !dbType.MatchString(o.Type) {
 		return errors.New("Invalid DB type")
+	}
+
+	d, err := o.DbType()
+	if err != nil {
+		return err
+	}
+
+	switch d {
+	case MySQL, Postgres:
+		if o.Schema == "" {
+			return errors.New("Must specify a target schema")
+		}
 	}
 
 	if o.File == "" && o.Url == "" {
@@ -55,7 +81,7 @@ func (o *Options) Validate() error {
 
 func Generate(db *sql.DB, opts *Options) error {
 
-	tables, err := opts.Dialect.metadata(db)
+	tables, err := opts.Dialect.metadata(opts.Schema, db)
 	if err != nil {
 		return err
 	}
@@ -83,15 +109,14 @@ func Generate(db *sql.DB, opts *Options) error {
 	return nil
 }
 
-func (d Dialect) metadata(db *sql.DB) ([]TableMeta, error) {
+func (d Dialect) metadata(schema string, db *sql.DB) ([]TableMeta, error) {
 	switch d {
 	case Sqlite:
 		return sqlite(db)
 	case MySQL:
-		// TODO unhardcode this schema
-		return infoSchema(MySQL, "sqlc", db)
+		return infoSchema(MySQL, schema, db)
 	case Postgres:
-		return infoSchema(Postgres, "public", db)
+		return infoSchema(Postgres, schema, db)
 	default:
 		return nil, errors.New("Unsupported dialect")
 	}

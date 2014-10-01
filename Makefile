@@ -33,10 +33,10 @@ test/generated/sqlite/objects.go: test/test.db test/migration_steps.go test/gene
 	go run main.go -p sqlite -o $@ -f test/test.db -t sqlite
 
 test/generated/mysql/objects.go: test/migration_steps.go test/generated/mysql main.go
-	go run main.go -p mysql -o $@ -u "sqlc:sqlc@/sqlc" -t mysql
+	go run main.go -p mysql -o $@ -u "sqlc:sqlc@/sqlc" -t mysql -s sqlc
 
 test/generated/postgres/objects.go: test/migration_steps.go test/generated/postgres main.go
-	go run main.go -p postgres -o $@ -u "postgres://sqlc:sqlc@localhost/sqlc?sslmode=disable" -t postgres
+	go run main.go -p postgres -o $@ -u "postgres://sqlc:sqlc@localhost/sqlc?sslmode=disable" -t postgres -s public
 
 sqlc/fields.go: sqlc/tmpl/fields.tmpl sqlc/field_generator.go
 	go run sqlc/field_generator.go

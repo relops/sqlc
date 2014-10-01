@@ -43,16 +43,21 @@ func main() {
 
 func dataSource() (*sql.DB, sqlc.Dialect, error) {
 
-	switch opts.Type {
-	case "sqlite":
+	d, err := opts.DbType()
+	if err != nil {
+		return nil, sqlc.Sqlite, err
+	}
+
+	switch d {
+	case sqlc.Sqlite:
 		db, err := sql.Open("sqlite3", opts.File)
-		return db, sqlc.Sqlite, err
-	case "mysql":
+		return db, d, err
+	case sqlc.MySQL:
 		db, err := sql.Open("mysql", opts.Url)
-		return db, sqlc.MySQL, err
-	case "postgres":
+		return db, d, err
+	case sqlc.Postgres:
 		db, err := sql.Open("postgres", opts.Url)
-		return db, sqlc.Postgres, err
+		return db, d, err
 	default:
 		return nil, sqlc.Sqlite, errors.New("Invalid Db type")
 	}
