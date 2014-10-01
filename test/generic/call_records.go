@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
+func RunCallRecordGroupTests(t *testing.T, d sqlc.Dialect, db *sql.DB) {
 
 	records := 100
 
@@ -30,11 +30,11 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 			SetString(CALL_RECORDS.REGION, region).
 			SetString(CALL_RECORDS.CALLING_NUMBER, "220082769234739").
 			SetString(CALL_RECORDS.CALLED_NUMBER, "275617294783934").
-			Exec(db)
+			Exec(d, db)
 		assert.NoError(t, err)
 	}
 
-	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("VT")).QueryRow(db)
+	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("VT")).QueryRow(d, db)
 	assert.NoError(t, err)
 
 	var count int
@@ -50,7 +50,7 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 		CALL_RECORDS.DURATION.Avg()).
 		From(CALL_RECORDS).GroupBy(CALL_RECORDS.REGION).OrderBy(CALL_RECORDS.REGION)
 
-	row, err = q1.QueryRow(db)
+	row, err = q1.QueryRow(d, db)
 	assert.NoError(t, err)
 
 	var regionScan string
@@ -64,7 +64,7 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 	assert.Equal(t, 98, max)
 	assert.Equal(t, 49.0, avg)
 
-	row, err = sqlc.SelectCount().From(q1).QueryRow(db)
+	row, err = sqlc.SelectCount().From(q1).QueryRow(d, db)
 	assert.NoError(t, err)
 
 	err = row.Scan(&count)
@@ -74,7 +74,7 @@ func RunCallRecordGroupTests(t *testing.T, db *sql.DB) {
 
 }
 
-func RunCallRecordTests(t *testing.T, db *sql.DB) {
+func RunCallRecordTests(t *testing.T, d sqlc.Dialect, db *sql.DB) {
 
 	_, err := sqlc.InsertInto(CALL_RECORDS).
 		SetString(CALL_RECORDS.IMSI, "230023741299234").
@@ -83,11 +83,11 @@ func RunCallRecordTests(t *testing.T, db *sql.DB) {
 		SetString(CALL_RECORDS.REGION, "quux").
 		SetString(CALL_RECORDS.CALLING_NUMBER, "220082769234739").
 		SetString(CALL_RECORDS.CALLED_NUMBER, "275617294783934").
-		Exec(db)
+		Exec(d, db)
 
 	assert.NoError(t, err)
 
-	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	row, err := sqlc.SelectCount().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(d, db)
 	assert.NoError(t, err)
 
 	var count int
@@ -96,7 +96,7 @@ func RunCallRecordTests(t *testing.T, db *sql.DB) {
 
 	assert.Equal(t, 1, count)
 
-	row, err = sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(d, db)
 	assert.NoError(t, err)
 
 	var durationScan int
@@ -105,10 +105,10 @@ func RunCallRecordTests(t *testing.T, db *sql.DB) {
 
 	assert.Equal(t, 10, durationScan)
 
-	_, err = sqlc.Update(CALL_RECORDS).SetInt(CALL_RECORDS.DURATION, 11).Where(CALL_RECORDS.REGION.Eq("quux")).Exec(db)
+	_, err = sqlc.Update(CALL_RECORDS).SetInt(CALL_RECORDS.DURATION, 11).Where(CALL_RECORDS.REGION.Eq("quux")).Exec(d, db)
 	assert.NoError(t, err)
 
-	row, err = sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select(CALL_RECORDS.DURATION).From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(d, db)
 	assert.NoError(t, err)
 
 	err = row.Scan(&durationScan)
@@ -116,10 +116,10 @@ func RunCallRecordTests(t *testing.T, db *sql.DB) {
 
 	assert.Equal(t, 11, durationScan)
 
-	_, err = sqlc.Delete(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).Exec(db)
+	_, err = sqlc.Delete(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).Exec(d, db)
 	assert.NoError(t, err)
 
-	row, err = sqlc.Select().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(db)
+	row, err = sqlc.Select().From(CALL_RECORDS).Where(CALL_RECORDS.REGION.Eq("quux")).QueryRow(d, db)
 	assert.NoError(t, err)
 
 	err = row.Scan(&durationScan)
