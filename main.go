@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jessevdk/go-flags"
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/relops/sqlc/sqlc"
 	"log"
@@ -40,11 +42,18 @@ func main() {
 }
 
 func dataSource() (*sql.DB, sqlc.Dialect, error) {
-	if opts.File != "" {
+
+	switch opts.Type {
+	case "sqlite":
 		db, err := sql.Open("sqlite3", opts.File)
 		return db, sqlc.Sqlite, err
-	} else {
+	case "mysql":
 		db, err := sql.Open("mysql", opts.Url)
 		return db, sqlc.MySQL, err
+	case "postgres":
+		db, err := sql.Open("postgres", opts.Url)
+		return db, sqlc.Postgres, err
+	default:
+		return nil, sqlc.Sqlite, errors.New("Invalid Db type")
 	}
 }
