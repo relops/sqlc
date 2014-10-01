@@ -20,6 +20,48 @@ If you don't want to use `database/sql`, you don't have to. `String(Dialect)` is
 	// Renders `SELECT foo.bar FROM foo WHERE foo.baz = ?`
 	sql := Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).String(d)
 
+Composing Queries
+-----------------
+
+You can compose query objects into reusebale and individually executable building blocks. For example, you can create a sub query that is in itself executable:
+
+	subQuery := Select(
+		CALL_RECORDS.REGION,
+		CALL_RECORDS.DURATION.Min(),
+		CALL_RECORDS.DURATION.Max(),
+		CALL_RECORDS.DURATION.Avg()).
+		From(CALL_RECORDS).
+		GroupBy(CALL_RECORDS.REGION).
+		OrderBy(CALL_RECORDS.REGION)
+
+	row, err := subQuery.QueryRow(d, db)
+
+And then you re-use the subquery as part of a new query:
+
+	row, err := SelectCount().From(subQuery).QueryRow(d, db)
+
+Type Safety
+-----------
+
+`sqlc` provides type safe methods for INSERTs and UPDATEs:
+
+	result, err := InsertInto(CALL_RECORDS).
+		SetString(CALL_RECORDS.IMSI, "230023741299234").
+		SetTime(CALL_RECORDS.TIMESTAMP, time.Now()).
+		SetInt(CALL_RECORDS.DURATION, 10).
+		SetString(CALL_RECORDS.REGION, "quux").
+		SetString(CALL_RECORDS.CALLING_NUMBER, "76581231298").
+		SetString(CALL_RECORDS.CALLED_NUMBER, "76754238764").
+		Exec(d, db)
+
+For example, the following invocation would not compile:
+
+		...
+		SetTime(CALL_RECORDS.TIMESTAMP, "some string"). // Results in compile time error
+		...
+
+If you use the `sqlc` code generator, you can keep your application in sync with your current DB schema any divergence between your code and the DDL will be flagged by the Go compiler.
+
 Code Generation
 ---------------
 
