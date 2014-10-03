@@ -11,6 +11,7 @@ var quux = Table("quux")
 var bar = String(foo, "bar")
 var baz = String(foo, "baz")
 var id = String(quux, "id")
+var col = String(quux, "col")
 
 var rendered = []struct {
 	Constructed Renderable
@@ -43,6 +44,10 @@ var rendered = []struct {
 	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
 		"SELECT foo.bar FROM foo JOIN quux ON quux.id = foo.bar",
+	},
+	{
+		Select(bar).From(foo).Join(quux).On(id.IsEq(bar), col.IsEq(baz)),
+		"SELECT foo.bar FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)",
 	},
 	{
 		Select().From(Select(bar).From(foo)),
@@ -202,7 +207,11 @@ func TestRendered(t *testing.T) {
 	for _, rendered := range rendered {
 		// TODO This does a substring match because of the potential random alias name,
 		// should probably figure out a way to strip out the alias
-		contains := strings.Contains(rendered.Constructed.String(Sqlite), rendered.Expected)
-		assert.True(t, contains)
+		r := rendered.Constructed.String(Sqlite)
+		contains := strings.Contains(r, rendered.Expected)
+		if !contains {
+			assert.Equal(t, rendered.Expected, r)
+		}
+
 	}
 }

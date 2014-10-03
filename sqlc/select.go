@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/0x6e6562/gosnow"
 	"io"
+	"strings"
 )
 
 var flake, _ = gosnow.Default()
@@ -113,14 +114,22 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 		fmt.Fprintf(w, ") AS alias_%d", n)
 	}
 
-	// TODO Support more than one join
-	if len(s.joins) == 1 {
-		join := s.joins[0]
-		lhsAlias := join.conds[0].Lhs.Table()
-		lhsField := join.conds[0].Lhs.Name()
-		rhsAlias := join.conds[0].Rhs.Table()
-		rhsField := join.conds[0].Rhs.Name()
-		fmt.Fprintf(w, " JOIN %s ON %s.%s = %s.%s", join.target.Name(), lhsAlias, lhsField, rhsAlias, rhsField)
+	for _, join := range s.joins {
+		fmt.Println("J...")
+		conds := len(join.conds)
+		switch conds {
+		case 1:
+			cond := join.conds[0]
+			fmt.Fprintf(w, " JOIN %s ON %s", join.target.Name(), renderJoinFragment(cond))
+		default:
+			fragments := make([]string, conds)
+			for i, cond := range join.conds {
+				fragments[i] = renderJoinFragment(cond)
+			}
+
+			clause := strings.Join(fragments, " AND ")
+			fmt.Fprintf(w, " JOIN %s ON (%s)", join.target.Name(), clause)
+		}
 	}
 
 	if len(s.predicate) > 0 {
@@ -144,4 +153,12 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 	}
 
 	return placeholders
+}
+
+func renderJoinFragment(cond JoinCondition) string {
+	lhsAlias := cond.Lhs.Table()
+	lhsField := cond.Lhs.Name()
+	rhsAlias := cond.Rhs.Table()
+	rhsField := cond.Rhs.Name()
+	return fmt.Sprintf("%s.%s = %s.%s", lhsAlias, lhsField, rhsAlias, rhsField)
 }
