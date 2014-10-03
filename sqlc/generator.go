@@ -14,7 +14,7 @@ import (
 )
 
 var integer = regexp.MustCompile("INT|INTEGER")
-var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING")
+var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
 var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
 
