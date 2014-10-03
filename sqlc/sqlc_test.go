@@ -89,6 +89,7 @@ var selectTrees = []struct {
 			selection:  table{name: "foo"},
 			projection: []Field{bar},
 			joinTarget: nil,
+			joinType:   NotJoined,
 			joins: []join{
 				join{
 					target:   table{name: "quux"},
