@@ -106,7 +106,8 @@ Features
 * INSERTs
 * UPDATEs
 * DELETEs
-* INNER JOINS
+* INNER JOINS (integration test only for single columns)
+* LEFT OUTER JOINS (unit tested only, no integration test)
 * Sub queries
 * Data types:
   * VARCHAR
