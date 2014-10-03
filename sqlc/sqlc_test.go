@@ -50,6 +50,10 @@ var rendered = []struct {
 		"SELECT foo.bar FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)",
 	},
 	{
+		Select(bar).From(foo).LeftOuterJoin(quux).On(id.IsEq(bar)),
+		"SELECT foo.bar FROM foo LEFT OUTER JOIN quux ON quux.id = foo.bar",
+	},
+	{
 		Select().From(Select(bar).From(foo)),
 		"SELECT * FROM (SELECT foo.bar FROM foo)",
 	},

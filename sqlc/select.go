@@ -19,6 +19,7 @@ type selection struct {
 	ordering   []Field
 	joins      []join
 	joinTarget TableLike
+	joinType   JoinType
 	count      bool
 }
 
@@ -44,16 +45,24 @@ func (sl *selection) From(s Selectable) SelectWhereStep {
 
 func (s *selection) Join(t TableLike) SelectOnStep {
 	s.joinTarget = t
+	s.joinType = Join
+	return s
+}
+
+func (s *selection) LeftOuterJoin(t TableLike) SelectOnStep {
+	s.joinTarget = t
+	s.joinType = LeftOuterJoin
 	return s
 }
 
 func (s *selection) On(c ...JoinCondition) SelectWhereStep {
 	j := join{
 		target:   s.joinTarget,
-		joinType: Join,
+		joinType: s.joinType,
 		conds:    c,
 	}
 	s.joinTarget = nil
+	s.joinType = NotJoined
 	s.joins = append(s.joins, j)
 	return s
 }
@@ -115,12 +124,20 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 	}
 
 	for _, join := range s.joins {
-		fmt.Println("J...")
+
+		var joinString string
+		switch join.joinType {
+		case LeftOuterJoin:
+			joinString = "LEFT OUTER JOIN"
+		case Join:
+			joinString = "JOIN"
+		}
+
 		conds := len(join.conds)
 		switch conds {
 		case 1:
 			cond := join.conds[0]
-			fmt.Fprintf(w, " JOIN %s ON %s", join.target.Name(), renderJoinFragment(cond))
+			fmt.Fprintf(w, " %s %s ON %s", joinString, join.target.Name(), renderJoinFragment(cond))
 		default:
 			fragments := make([]string, conds)
 			for i, cond := range join.conds {
@@ -128,7 +145,7 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 			}
 
 			clause := strings.Join(fragments, " AND ")
-			fmt.Fprintf(w, " JOIN %s ON (%s)", join.target.Name(), clause)
+			fmt.Fprintf(w, " %s %s ON (%s)", joinString, join.target.Name(), clause)
 		}
 	}
 

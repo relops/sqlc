@@ -29,6 +29,8 @@ const (
 
 const (
 	Join JoinType = iota
+	LeftOuterJoin
+	NotJoined
 )
 
 const (
@@ -77,6 +79,7 @@ type SelectFromStep interface {
 
 type SelectJoinStep interface {
 	Join(TableLike) SelectOnStep
+	LeftOuterJoin(TableLike) SelectOnStep
 }
 
 type SelectOnStep interface {
