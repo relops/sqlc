@@ -134,6 +134,7 @@ type Queryable interface {
 type Query interface {
 	Renderable
 	Selectable
+	Query(Dialect, *sql.DB) (*sql.Rows, error)
 	QueryRow(Dialect, *sql.DB) (*sql.Row, error)
 }
 

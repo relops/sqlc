@@ -83,6 +83,12 @@ func (s *selection) QueryRow(d Dialect, db *sql.DB) (*sql.Row, error) {
 	return db.QueryRow(buf.String(), args...), nil
 }
 
+func (s *selection) Query(d Dialect, db *sql.DB) (*sql.Rows, error) {
+	var buf bytes.Buffer
+	args := s.Render(d, &buf)
+	return db.Query(buf.String(), args...)
+}
+
 func (s *selection) String(d Dialect) string {
 	return toString(d, s)
 }
