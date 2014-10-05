@@ -13,7 +13,8 @@ import (
 	"text/template"
 )
 
-var integer = regexp.MustCompile("INT|INTEGER")
+var integer = regexp.MustCompile("INT")
+var int_64 = regexp.MustCompile("INTEGER|BIGINT")
 var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
 var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
@@ -156,7 +157,9 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 
 			var fieldType string
 
-			if integer.MatchString(colType.String) {
+			if int_64.MatchString(colType.String) {
+				fieldType = "Int64"
+			} else if integer.MatchString(colType.String) {
 				fieldType = "Int"
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
@@ -207,7 +210,9 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 
 			var fieldType string
 
-			if integer.MatchString(colType.String) {
+			if int_64.MatchString(colType.String) {
+				fieldType = "Int64"
+			} else if integer.MatchString(colType.String) {
 				fieldType = "Int"
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
@@ -216,7 +221,7 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}
-			//fmt.Printf("Field type: %s\n", fieldType)
+			//fmt.Printf("Field type: %s -> %s\n", fieldType, colType.String)
 			fields = append(fields, field)
 		}
 		tables[i].Fields = fields

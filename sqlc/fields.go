@@ -12,6 +12,8 @@ type InsertSetStep interface {
  	
  	SetInt(IntField, int) InsertSetMoreStep
  	
+ 	SetInt64(Int64Field, int64) InsertSetMoreStep
+ 	
  	SetTime(TimeField, time.Time) InsertSetMoreStep
  	
 }
@@ -21,6 +23,8 @@ type UpdateSetStep interface {
  	SetString(StringField, string) UpdateSetMoreStep
  	
  	SetInt(IntField, int) UpdateSetMoreStep
+ 	
+ 	SetInt64(Int64Field, int64) UpdateSetMoreStep
  	
  	SetTime(TimeField, time.Time) UpdateSetMoreStep
  	
@@ -35,6 +39,10 @@ func (i *insert) SetInt(f IntField, v int) InsertSetMoreStep {
 	return i.set(f,v)
 }
 
+func (i *insert) SetInt64(f Int64Field, v int64) InsertSetMoreStep {
+	return i.set(f,v)
+}
+
 func (i *insert) SetTime(f TimeField, v time.Time) InsertSetMoreStep {
 	return i.set(f,v)
 }
@@ -46,6 +54,10 @@ func (u *update) SetString(f StringField, v string) UpdateSetMoreStep {
 }
 
 func (u *update) SetInt(f IntField, v int) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+
+func (u *update) SetInt64(f Int64Field, v int64) UpdateSetMoreStep {
 	return u.set(f,v)
 }
 
@@ -174,6 +186,67 @@ func (c *intField) Max() Field {
 }
 
 func (c *intField) Min() Field {
+	return c.fct(Min)
+}
+
+
+
+type int64Field struct {
+	name string
+	table TableLike
+	fun Function
+}
+
+type Int64Field interface {
+	TableField
+	Eq(value int64) Condition
+	IsEq(value Int64Field) JoinCondition
+}
+
+
+func (c *int64Field) Function() Function {
+	return c.fun
+}
+
+func (c *int64Field) fct(f Function) Field {
+	return &int64Field{
+		name:  c.name,
+		table: c.table,
+		fun:   f,
+	}
+}
+
+func (c *int64Field) Name() string {
+	return c.name
+}
+
+func (c *int64Field) Table() string {
+	return c.table.Name()
+}
+
+func (c *int64Field) Eq(pred int64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *int64Field) IsEq(pred Int64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+func Int64(table TableLike, name string) Int64Field {
+	return &int64Field{name: name, table:table}
+}
+
+//////
+
+func (c *int64Field) Avg() Field {	
+	return c.fct(Avg)
+}
+
+func (c *int64Field) Max() Field {	
+	return c.fct(Max)
+}
+
+func (c *int64Field) Min() Field {
 	return c.fct(Min)
 }
 
