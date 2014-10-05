@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jessevdk/go-flags"
 	_ "github.com/lib/pq"
@@ -12,8 +13,14 @@ import (
 	"os"
 )
 
+var VERSION string = "0.1.0"
+
 var opts sqlc.Options
 var parser = flags.NewParser(&opts, flags.Default)
+
+func init() {
+	opts.Version = printVersionAndExit
+}
 
 func main() {
 
@@ -61,4 +68,9 @@ func dataSource() (*sql.DB, sqlc.Dialect, error) {
 	default:
 		return nil, sqlc.Sqlite, errors.New("Invalid Db type")
 	}
+}
+
+func printVersionAndExit() {
+	fmt.Fprintf(os.Stderr, "%s %s\n", "sqlc", VERSION)
+	os.Exit(0)
 }

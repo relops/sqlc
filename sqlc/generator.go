@@ -35,6 +35,7 @@ type Options struct {
 	Package string `short:"p" long:"package" description:"The package to put the generated objects into" required:"true"`
 	Type    string `short:"t" long:"type" description:"The type of the DB (mysql,postgres,sqlite)" required:"true"`
 	Schema  string `short:"s" long:"schema" description:"The target DB schema (required for MySQL and Postgres)"`
+	Version func() `short:"V" long:"version" description:"Print sqlc version and exit"`
 	Dialect Dialect
 }
 
