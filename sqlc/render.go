@@ -74,19 +74,33 @@ func (i *insert) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 	return values
 }
 
+func resolveAlias(alias string, col Field) string {
+	if alias == "" {
+		if tabCol, ok := col.(TableField); ok {
+			return tabCol.Table()
+		}
+
+		return ""
+	} else {
+		return alias
+	}
+}
+
 func columnClause(alias string, cols []Field) string {
+
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
+		al := resolveAlias(alias, col)
 		var f string
 		switch col.Function() {
 		case Avg:
-			f = fmt.Sprintf("AVG(%s.%s)", alias, col.Name())
+			f = fmt.Sprintf("AVG(%s.%s)", al, col.Name())
 		case Max:
-			f = fmt.Sprintf("MAX(%s.%s)", alias, col.Name())
+			f = fmt.Sprintf("MAX(%s.%s)", al, col.Name())
 		case Min:
-			f = fmt.Sprintf("MIN(%s.%s)", alias, col.Name())
+			f = fmt.Sprintf("MIN(%s.%s)", al, col.Name())
 		default:
-			f = fmt.Sprintf("%s.%s", alias, col.Name())
+			f = fmt.Sprintf("%s.%s", al, col.Name())
 		}
 
 		colFragments[i] = f
@@ -102,10 +116,12 @@ func renderWhereClause(alias string, conds []Condition, d Dialect, paramCount in
 	values := make([]interface{}, len(conds))
 
 	for i, condition := range conds {
-		col := condition.Binding.Field.Name()
+		field := condition.Binding.Field
+		al := resolveAlias(alias, field)
+		col := field.Name()
 		pred := condition.Predicate
 		placeHolder := d.renderPlaceholder(i + paramCount + 1)
-		whereFragments[i] = fmt.Sprintf("%s.%s %s %s", alias, col, predicateTypes[pred], placeHolder)
+		whereFragments[i] = fmt.Sprintf("%s.%s %s %s", al, col, predicateTypes[pred], placeHolder)
 		values[i] = condition.Binding.Value
 	}
 

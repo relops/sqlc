@@ -95,14 +95,6 @@ func (s *selection) String(d Dialect) string {
 
 func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 
-	var alias string
-
-	// TODO This type switch is used twice, consider refactoring
-	switch sub := s.selection.(type) {
-	case TableLike:
-		alias = sub.Name()
-	}
-
 	fmt.Fprint(w, "SELECT ")
 
 	if s.count {
@@ -111,7 +103,8 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 		if len(s.projection) == 0 {
 			fmt.Fprint(w, "*")
 		} else {
-			colClause := columnClause(alias, s.projection)
+			colAlias := ""
+			colClause := columnClause(colAlias, s.projection)
 			fmt.Fprint(w, colClause)
 		}
 	}
@@ -154,6 +147,8 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 			fmt.Fprintf(w, " %s %s ON (%s)", joinString, join.target.Name(), clause)
 		}
 	}
+
+	var alias string
 
 	if len(s.predicate) > 0 {
 		fmt.Fprint(w, " ")

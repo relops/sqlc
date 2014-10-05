@@ -46,8 +46,8 @@ var rendered = []struct {
 		"SELECT foo.bar FROM foo JOIN quux ON quux.id = foo.bar",
 	},
 	{
-		Select(bar).From(foo).Join(quux).On(id.IsEq(bar), col.IsEq(baz)),
-		"SELECT foo.bar FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)",
+		Select(bar, col).From(foo).Join(quux).On(id.IsEq(bar), col.IsEq(baz)),
+		"SELECT foo.bar, quux.col FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)",
 	},
 	{
 		Select(bar).From(foo).LeftOuterJoin(quux).On(id.IsEq(bar)),
