@@ -13,7 +13,7 @@ import (
 	"os"
 )
 
-var VERSION string = "0.1.1"
+var VERSION string = "0.1.2"
 
 var opts sqlc.Options
 var parser = flags.NewParser(&opts, flags.Default)
