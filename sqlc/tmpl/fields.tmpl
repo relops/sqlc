@@ -37,6 +37,7 @@ type {{ toLower $t.Prefix }}Field struct {
 	name string
 	table TableLike
 	fun Function
+	alias string
 }
 
 type {{ $t.Prefix }}Field interface {
@@ -56,6 +57,15 @@ func (c *{{ toLower $t.Prefix }}Field) fct(f Function) Field {
 		table: c.table,
 		fun:   f,
 	}
+}
+
+func (c *{{ toLower $t.Prefix }}Field) As(alias string) Field {
+	c.alias = alias
+	return c
+}
+
+func (c *{{ toLower $t.Prefix }}Field) Alias() string {
+	return c.alias
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Name() string {

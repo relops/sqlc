@@ -73,6 +73,7 @@ type stringField struct {
 	name string
 	table TableLike
 	fun Function
+	alias string
 }
 
 type StringField interface {
@@ -92,6 +93,15 @@ func (c *stringField) fct(f Function) Field {
 		table: c.table,
 		fun:   f,
 	}
+}
+
+func (c *stringField) As(alias string) Field {
+	c.alias = alias
+	return c
+}
+
+func (c *stringField) Alias() string {
+	return c.alias
 }
 
 func (c *stringField) Name() string {
@@ -134,6 +144,7 @@ type intField struct {
 	name string
 	table TableLike
 	fun Function
+	alias string
 }
 
 type IntField interface {
@@ -153,6 +164,15 @@ func (c *intField) fct(f Function) Field {
 		table: c.table,
 		fun:   f,
 	}
+}
+
+func (c *intField) As(alias string) Field {
+	c.alias = alias
+	return c
+}
+
+func (c *intField) Alias() string {
+	return c.alias
 }
 
 func (c *intField) Name() string {
@@ -195,6 +215,7 @@ type int64Field struct {
 	name string
 	table TableLike
 	fun Function
+	alias string
 }
 
 type Int64Field interface {
@@ -214,6 +235,15 @@ func (c *int64Field) fct(f Function) Field {
 		table: c.table,
 		fun:   f,
 	}
+}
+
+func (c *int64Field) As(alias string) Field {
+	c.alias = alias
+	return c
+}
+
+func (c *int64Field) Alias() string {
+	return c.alias
 }
 
 func (c *int64Field) Name() string {
@@ -256,6 +286,7 @@ type timeField struct {
 	name string
 	table TableLike
 	fun Function
+	alias string
 }
 
 type TimeField interface {
@@ -275,6 +306,15 @@ func (c *timeField) fct(f Function) Field {
 		table: c.table,
 		fun:   f,
 	}
+}
+
+func (c *timeField) As(alias string) Field {
+	c.alias = alias
+	return c
+}
+
+func (c *timeField) Alias() string {
+	return c.alias
 }
 
 func (c *timeField) Name() string {

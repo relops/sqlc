@@ -46,6 +46,10 @@ var rendered = []struct {
 		"SELECT foo.bar FROM foo JOIN quux ON quux.id = foo.bar",
 	},
 	{
+		Select(bar).From(foo.As("f")).Join(quux.As("q")).On(id.IsEq(bar)),
+		"SELECT f.bar FROM foo AS f JOIN quux AS q ON q.id = f.bar",
+	},
+	{
 		Select(bar, col).From(foo).Join(quux).On(id.IsEq(bar), col.IsEq(baz)),
 		"SELECT foo.bar, quux.col FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)",
 	},
@@ -77,11 +81,19 @@ var selectTrees = []struct {
 }{
 	{
 		Select().From(foo),
-		selection{selection: table{name: "foo"}},
+		selection{
+			selection: table{name: "foo"},
+			aliases: map[string]string{
+				"foo": "",
+			},
+		},
 	},
 	{
 		Select(bar, baz).From(foo),
-		selection{selection: table{name: "foo"}, projection: []Field{bar, baz}},
+		selection{selection: table{name: "foo"}, projection: []Field{bar, baz},
+			aliases: map[string]string{
+				"foo": "",
+			}},
 	},
 	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
@@ -97,6 +109,10 @@ var selectTrees = []struct {
 					conds:    []JoinCondition{id.IsEq(bar)},
 				},
 			},
+			aliases: map[string]string{
+				"foo":  "",
+				"quux": "",
+			},
 		},
 	},
 	{
@@ -106,13 +122,20 @@ var selectTrees = []struct {
 			projection: []Field{bar},
 			groups:     []Field{bar},
 			ordering:   []Field{bar},
+			aliases: map[string]string{
+				"foo": "",
+			},
 		},
 	},
 	{
 		Select().From(Select(bar).From(foo)),
 		selection{
 			selection: &selection{
-				selection: table{name: "foo"}, projection: []Field{bar},
+				selection:  table{name: "foo"},
+				projection: []Field{bar},
+				aliases: map[string]string{
+					"foo": "",
+				},
 			},
 		},
 	},

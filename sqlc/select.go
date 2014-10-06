@@ -18,9 +18,11 @@ type selection struct {
 	groups     []Field
 	ordering   []Field
 	joins      []join
-	joinTarget TableLike
+	joinTarget Selectable
 	joinType   JoinType
 	count      bool
+	aliases    map[string]string
+	alias      string
 }
 
 func Select(f ...Field) SelectFromStep {
@@ -33,6 +35,28 @@ func SelectCount() SelectFromStep {
 
 func (s *selection) IsSelectable() {}
 
+func (sl *selection) maybeCacheAlias(s Selectable) {
+	if t, ok := s.(TableLike); ok {
+		sl.cacheAlias(t)
+	}
+}
+
+func (s *selection) cacheAlias(t TableLike) {
+	if len(s.aliases) == 0 {
+		s.aliases = make(map[string]string)
+	}
+	s.aliases[t.Name()] = t.Alias()
+}
+
+func (s *selection) Alias() string {
+	return s.alias
+}
+
+func (s *selection) As(a string) Selectable {
+	s.alias = a
+	return s
+}
+
 func (s *selection) Where(c ...Condition) Query {
 	s.predicate = c
 	return s
@@ -40,18 +64,22 @@ func (s *selection) Where(c ...Condition) Query {
 
 func (sl *selection) From(s Selectable) SelectWhereStep {
 	sl.selection = s
+	sl.maybeCacheAlias(s)
 	return sl
 }
 
-func (s *selection) Join(t TableLike) SelectOnStep {
+func (s *selection) Join(t Selectable) SelectOnStep {
 	s.joinTarget = t
 	s.joinType = Join
+	s.maybeCacheAlias(t)
 	return s
 }
 
-func (s *selection) LeftOuterJoin(t TableLike) SelectOnStep {
+func (s *selection) LeftOuterJoin(t Selectable) SelectOnStep {
+	// TODO copy and paste from Join(.)
 	s.joinTarget = t
 	s.joinType = LeftOuterJoin
+	s.maybeCacheAlias(t)
 	return s
 }
 
@@ -95,6 +123,13 @@ func (s *selection) String(d Dialect) string {
 
 func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 
+	alias := ""
+	if al, ok := s.selection.(Aliasable); ok {
+		if al.Alias() != "" {
+			alias = al.Alias()
+		}
+	}
+
 	fmt.Fprint(w, "SELECT ")
 
 	if s.count {
@@ -103,8 +138,8 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 		if len(s.projection) == 0 {
 			fmt.Fprint(w, "*")
 		} else {
-			colAlias := ""
-			colClause := columnClause(colAlias, s.projection)
+			//colAlias := ""
+			colClause := columnClause(alias, s.projection)
 			fmt.Fprint(w, colClause)
 		}
 	}
@@ -117,9 +152,16 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 	case *selection:
 		fmt.Fprint(w, "(")
 		sub.Render(d, w)
-		// TODO Probably shouldn't swallow this error ......
-		n, _ := flake.Next()
-		fmt.Fprintf(w, ") AS alias_%d", n)
+		fmt.Fprint(w, ")")
+		if alias == "" {
+			// TODO Probably shouldn't swallow this error ......
+			n, _ := flake.Next()
+			alias = fmt.Sprintf("alias_%d", n)
+		}
+	}
+
+	if alias != "" {
+		fmt.Fprintf(w, " AS %s", alias)
 	}
 
 	for _, join := range s.joins {
@@ -136,19 +178,46 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 		switch conds {
 		case 1:
 			cond := join.conds[0]
-			fmt.Fprintf(w, " %s %s ON %s", joinString, join.target.Name(), renderJoinFragment(cond))
+			var al string
+			var aliased bool
+			if t, ok := join.target.(TableLike); ok {
+				al, aliased = renderTableAlias(t)
+			} else {
+				al = join.target.Alias()
+				aliased = false
+			}
+
+			if aliased {
+				fmt.Fprintf(w, " %s %s ON %s", joinString, al, s.renderJoinFragment(cond))
+			} else {
+				fmt.Fprintf(w, " %s %s ON %s", joinString, al, s.renderJoinFragment(cond))
+			}
 		default:
+			// TODO copy and paste
+			var al string
+			var aliased bool
+			if t, ok := join.target.(TableLike); ok {
+				al, aliased = renderTableAlias(t)
+			} else {
+				al = join.target.Alias()
+				aliased = false
+			}
+
 			fragments := make([]string, conds)
 			for i, cond := range join.conds {
-				fragments[i] = renderJoinFragment(cond)
+				if aliased {
+					fragments[i] = s.renderJoinFragment(cond)
+				} else {
+					fragments[i] = s.renderJoinFragment(cond)
+				}
+
 			}
 
 			clause := strings.Join(fragments, " AND ")
-			fmt.Fprintf(w, " %s %s ON (%s)", joinString, join.target.Name(), clause)
+
+			fmt.Fprintf(w, " %s %s ON (%s)", joinString, al, clause)
 		}
 	}
-
-	var alias string
 
 	if len(s.predicate) > 0 {
 		fmt.Fprint(w, " ")
@@ -173,10 +242,26 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 	return placeholders
 }
 
-func renderJoinFragment(cond JoinCondition) string {
-	lhsAlias := cond.Lhs.Table()
-	lhsField := cond.Lhs.Name()
-	rhsAlias := cond.Rhs.Table()
-	rhsField := cond.Rhs.Name()
-	return fmt.Sprintf("%s.%s = %s.%s", lhsAlias, lhsField, rhsAlias, rhsField)
+func renderTableAlias(t TableLike) (string, bool) {
+	if t.Alias() != "" {
+		return fmt.Sprintf("%s AS %s", t.Name(), t.Alias()), true
+	} else {
+		return t.Name(), false
+	}
+}
+
+func renderFieldAlias(alias string, f TableField) (string, bool) {
+	if alias != "" {
+		return fmt.Sprintf("%s.%s", alias, f.Name()), true
+	} else if f.Alias() != "" {
+		return fmt.Sprintf("%s.%s", f.Alias(), f.Name()), true
+	} else {
+		return fmt.Sprintf("%s.%s", f.Table(), f.Name()), false
+	}
+}
+
+func (s *selection) renderJoinFragment(cond JoinCondition) string {
+	lhsAlias, _ := renderFieldAlias(s.aliases[cond.Lhs.Table()], cond.Lhs)
+	rhsAlias, _ := renderFieldAlias(s.aliases[cond.Rhs.Table()], cond.Rhs)
+	return fmt.Sprintf("%s = %s", lhsAlias, rhsAlias)
 }

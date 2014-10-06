@@ -11,12 +11,22 @@ type {{ toLower $t.Name }} struct {
 	{{ range $_, $f := $t.Fields }}
 	{{ toUpper $f.Name }} sqlc.{{ $f.Type }}Field
 	{{ end }}
+	alias string
 }
 
 func (t *{{ toLower $t.Name }}) IsSelectable() {}
 
 func (t *{{ toLower $t.Name }}) Name() string {
 	return "{{ toLower $t.Name }}"
+}
+
+func (t *{{ toLower $t.Name }}) As(a string) sqlc.Selectable {
+	t.alias = a
+	return t
+}
+
+func (t *{{ toLower $t.Name }}) Alias() string {
+	return t.alias
 }
 
 func (t *{{ toLower $t.Name }}) Fields() []sqlc.Field {

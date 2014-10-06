@@ -39,14 +39,21 @@ const (
 	Postgres
 )
 
+type Aliasable interface {
+	Alias() string
+}
+
 type TableLike interface {
 	Selectable
 	Name() string
+	As(string) Selectable
 	Queryable
 }
 
 type Field interface {
+	Aliasable
 	Name() string
+	As(string) Field
 	Avg() Field
 	Min() Field
 	Max() Field
@@ -78,8 +85,8 @@ type SelectFromStep interface {
 }
 
 type SelectJoinStep interface {
-	Join(TableLike) SelectOnStep
-	LeftOuterJoin(TableLike) SelectOnStep
+	Join(Selectable) SelectOnStep
+	LeftOuterJoin(Selectable) SelectOnStep
 }
 
 type SelectOnStep interface {
@@ -144,6 +151,7 @@ type Executable interface {
 }
 
 type Selectable interface {
+	Aliasable
 	IsSelectable()
 }
 
@@ -153,7 +161,7 @@ type JoinCondition struct {
 }
 
 type join struct {
-	target   TableLike
+	target   Selectable
 	joinType JoinType
 	conds    []JoinCondition
 }
