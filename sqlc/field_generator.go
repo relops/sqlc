@@ -34,9 +34,20 @@ func init() {
 	log.ReplaceLogger(logger)
 }
 
+type PredicateInfo struct {
+	Predicate     string
+	FieldFunction string
+	JoinFunction  string
+}
+
+var preds = []PredicateInfo{
+	PredicateInfo{Predicate: "EqPredicate", FieldFunction: "Eq", JoinFunction: "IsEq"},
+}
+
 func main() {
 	params := make(map[string]interface{})
 	params["types"] = meta.Types
+	params["predicates"] = preds
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,
