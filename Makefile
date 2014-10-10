@@ -26,16 +26,16 @@ test/generated/generic:
 test/generated/postgres:
 	mkdir -p $@
 
-test/generated/generic/objects.go: test/test.db test/migration_steps.go test/generated/generic main.go
+test/generated/generic/objects.go: sqlc/schema.go test/test.db test/migration_steps.go test/generated/generic main.go
 	go run main.go -p generic -o $@ -f test/test.db -t sqlite
 
-test/generated/sqlite/objects.go: test/test.db test/migration_steps.go test/generated/sqlite main.go
+test/generated/sqlite/objects.go: sqlc/schema.go  test/test.db test/migration_steps.go test/generated/sqlite main.go
 	go run main.go -p sqlite -o $@ -f test/test.db -t sqlite
 
-test/generated/mysql/objects.go: test/migration_steps.go test/generated/mysql main.go
+test/generated/mysql/objects.go: sqlc/schema.go test/migration_steps.go test/generated/mysql main.go
 	go run main.go -p mysql -o $@ -u "sqlc:sqlc@/sqlc" -t mysql -s sqlc
 
-test/generated/postgres/objects.go: test/migration_steps.go test/generated/postgres main.go
+test/generated/postgres/objects.go: sqlc/schema.go test/migration_steps.go test/generated/postgres main.go
 	go run main.go -p postgres -o $@ -u "postgres://sqlc:sqlc@localhost/sqlc?sslmode=disable" -t postgres -s public
 
 sqlc/fields.go: sqlc/tmpl/fields.tmpl sqlc/field_generator.go

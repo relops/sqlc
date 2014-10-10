@@ -71,7 +71,7 @@ func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
 
 type stringField struct {
 	name string
-	table TableLike
+	table Selectable
 	fun Function
 	alias string
 }
@@ -96,20 +96,27 @@ func (c *stringField) fct(f Function) Field {
 }
 
 func (c *stringField) As(alias string) Field {
-	c.alias = alias
-	return c
+	return &stringField{name: c.name, table: c.table, fun: c.fun, alias: alias}
 }
 
 func (c *stringField) Alias() string {
 	return c.alias
 }
 
+func (c *stringField) MaybeAlias() string {
+	if c.alias == "" {
+		return c.name
+	} else {
+		return c.alias
+	}
+}
+
 func (c *stringField) Name() string {
 	return c.name
 }
 
-func (c *stringField) Table() string {
-	return c.table.Name()
+func (c *stringField) Parent() Selectable {
+	return c.table
 }
 
 func (c *stringField) Eq(pred string) Condition {
@@ -120,7 +127,7 @@ func (c *stringField) IsEq(pred StringField) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
-func String(table TableLike, name string) StringField {
+func String(table Selectable, name string) StringField {
 	return &stringField{name: name, table:table}
 }
 
@@ -142,7 +149,7 @@ func (c *stringField) Min() Field {
 
 type intField struct {
 	name string
-	table TableLike
+	table Selectable
 	fun Function
 	alias string
 }
@@ -167,20 +174,27 @@ func (c *intField) fct(f Function) Field {
 }
 
 func (c *intField) As(alias string) Field {
-	c.alias = alias
-	return c
+	return &intField{name: c.name, table: c.table, fun: c.fun, alias: alias}
 }
 
 func (c *intField) Alias() string {
 	return c.alias
 }
 
+func (c *intField) MaybeAlias() string {
+	if c.alias == "" {
+		return c.name
+	} else {
+		return c.alias
+	}
+}
+
 func (c *intField) Name() string {
 	return c.name
 }
 
-func (c *intField) Table() string {
-	return c.table.Name()
+func (c *intField) Parent() Selectable {
+	return c.table
 }
 
 func (c *intField) Eq(pred int) Condition {
@@ -191,7 +205,7 @@ func (c *intField) IsEq(pred IntField) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
-func Int(table TableLike, name string) IntField {
+func Int(table Selectable, name string) IntField {
 	return &intField{name: name, table:table}
 }
 
@@ -213,7 +227,7 @@ func (c *intField) Min() Field {
 
 type int64Field struct {
 	name string
-	table TableLike
+	table Selectable
 	fun Function
 	alias string
 }
@@ -238,20 +252,27 @@ func (c *int64Field) fct(f Function) Field {
 }
 
 func (c *int64Field) As(alias string) Field {
-	c.alias = alias
-	return c
+	return &int64Field{name: c.name, table: c.table, fun: c.fun, alias: alias}
 }
 
 func (c *int64Field) Alias() string {
 	return c.alias
 }
 
+func (c *int64Field) MaybeAlias() string {
+	if c.alias == "" {
+		return c.name
+	} else {
+		return c.alias
+	}
+}
+
 func (c *int64Field) Name() string {
 	return c.name
 }
 
-func (c *int64Field) Table() string {
-	return c.table.Name()
+func (c *int64Field) Parent() Selectable {
+	return c.table
 }
 
 func (c *int64Field) Eq(pred int64) Condition {
@@ -262,7 +283,7 @@ func (c *int64Field) IsEq(pred Int64Field) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
-func Int64(table TableLike, name string) Int64Field {
+func Int64(table Selectable, name string) Int64Field {
 	return &int64Field{name: name, table:table}
 }
 
@@ -284,7 +305,7 @@ func (c *int64Field) Min() Field {
 
 type timeField struct {
 	name string
-	table TableLike
+	table Selectable
 	fun Function
 	alias string
 }
@@ -309,20 +330,27 @@ func (c *timeField) fct(f Function) Field {
 }
 
 func (c *timeField) As(alias string) Field {
-	c.alias = alias
-	return c
+	return &timeField{name: c.name, table: c.table, fun: c.fun, alias: alias}
 }
 
 func (c *timeField) Alias() string {
 	return c.alias
 }
 
+func (c *timeField) MaybeAlias() string {
+	if c.alias == "" {
+		return c.name
+	} else {
+		return c.alias
+	}
+}
+
 func (c *timeField) Name() string {
 	return c.name
 }
 
-func (c *timeField) Table() string {
-	return c.table.Name()
+func (c *timeField) Parent() Selectable {
+	return c.table
 }
 
 func (c *timeField) Eq(pred time.Time) Condition {
@@ -333,7 +361,7 @@ func (c *timeField) IsEq(pred TimeField) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
-func Time(table TableLike, name string) TimeField {
+func Time(table Selectable, name string) TimeField {
 	return &timeField{name: name, table:table}
 }
 

@@ -77,9 +77,8 @@ func (i *insert) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 func resolveAlias(alias string, col Field) string {
 	if alias == "" {
 		if tabCol, ok := col.(TableField); ok {
-			return tabCol.Table()
+			return tabCol.Parent().MaybeAlias()
 		}
-
 		return ""
 	} else {
 		return alias

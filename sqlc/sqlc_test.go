@@ -46,7 +46,10 @@ var rendered = []struct {
 		"SELECT foo.bar FROM foo JOIN quux ON quux.id = foo.bar",
 	},
 	{
-		Select(bar).From(foo.As("f")).Join(quux.As("q")).On(id.IsEq(bar)),
+		// This is more verbose that it needs to be
+		// generally speaking apps would use generated objects, but this example uses the runtime API
+		// to create aliased objects
+		Select(bar).From(foo.As("f")).Join(quux.As("q")).On(quux.As("q").StringField("id").IsEq(foo.As("f").StringField("bar"))),
 		"SELECT f.bar FROM foo AS f JOIN quux AS q ON q.id = f.bar",
 	},
 	{
@@ -82,60 +85,49 @@ var selectTrees = []struct {
 	{
 		Select().From(foo),
 		selection{
-			selection: table{name: "foo"},
-			aliases: map[string]string{
-				"foo": "",
-			},
+			selection: table{name: "foo", fieldMap: make(map[string]Field)},
 		},
 	},
 	{
 		Select(bar, baz).From(foo),
-		selection{selection: table{name: "foo"}, projection: []Field{bar, baz},
-			aliases: map[string]string{
-				"foo": "",
-			}},
+		selection{
+			selection: table{
+				name:     "foo",
+				fieldMap: make(map[string]Field),
+			}, projection: []Field{bar, baz},
+		},
 	},
 	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
 		selection{
-			selection:  table{name: "foo"},
+			selection:  table{name: "foo", fieldMap: make(map[string]Field)},
 			projection: []Field{bar},
 			joinTarget: nil,
 			joinType:   NotJoined,
 			joins: []join{
 				join{
-					target:   table{name: "quux"},
+					target:   table{name: "quux", fieldMap: make(map[string]Field)},
 					joinType: Join,
 					conds:    []JoinCondition{id.IsEq(bar)},
 				},
-			},
-			aliases: map[string]string{
-				"foo":  "",
-				"quux": "",
 			},
 		},
 	},
 	{
 		Select(bar).From(foo).GroupBy(bar).OrderBy(bar),
 		selection{
-			selection:  table{name: "foo"},
+			selection:  table{name: "foo", fieldMap: make(map[string]Field)},
 			projection: []Field{bar},
 			groups:     []Field{bar},
 			ordering:   []Field{bar},
-			aliases: map[string]string{
-				"foo": "",
-			},
 		},
 	},
 	{
 		Select().From(Select(bar).From(foo)),
 		selection{
 			selection: &selection{
-				selection:  table{name: "foo"},
+				selection:  table{name: "foo", fieldMap: make(map[string]Field)},
 				projection: []Field{bar},
-				aliases: map[string]string{
-					"foo": "",
-				},
 			},
 		},
 	},
@@ -148,7 +140,7 @@ var insertTrees = []struct {
 	{
 		InsertInto(foo).SetString(bar, "quux"),
 		insert{
-			table: table{name: "foo"},
+			table: table{name: "foo", fieldMap: make(map[string]Field)},
 			bindings: []TableFieldBinding{
 				TableFieldBinding{
 					Field: bar,
@@ -166,7 +158,7 @@ var updateTrees = []struct {
 	{
 		Update(foo).SetString(bar, "quux").Where(baz.Eq("gorp")),
 		update{
-			table: table{name: "foo"},
+			table: table{name: "foo", fieldMap: make(map[string]Field)},
 			bindings: []TableFieldBinding{
 				TableFieldBinding{
 					Field: bar,
@@ -193,7 +185,7 @@ var deleteTrees = []struct {
 	{
 		Delete(foo).Where(baz.Eq("gorp")),
 		deletion{
-			table: table{name: "foo"},
+			table: table{name: "foo", fieldMap: make(map[string]Field)},
 			predicate: []Condition{
 				Condition{
 					Binding: FieldBinding{

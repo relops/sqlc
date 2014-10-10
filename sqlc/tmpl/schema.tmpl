@@ -21,12 +21,28 @@ func (t *{{ toLower $t.Name }}) Name() string {
 }
 
 func (t *{{ toLower $t.Name }}) As(a string) sqlc.Selectable {
-	t.alias = a
-	return t
+	return &{{ toLower $t.Name }}{
+		{{ range $_, $f := $t.Fields }}
+		{{ toUpper $f.Name }}: t.{{ toUpper $f.Name }},
+		{{ end }}
+		alias:a,
+	}
 }
 
 func (t *{{ toLower $t.Name }}) Alias() string {
 	return t.alias
+}
+
+func (t *{{ toLower $t.Name }}) MaybeAlias() string {
+	if t.alias == "" {
+		return "{{ toLower $t.Name }}"
+	} else {
+		return t.alias
+	}
+}
+
+func (t *{{ toLower $t.Name }}) StringField(name string) sqlc.StringField {
+	return sqlc.String({{ toUpper $t.Name }}, "toUpper(name)")
 }
 
 func (t *{{ toLower $t.Name }}) Fields() []sqlc.Field {

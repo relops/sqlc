@@ -21,7 +21,6 @@ type selection struct {
 	joinTarget Selectable
 	joinType   JoinType
 	count      bool
-	aliases    map[string]string
 	alias      string
 }
 
@@ -35,26 +34,25 @@ func SelectCount() SelectFromStep {
 
 func (s *selection) IsSelectable() {}
 
-func (sl *selection) maybeCacheAlias(s Selectable) {
-	if t, ok := s.(TableLike); ok {
-		sl.cacheAlias(t)
-	}
-}
-
-func (s *selection) cacheAlias(t TableLike) {
-	if len(s.aliases) == 0 {
-		s.aliases = make(map[string]string)
-	}
-	s.aliases[t.Name()] = t.Alias()
-}
-
 func (s *selection) Alias() string {
 	return s.alias
 }
 
-func (s *selection) As(a string) Selectable {
-	s.alias = a
-	return s
+func (s *selection) MaybeAlias() string {
+	if s.alias == "" {
+		switch sub := s.selection.(type) {
+		case TableLike:
+			return sub.Name()
+		default:
+			return ""
+		}
+	} else {
+		return s.alias
+	}
+}
+
+func (s *selection) Field(name string) Field {
+	return &stringField{}
 }
 
 func (s *selection) Where(c ...Condition) Query {
@@ -64,14 +62,12 @@ func (s *selection) Where(c ...Condition) Query {
 
 func (sl *selection) From(s Selectable) SelectWhereStep {
 	sl.selection = s
-	sl.maybeCacheAlias(s)
 	return sl
 }
 
 func (s *selection) Join(t Selectable) SelectOnStep {
 	s.joinTarget = t
 	s.joinType = Join
-	s.maybeCacheAlias(t)
 	return s
 }
 
@@ -79,8 +75,11 @@ func (s *selection) LeftOuterJoin(t Selectable) SelectOnStep {
 	// TODO copy and paste from Join(.)
 	s.joinTarget = t
 	s.joinType = LeftOuterJoin
-	s.maybeCacheAlias(t)
 	return s
+}
+
+func (s *selection) StringField(name string) StringField {
+	return &stringField{name: name}
 }
 
 func (s *selection) On(c ...JoinCondition) SelectWhereStep {
@@ -138,7 +137,6 @@ func (s *selection) Render(d Dialect, w io.Writer) (placeholders []interface{}) 
 		if len(s.projection) == 0 {
 			fmt.Fprint(w, "*")
 		} else {
-			//colAlias := ""
 			colClause := columnClause(alias, s.projection)
 			fmt.Fprint(w, colClause)
 		}
@@ -256,12 +254,12 @@ func renderFieldAlias(alias string, f TableField) (string, bool) {
 	} else if f.Alias() != "" {
 		return fmt.Sprintf("%s.%s", f.Alias(), f.Name()), true
 	} else {
-		return fmt.Sprintf("%s.%s", f.Table(), f.Name()), false
+		return fmt.Sprintf("%s.%s", f.Parent().Alias(), f.Name()), false
 	}
 }
 
 func (s *selection) renderJoinFragment(cond JoinCondition) string {
-	lhsAlias, _ := renderFieldAlias(s.aliases[cond.Lhs.Table()], cond.Lhs)
-	rhsAlias, _ := renderFieldAlias(s.aliases[cond.Rhs.Table()], cond.Rhs)
+	lhsAlias, _ := renderFieldAlias(cond.Lhs.Parent().MaybeAlias(), cond.Lhs)
+	rhsAlias, _ := renderFieldAlias(cond.Rhs.Parent().MaybeAlias(), cond.Rhs)
 	return fmt.Sprintf("%s = %s", lhsAlias, rhsAlias)
 }

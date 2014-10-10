@@ -41,6 +41,7 @@ const (
 
 type Aliasable interface {
 	Alias() string
+	MaybeAlias() string
 }
 
 type TableLike interface {
@@ -62,7 +63,7 @@ type Field interface {
 
 type TableField interface {
 	Field
-	Table() string
+	Parent() Selectable
 }
 
 type FieldBinding struct {
@@ -152,6 +153,7 @@ type Executable interface {
 
 type Selectable interface {
 	Aliasable
+	StringField(string) StringField
 	IsSelectable()
 }
 
