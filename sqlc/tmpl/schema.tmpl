@@ -6,6 +6,7 @@ package {{ .Package }}
 
 import (
 	"github.com/relops/sqlc/sqlc"
+	"strings"
 )
 
 {{ range $_, $t := .Tables }}
@@ -48,7 +49,7 @@ func (t *{{ toLower $t.Name }}) MaybeAlias() string {
 
 {{ range $_, $ty := $types }}
 func (t *{{ toLower $t.Name }}) {{ $ty.Prefix }}Field(name string) sqlc.{{ $ty.Prefix }}Field {
-	return sqlc.{{ $ty.Prefix }}({{ toUpper $t.Name }}, "toUpper(name)")
+	return sqlc.{{ $ty.Prefix }}({{ toUpper $t.Name }}, strings.ToUpper(name))
 }
 {{ end }}
 
