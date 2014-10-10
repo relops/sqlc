@@ -42,6 +42,10 @@ type PredicateInfo struct {
 
 var preds = []PredicateInfo{
 	PredicateInfo{Predicate: "EqPredicate", FieldFunction: "Eq", JoinFunction: "IsEq"},
+	PredicateInfo{Predicate: "GtPredicate", FieldFunction: "Gt", JoinFunction: "IsGt"},
+	PredicateInfo{Predicate: "GePredicate", FieldFunction: "Ge", JoinFunction: "IsGe"},
+	PredicateInfo{Predicate: "LtPredicate", FieldFunction: "Lt", JoinFunction: "IsLt"},
+	PredicateInfo{Predicate: "LePredicate", FieldFunction: "Le", JoinFunction: "IsLe"},
 }
 
 func main() {

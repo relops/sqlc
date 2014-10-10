@@ -180,6 +180,46 @@ func (c *stringField) IsEq(pred StringField) JoinCondition {
 
 
 
+func (c *stringField) Gt(pred string) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *stringField) IsGt(pred StringField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *stringField) Ge(pred string) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *stringField) IsGe(pred StringField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *stringField) Lt(pred string) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *stringField) IsLt(pred StringField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *stringField) Le(pred string) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *stringField) IsLe(pred StringField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
 // --
 
 func String(table Selectable, name string) StringField {
@@ -262,6 +302,46 @@ func (c *intField) Eq(pred int) Condition {
 
 func (c *intField) IsEq(pred IntField) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *intField) Gt(pred int) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *intField) IsGt(pred IntField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *intField) Ge(pred int) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *intField) IsGe(pred IntField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *intField) Lt(pred int) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *intField) IsLt(pred IntField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *intField) Le(pred int) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *intField) IsLe(pred IntField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
 
@@ -352,6 +432,46 @@ func (c *int64Field) IsEq(pred Int64Field) JoinCondition {
 
 
 
+func (c *int64Field) Gt(pred int64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *int64Field) IsGt(pred Int64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *int64Field) Ge(pred int64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *int64Field) IsGe(pred Int64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *int64Field) Lt(pred int64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *int64Field) IsLt(pred Int64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *int64Field) Le(pred int64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *int64Field) IsLe(pred Int64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
 // --
 
 func Int64(table Selectable, name string) Int64Field {
@@ -434,6 +554,46 @@ func (c *timeField) Eq(pred time.Time) Condition {
 
 func (c *timeField) IsEq(pred TimeField) JoinCondition {
 	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *timeField) Gt(pred time.Time) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *timeField) IsGt(pred TimeField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *timeField) Ge(pred time.Time) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *timeField) IsGe(pred TimeField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *timeField) Lt(pred time.Time) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *timeField) IsLt(pred TimeField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *timeField) Le(pred time.Time) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+}
+
+func (c *timeField) IsLe(pred TimeField) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
 
