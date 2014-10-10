@@ -66,6 +66,51 @@ func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
 }
 
 
+/////
+
+type Reflectable interface {
+
+	StringField(name string) StringField
+
+	IntField(name string) IntField
+
+	Int64Field(name string) Int64Field
+
+	TimeField(name string) TimeField
+
+}
+
+
+func (s *selection) StringField(name string) StringField {
+	return &stringField{name: name}
+}
+func (t table) StringField(name string) StringField {
+	return &stringField{name: name, table: t}
+}
+
+func (s *selection) IntField(name string) IntField {
+	return &intField{name: name}
+}
+func (t table) IntField(name string) IntField {
+	return &intField{name: name, table: t}
+}
+
+func (s *selection) Int64Field(name string) Int64Field {
+	return &int64Field{name: name}
+}
+func (t table) Int64Field(name string) Int64Field {
+	return &int64Field{name: name, table: t}
+}
+
+func (s *selection) TimeField(name string) TimeField {
+	return &timeField{name: name}
+}
+func (t table) TimeField(name string) TimeField {
+	return &timeField{name: name, table: t}
+}
+
+
+/////
 
 
 

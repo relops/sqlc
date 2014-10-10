@@ -33,10 +33,6 @@ func (t table) MaybeAlias() string {
 	}
 }
 
-func (t table) StringField(name string) StringField {
-	return &stringField{name: name, table: t}
-}
-
 func Table(name string) TableLike {
 	return table{name: name, fieldMap: make(map[string]Field)}
 }

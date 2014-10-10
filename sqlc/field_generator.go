@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"fmt"
 	log "github.com/cihub/seelog"
+	"github.com/relops/sqlc/meta"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -33,21 +34,9 @@ func init() {
 	log.ReplaceLogger(logger)
 }
 
-type TypeInfo struct {
-	Prefix  string
-	Literal string
-}
-
-var types = []TypeInfo{
-	TypeInfo{Prefix: "String", Literal: "string"},
-	TypeInfo{Prefix: "Int", Literal: "int"},
-	TypeInfo{Prefix: "Int64", Literal: "int64"},
-	TypeInfo{Prefix: "Time", Literal: "time.Time"},
-}
-
 func main() {
 	params := make(map[string]interface{})
-	params["types"] = types
+	params["types"] = meta.Types
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,

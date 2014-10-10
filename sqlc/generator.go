@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/relops/sqlc/meta"
 	"io/ioutil"
 	"log"
 	"os"
@@ -91,6 +92,7 @@ func Generate(db *sql.DB, opts *Options) error {
 	params := make(map[string]interface{})
 	params["Tables"] = tables
 	params["Package"] = opts.Package
+	params["Types"] = meta.Types
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,

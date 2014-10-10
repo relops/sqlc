@@ -30,6 +30,24 @@ func (u *update) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) 
 }
 {{ end }}
 
+/////
+
+type Reflectable interface {
+{{ range $_, $t := .types }}
+	{{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field
+{{ end }}
+}
+
+{{ range $_, $t := .types }}
+func (s *selection) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
+	return &{{ toLower $t.Prefix }}Field{name: name}
+}
+func (t table) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
+	return &{{ toLower $t.Prefix }}Field{name: name, table: t}
+}
+{{ end }}
+
+/////
 
 {{ range $_, $t := .types }}
 

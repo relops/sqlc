@@ -153,7 +153,7 @@ type Executable interface {
 
 type Selectable interface {
 	Aliasable
-	StringField(string) StringField
+	Reflectable
 	IsSelectable()
 }
 

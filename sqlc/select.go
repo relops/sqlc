@@ -78,10 +78,6 @@ func (s *selection) LeftOuterJoin(t Selectable) SelectOnStep {
 	return s
 }
 
-func (s *selection) StringField(name string) StringField {
-	return &stringField{name: name}
-}
-
 func (s *selection) On(c ...JoinCondition) SelectWhereStep {
 	j := join{
 		target:   s.joinTarget,
