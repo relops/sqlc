@@ -30,6 +30,9 @@ var rendered = []struct {
 		"SELECT foo.bar AS x, foo.baz AS y FROM foo",
 	},
 	{
+		// This is more verbose that it needs to be
+		// generally speaking apps would use generated objects, but this example uses the runtime API
+		// to create aliased objects
 		Select(foo.As("f").StringField("bar").As("x")).From(foo.As("f")),
 		"SELECT f.bar AS x FROM foo AS f",
 	},
