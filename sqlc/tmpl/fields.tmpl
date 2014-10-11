@@ -70,8 +70,10 @@ type {{ toLower $t.Prefix }}Field struct {
 
 type {{ $t.Prefix }}Field interface {
 	TableField
-	Eq(value {{ $t.Literal }}) Condition
-	IsEq(value {{ $t.Prefix }}Field) JoinCondition
+	{{ range $_, $p := $preds }}
+	{{ $p.FieldFunction }}(value {{ $t.Literal }}) Condition
+	{{ $p.JoinFunction }}(value {{ $t.Prefix }}Field) JoinCondition
+	{{ end }}
 }
 
 

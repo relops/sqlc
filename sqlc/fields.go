@@ -137,8 +137,22 @@ type stringField struct {
 
 type StringField interface {
 	TableField
+	
 	Eq(value string) Condition
 	IsEq(value StringField) JoinCondition
+	
+	Gt(value string) Condition
+	IsGt(value StringField) JoinCondition
+	
+	Ge(value string) Condition
+	IsGe(value StringField) JoinCondition
+	
+	Lt(value string) Condition
+	IsLt(value StringField) JoinCondition
+	
+	Le(value string) Condition
+	IsLe(value StringField) JoinCondition
+	
 }
 
 
@@ -265,8 +279,22 @@ type intField struct {
 
 type IntField interface {
 	TableField
+	
 	Eq(value int) Condition
 	IsEq(value IntField) JoinCondition
+	
+	Gt(value int) Condition
+	IsGt(value IntField) JoinCondition
+	
+	Ge(value int) Condition
+	IsGe(value IntField) JoinCondition
+	
+	Lt(value int) Condition
+	IsLt(value IntField) JoinCondition
+	
+	Le(value int) Condition
+	IsLe(value IntField) JoinCondition
+	
 }
 
 
@@ -393,8 +421,22 @@ type int64Field struct {
 
 type Int64Field interface {
 	TableField
+	
 	Eq(value int64) Condition
 	IsEq(value Int64Field) JoinCondition
+	
+	Gt(value int64) Condition
+	IsGt(value Int64Field) JoinCondition
+	
+	Ge(value int64) Condition
+	IsGe(value Int64Field) JoinCondition
+	
+	Lt(value int64) Condition
+	IsLt(value Int64Field) JoinCondition
+	
+	Le(value int64) Condition
+	IsLe(value Int64Field) JoinCondition
+	
 }
 
 
@@ -521,8 +563,22 @@ type timeField struct {
 
 type TimeField interface {
 	TableField
+	
 	Eq(value time.Time) Condition
 	IsEq(value TimeField) JoinCondition
+	
+	Gt(value time.Time) Condition
+	IsGt(value TimeField) JoinCondition
+	
+	Ge(value time.Time) Condition
+	IsGe(value TimeField) JoinCondition
+	
+	Lt(value time.Time) Condition
+	IsLt(value TimeField) JoinCondition
+	
+	Le(value time.Time) Condition
+	IsLe(value TimeField) JoinCondition
+	
 }
 
 
