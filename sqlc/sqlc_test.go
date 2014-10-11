@@ -26,6 +26,10 @@ var rendered = []struct {
 		"SELECT foo.bar, foo.baz FROM foo",
 	},
 	{
+		Select(bar.As("x"), baz.As("y")).From(foo),
+		"SELECT foo.bar AS x, foo.baz AS y FROM foo",
+	},
+	{
 		Select(bar).From(foo).Where(baz.Eq("quux")),
 		"SELECT foo.bar FROM foo WHERE foo.baz = ?",
 	},

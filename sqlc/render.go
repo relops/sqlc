@@ -75,7 +75,7 @@ func (i *insert) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 	return values
 }
 
-func resolveAlias(alias string, col Field) string {
+func resolveParentAlias(alias string, col Field) string {
 	if alias == "" {
 		if tabCol, ok := col.(TableField); ok {
 			return tabCol.Parent().MaybeAlias()
@@ -87,10 +87,9 @@ func resolveAlias(alias string, col Field) string {
 }
 
 func columnClause(alias string, cols []Field) string {
-
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
-		al := resolveAlias(alias, col)
+		al := resolveParentAlias(alias, col)
 		var f string
 		switch col.Function() {
 		case meta.Avg:
@@ -101,6 +100,10 @@ func columnClause(alias string, cols []Field) string {
 			f = fmt.Sprintf("MIN(%s.%s)", al, col.Name())
 		default:
 			f = fmt.Sprintf("%s.%s", al, col.Name())
+		}
+
+		if col.Alias() != "" {
+			f = fmt.Sprintf("%s AS %s", f, col.Alias())
 		}
 
 		colFragments[i] = f
@@ -117,7 +120,7 @@ func renderWhereClause(alias string, conds []Condition, d Dialect, paramCount in
 
 	for i, condition := range conds {
 		field := condition.Binding.Field
-		al := resolveAlias(alias, field)
+		al := resolveParentAlias(alias, field)
 		col := field.Name()
 		pred := condition.Predicate
 		placeHolder := d.renderPlaceholder(i + paramCount + 1)
