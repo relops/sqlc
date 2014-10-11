@@ -84,6 +84,16 @@ type Reflectable interface {
 
 }
 
+type Functional interface {
+
+	Avg() Field
+
+	Max() Field
+
+	Min() Field
+
+}
+
 
 func (s *selection) StringField(name string) StringField {
 	return &stringField{name: name}

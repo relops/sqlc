@@ -46,11 +46,9 @@ type TableLike interface {
 
 type Field interface {
 	Aliasable
+	Functional
 	Name() string
 	As(string) Field
-	Avg() Field
-	Min() Field
-	Max() Field
 	Function() meta.Function
 }
 

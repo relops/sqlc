@@ -42,6 +42,12 @@ type Reflectable interface {
 {{ end }}
 }
 
+type Functional interface {
+{{ range $_, $f := $funcs }}
+	{{ $f.Name }}() Field
+{{ end }}
+}
+
 {{ range $_, $t := .types }}
 func (s *selection) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
 	return &{{ toLower $t.Prefix }}Field{name: name}
