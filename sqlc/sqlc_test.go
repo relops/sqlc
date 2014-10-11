@@ -30,6 +30,10 @@ var rendered = []struct {
 		"SELECT foo.bar AS x, foo.baz AS y FROM foo",
 	},
 	{
+		Select(foo.As("f").StringField("bar").As("x")).From(foo.As("f")),
+		"SELECT f.bar AS x FROM foo AS f",
+	},
+	{
 		Select(bar).From(foo).Where(baz.Eq("quux")),
 		"SELECT foo.bar FROM foo WHERE foo.baz = ?",
 	},
