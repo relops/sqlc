@@ -197,7 +197,7 @@ func (c *stringField) Parent() Selectable {
 
 
 func (c *stringField) Eq(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *stringField) IsEq(pred StringField) JoinCondition {
@@ -207,7 +207,7 @@ func (c *stringField) IsEq(pred StringField) JoinCondition {
 
 
 func (c *stringField) Gt(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *stringField) IsGt(pred StringField) JoinCondition {
@@ -217,7 +217,7 @@ func (c *stringField) IsGt(pred StringField) JoinCondition {
 
 
 func (c *stringField) Ge(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *stringField) IsGe(pred StringField) JoinCondition {
@@ -227,7 +227,7 @@ func (c *stringField) IsGe(pred StringField) JoinCondition {
 
 
 func (c *stringField) Lt(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *stringField) IsLt(pred StringField) JoinCondition {
@@ -237,7 +237,7 @@ func (c *stringField) IsLt(pred StringField) JoinCondition {
 
 
 func (c *stringField) Le(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *stringField) IsLe(pred StringField) JoinCondition {
@@ -339,7 +339,7 @@ func (c *intField) Parent() Selectable {
 
 
 func (c *intField) Eq(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *intField) IsEq(pred IntField) JoinCondition {
@@ -349,7 +349,7 @@ func (c *intField) IsEq(pred IntField) JoinCondition {
 
 
 func (c *intField) Gt(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *intField) IsGt(pred IntField) JoinCondition {
@@ -359,7 +359,7 @@ func (c *intField) IsGt(pred IntField) JoinCondition {
 
 
 func (c *intField) Ge(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *intField) IsGe(pred IntField) JoinCondition {
@@ -369,7 +369,7 @@ func (c *intField) IsGe(pred IntField) JoinCondition {
 
 
 func (c *intField) Lt(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *intField) IsLt(pred IntField) JoinCondition {
@@ -379,7 +379,7 @@ func (c *intField) IsLt(pred IntField) JoinCondition {
 
 
 func (c *intField) Le(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *intField) IsLe(pred IntField) JoinCondition {
@@ -481,7 +481,7 @@ func (c *int64Field) Parent() Selectable {
 
 
 func (c *int64Field) Eq(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *int64Field) IsEq(pred Int64Field) JoinCondition {
@@ -491,7 +491,7 @@ func (c *int64Field) IsEq(pred Int64Field) JoinCondition {
 
 
 func (c *int64Field) Gt(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *int64Field) IsGt(pred Int64Field) JoinCondition {
@@ -501,7 +501,7 @@ func (c *int64Field) IsGt(pred Int64Field) JoinCondition {
 
 
 func (c *int64Field) Ge(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *int64Field) IsGe(pred Int64Field) JoinCondition {
@@ -511,7 +511,7 @@ func (c *int64Field) IsGe(pred Int64Field) JoinCondition {
 
 
 func (c *int64Field) Lt(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *int64Field) IsLt(pred Int64Field) JoinCondition {
@@ -521,7 +521,7 @@ func (c *int64Field) IsLt(pred Int64Field) JoinCondition {
 
 
 func (c *int64Field) Le(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *int64Field) IsLe(pred Int64Field) JoinCondition {
@@ -623,7 +623,7 @@ func (c *timeField) Parent() Selectable {
 
 
 func (c *timeField) Eq(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *timeField) IsEq(pred TimeField) JoinCondition {
@@ -633,7 +633,7 @@ func (c *timeField) IsEq(pred TimeField) JoinCondition {
 
 
 func (c *timeField) Gt(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *timeField) IsGt(pred TimeField) JoinCondition {
@@ -643,7 +643,7 @@ func (c *timeField) IsGt(pred TimeField) JoinCondition {
 
 
 func (c *timeField) Ge(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *timeField) IsGe(pred TimeField) JoinCondition {
@@ -653,7 +653,7 @@ func (c *timeField) IsGe(pred TimeField) JoinCondition {
 
 
 func (c *timeField) Lt(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *timeField) IsLt(pred TimeField) JoinCondition {
@@ -663,7 +663,7 @@ func (c *timeField) IsLt(pred TimeField) JoinCondition {
 
 
 func (c *timeField) Le(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *timeField) IsLe(pred TimeField) JoinCondition {

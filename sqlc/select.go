@@ -257,5 +257,5 @@ func renderFieldAlias(alias string, f TableField) (string, bool) {
 func (s *selection) renderJoinFragment(cond JoinCondition) string {
 	lhsAlias, _ := renderFieldAlias(cond.Lhs.Parent().MaybeAlias(), cond.Lhs)
 	rhsAlias, _ := renderFieldAlias(cond.Rhs.Parent().MaybeAlias(), cond.Rhs)
-	return fmt.Sprintf("%s %s %s", lhsAlias, cond.Predicate.toString(), rhsAlias)
+	return fmt.Sprintf("%s %s %s", lhsAlias, predicateTypes[cond.Predicate], rhsAlias)
 }

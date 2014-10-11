@@ -118,7 +118,7 @@ func (c *{{ toLower $t.Prefix }}Field) Parent() Selectable {
 {{ range $_, $p := $preds }}
 
 func (c *{{ toLower $t.Prefix }}Field) {{ $p.FieldFunction }}(pred {{ $t.Literal }}) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}}
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: {{ $p.Predicate }}}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) {{ $p.JoinFunction }}(pred {{ $t.Prefix }}Field) JoinCondition {
