@@ -140,6 +140,21 @@ func (d Dialect) renderPlaceholder(n int) string {
 	}
 }
 
+func (p PredicateType) toString() string {
+	switch p {
+	case GePredicate:
+		return ">="
+	case GtPredicate:
+		return ">"
+	case LePredicate:
+		return "<="
+	case LtPredicate:
+		return "<"
+	default:
+		return "="
+	}
+}
+
 func toString(d Dialect, r Renderable) string {
 	var buf bytes.Buffer
 	r.Render(d, &buf)
