@@ -78,7 +78,9 @@ func (i *insert) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 func resolveParentAlias(alias string, col Field) string {
 	if alias == "" {
 		if tabCol, ok := col.(TableField); ok {
-			return tabCol.Parent().MaybeAlias()
+			if tabCol.Parent() != nil {
+				return tabCol.Parent().MaybeAlias()
+			}
 		}
 		return ""
 	} else {
@@ -98,6 +100,8 @@ func columnClause(alias string, cols []Field) string {
 			f = fmt.Sprintf("MAX(%s.%s)", al, col.Name())
 		case meta.Min:
 			f = fmt.Sprintf("MIN(%s.%s)", al, col.Name())
+		case meta.Count:
+			f = fmt.Sprintf("COUNT(%s)", col.Name())
 		default:
 			f = fmt.Sprintf("%s.%s", al, col.Name())
 		}

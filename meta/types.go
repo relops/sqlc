@@ -19,6 +19,7 @@ const (
 	Avg
 	Max
 	Min
+	Count
 )
 
 type FunctionInfo struct {

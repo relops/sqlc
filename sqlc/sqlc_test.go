@@ -69,6 +69,10 @@ var rendered = []struct {
 		"SELECT foo.bar FROM foo GROUP BY foo.bar ORDER BY foo.bar",
 	},
 	{
+		Select(bar, Count()).From(foo).GroupBy(bar),
+		"SELECT foo.bar, COUNT(*) FROM foo GROUP BY foo.bar",
+	},
+	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
 		"SELECT foo.bar FROM foo JOIN quux ON quux.id = foo.bar",
 	},
