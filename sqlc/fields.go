@@ -2,10 +2,12 @@
 
 
 
+
 package sqlc
 
 import (
 	"time"
+	"github.com/relops/sqlc/meta"
 )
 
 type InsertSetStep interface {
@@ -119,7 +121,7 @@ func (t table) TimeField(name string) TimeField {
 type stringField struct {
 	name string
 	table Selectable
-	fun Function
+	fun meta.Function
 	alias string
 }
 
@@ -130,11 +132,11 @@ type StringField interface {
 }
 
 
-func (c *stringField) Function() Function {
+func (c *stringField) Function() meta.Function {
 	return c.fun
 }
 
-func (c *stringField) fct(f Function) Field {
+func (c *stringField) fct(f meta.Function) Field {
 	return &stringField{
 		name:  c.name,
 		table: c.table,
@@ -228,24 +230,26 @@ func String(table Selectable, name string) StringField {
 
 //////
 
+
 func (c *stringField) Avg() Field {	
-	return c.fct(Avg)
+	return c.fct(meta.Avg)
 }
 
 func (c *stringField) Max() Field {	
-	return c.fct(Max)
+	return c.fct(meta.Max)
 }
 
-func (c *stringField) Min() Field {
-	return c.fct(Min)
+func (c *stringField) Min() Field {	
+	return c.fct(meta.Min)
 }
+
 
 
 
 type intField struct {
 	name string
 	table Selectable
-	fun Function
+	fun meta.Function
 	alias string
 }
 
@@ -256,11 +260,11 @@ type IntField interface {
 }
 
 
-func (c *intField) Function() Function {
+func (c *intField) Function() meta.Function {
 	return c.fun
 }
 
-func (c *intField) fct(f Function) Field {
+func (c *intField) fct(f meta.Function) Field {
 	return &intField{
 		name:  c.name,
 		table: c.table,
@@ -354,24 +358,26 @@ func Int(table Selectable, name string) IntField {
 
 //////
 
+
 func (c *intField) Avg() Field {	
-	return c.fct(Avg)
+	return c.fct(meta.Avg)
 }
 
 func (c *intField) Max() Field {	
-	return c.fct(Max)
+	return c.fct(meta.Max)
 }
 
-func (c *intField) Min() Field {
-	return c.fct(Min)
+func (c *intField) Min() Field {	
+	return c.fct(meta.Min)
 }
+
 
 
 
 type int64Field struct {
 	name string
 	table Selectable
-	fun Function
+	fun meta.Function
 	alias string
 }
 
@@ -382,11 +388,11 @@ type Int64Field interface {
 }
 
 
-func (c *int64Field) Function() Function {
+func (c *int64Field) Function() meta.Function {
 	return c.fun
 }
 
-func (c *int64Field) fct(f Function) Field {
+func (c *int64Field) fct(f meta.Function) Field {
 	return &int64Field{
 		name:  c.name,
 		table: c.table,
@@ -480,24 +486,26 @@ func Int64(table Selectable, name string) Int64Field {
 
 //////
 
+
 func (c *int64Field) Avg() Field {	
-	return c.fct(Avg)
+	return c.fct(meta.Avg)
 }
 
 func (c *int64Field) Max() Field {	
-	return c.fct(Max)
+	return c.fct(meta.Max)
 }
 
-func (c *int64Field) Min() Field {
-	return c.fct(Min)
+func (c *int64Field) Min() Field {	
+	return c.fct(meta.Min)
 }
+
 
 
 
 type timeField struct {
 	name string
 	table Selectable
-	fun Function
+	fun meta.Function
 	alias string
 }
 
@@ -508,11 +516,11 @@ type TimeField interface {
 }
 
 
-func (c *timeField) Function() Function {
+func (c *timeField) Function() meta.Function {
 	return c.fun
 }
 
-func (c *timeField) fct(f Function) Field {
+func (c *timeField) fct(f meta.Function) Field {
 	return &timeField{
 		name:  c.name,
 		table: c.table,
@@ -606,15 +614,18 @@ func Time(table Selectable, name string) TimeField {
 
 //////
 
+
 func (c *timeField) Avg() Field {	
-	return c.fct(Avg)
+	return c.fct(meta.Avg)
 }
 
 func (c *timeField) Max() Field {	
-	return c.fct(Max)
+	return c.fct(meta.Max)
 }
 
-func (c *timeField) Min() Field {
-	return c.fct(Min)
+func (c *timeField) Min() Field {	
+	return c.fct(meta.Min)
 }
+
+
 

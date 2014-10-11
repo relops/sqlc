@@ -52,6 +52,7 @@ func main() {
 	params := make(map[string]interface{})
 	params["types"] = meta.Types
 	params["predicates"] = preds
+	params["functions"] = meta.Funcs
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,

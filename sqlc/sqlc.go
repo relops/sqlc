@@ -3,20 +3,13 @@ package sqlc
 import (
 	"bytes"
 	"database/sql"
+	"github.com/relops/sqlc/meta"
 	"io"
 )
 
 type PredicateType int
 type JoinType int
 type Dialect int
-type Function int
-
-const (
-	None Function = iota
-	Avg
-	Max
-	Min
-)
 
 const (
 	EqPredicate PredicateType = iota
@@ -58,7 +51,7 @@ type Field interface {
 	Avg() Field
 	Min() Field
 	Max() Field
-	Function() Function
+	Function() meta.Function
 }
 
 type TableField interface {
