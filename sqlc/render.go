@@ -99,7 +99,14 @@ func columnClause(alias string, cols []Field) string {
 			if col.Expression() == "" {
 				f = aliased
 			} else {
-				f = fmt.Sprintf(col.Expression(), aliased)
+				if len(col.FunctionArgs()) > 0 {
+					args := make([]interface{}, 1)
+					args[0] = aliased
+					args = append(args, col.FunctionArgs()...)
+					f = fmt.Sprintf(col.Expression(), args...)
+				} else {
+					f = fmt.Sprintf(col.Expression(), aliased)
+				}
 			}
 		}
 

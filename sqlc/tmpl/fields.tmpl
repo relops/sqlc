@@ -43,7 +43,7 @@ type Reflectable interface {
 
 type Functional interface {
 {{ range $_, $f := $funcs }}
-	{{ $f.Name }}() Field
+	{{ $f.Name }}({{ signifier $f }}) Field
 {{ end }}
 }
 
@@ -66,6 +66,7 @@ type {{ toLower $t.Prefix }}Field struct {
 	fun string
 	expr string
 	alias string
+	args []interface{}
 }
 
 type {{ $t.Prefix }}Field interface {
@@ -84,17 +85,22 @@ func (c *{{ toLower $t.Prefix }}Field) Expression() string {
 	return c.expr
 }
 
+func (c *{{ toLower $t.Prefix }}Field) FunctionArgs() []interface{} {
+	return c.args
+}
+
 func (c *{{ toLower $t.Prefix }}Field) fct(fun, expr string, args ...interface{}) Field {
 	return &{{ toLower $t.Prefix }}Field{
 		name:  c.name,
 		table: c.table,
 		fun:   fun,
 		expr:  expr,
+		args:  args,
 	}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) As(alias string) Field {
-	return &{{ toLower $t.Prefix }}Field{name: c.name, table: c.table, fun: c.fun, alias: alias}
+	return &{{ toLower $t.Prefix }}Field{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Alias() string {
@@ -140,8 +146,8 @@ func {{ $t.Prefix }}(table Selectable, name string) {{ $t.Prefix }}Field {
 //////
 
 {{ range $_, $f := $funcs }}
-func (c *{{ toLower $t.Prefix }}Field) {{ $f.Name }}() Field {	
-	return c.fct("{{ $f.Name }}", "{{ $f.Expr }}")
+func (c *{{ toLower $t.Prefix }}Field) {{ $f.Name }}({{ signifier $f }}) Field {	
+	return c.fct("{{ $f.Name }}", "{{ $f.Expr }}"{{ injectifier $f }})
 }
 {{ end }}
 

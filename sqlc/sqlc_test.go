@@ -26,6 +26,14 @@ var rendered = []struct {
 		"SELECT foo.bar, foo.baz FROM foo",
 	},
 	{
+		Select(bar.Div(5)).From(foo),
+		"SELECT foo.bar / 5 FROM foo",
+	},
+	{
+		Select(bar.Div(5).As("result")).From(foo),
+		"SELECT foo.bar / 5 AS result FROM foo",
+	},
+	{
 		Select(bar.As("x"), baz.As("y")).From(foo),
 		"SELECT foo.bar AS x, foo.baz AS y FROM foo",
 	},

@@ -48,6 +48,38 @@ var preds = []PredicateInfo{
 	PredicateInfo{Predicate: "LePredicate", FieldFunction: "Le", JoinFunction: "IsLe"},
 }
 
+func argifier(arg meta.FunctionInfo) string {
+	argN := strings.Count(arg.Expr, "%")
+	if argN == 1 {
+		return ""
+	} else {
+		argsToSub := argN - 1
+		args := make([]string, argsToSub)
+		for i := 0; i < argsToSub; i++ {
+			args[i] = fmt.Sprintf("_%d", i)
+		}
+		return strings.Join(args, ",")
+	}
+}
+
+func signifier(arg meta.FunctionInfo) string {
+	args := argifier(arg)
+	if args == "" {
+		return ""
+	} else {
+		return fmt.Sprintf("%s interface{}", args)
+	}
+}
+
+func injectifier(arg meta.FunctionInfo) string {
+	args := argifier(arg)
+	if args == "" {
+		return ""
+	} else {
+		return fmt.Sprintf(", %s", args)
+	}
+}
+
 func main() {
 	params := make(map[string]interface{})
 	params["types"] = meta.Types
@@ -55,7 +87,9 @@ func main() {
 	params["functions"] = meta.Funcs
 
 	m := template.FuncMap{
-		"toLower": strings.ToLower,
+		"toLower":     strings.ToLower,
+		"signifier":   signifier,
+		"injectifier": injectifier,
 	}
 
 	t, err := template.New("fields.tmpl").Funcs(m).ParseFiles("sqlc/tmpl/fields.tmpl")

@@ -50,6 +50,7 @@ type Field interface {
 	As(string) Field
 	Function() string
 	Expression() string
+	FunctionArgs() []interface{}
 }
 
 type TableField interface {

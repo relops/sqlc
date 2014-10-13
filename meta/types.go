@@ -31,4 +31,5 @@ var Funcs = []FunctionInfo{
 	FunctionInfo{Name: "Avg", Expr: "AVG(%s)"},
 	FunctionInfo{Name: "Max", Expr: "MAX(%s)"},
 	FunctionInfo{Name: "Min", Expr: "MIN(%s)"},
+	FunctionInfo{Name: "Div", Expr: "%s / %v"},
 }

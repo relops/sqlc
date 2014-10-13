@@ -91,6 +91,8 @@ type Functional interface {
 
 	Min() Field
 
+	Div(_0 interface{}) Field
+
 }
 
 
@@ -133,6 +135,7 @@ type stringField struct {
 	fun string
 	expr string
 	alias string
+	args []interface{}
 }
 
 type StringField interface {
@@ -163,17 +166,22 @@ func (c *stringField) Expression() string {
 	return c.expr
 }
 
+func (c *stringField) FunctionArgs() []interface{} {
+	return c.args
+}
+
 func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
 	return &stringField{
 		name:  c.name,
 		table: c.table,
 		fun:   fun,
 		expr:  expr,
+		args:  args,
 	}
 }
 
 func (c *stringField) As(alias string) Field {
-	return &stringField{name: c.name, table: c.table, fun: c.fun, alias: alias}
+	return &stringField{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
 }
 
 func (c *stringField) Alias() string {
@@ -271,6 +279,10 @@ func (c *stringField) Min() Field {
 	return c.fct("Min", "MIN(%s)")
 }
 
+func (c *stringField) Div(_0 interface{}) Field {	
+	return c.fct("Div", "%s / %v", _0)
+}
+
 
 
 
@@ -280,6 +292,7 @@ type intField struct {
 	fun string
 	expr string
 	alias string
+	args []interface{}
 }
 
 type IntField interface {
@@ -310,17 +323,22 @@ func (c *intField) Expression() string {
 	return c.expr
 }
 
+func (c *intField) FunctionArgs() []interface{} {
+	return c.args
+}
+
 func (c *intField) fct(fun, expr string, args ...interface{}) Field {
 	return &intField{
 		name:  c.name,
 		table: c.table,
 		fun:   fun,
 		expr:  expr,
+		args:  args,
 	}
 }
 
 func (c *intField) As(alias string) Field {
-	return &intField{name: c.name, table: c.table, fun: c.fun, alias: alias}
+	return &intField{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
 }
 
 func (c *intField) Alias() string {
@@ -418,6 +436,10 @@ func (c *intField) Min() Field {
 	return c.fct("Min", "MIN(%s)")
 }
 
+func (c *intField) Div(_0 interface{}) Field {	
+	return c.fct("Div", "%s / %v", _0)
+}
+
 
 
 
@@ -427,6 +449,7 @@ type int64Field struct {
 	fun string
 	expr string
 	alias string
+	args []interface{}
 }
 
 type Int64Field interface {
@@ -457,17 +480,22 @@ func (c *int64Field) Expression() string {
 	return c.expr
 }
 
+func (c *int64Field) FunctionArgs() []interface{} {
+	return c.args
+}
+
 func (c *int64Field) fct(fun, expr string, args ...interface{}) Field {
 	return &int64Field{
 		name:  c.name,
 		table: c.table,
 		fun:   fun,
 		expr:  expr,
+		args:  args,
 	}
 }
 
 func (c *int64Field) As(alias string) Field {
-	return &int64Field{name: c.name, table: c.table, fun: c.fun, alias: alias}
+	return &int64Field{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
 }
 
 func (c *int64Field) Alias() string {
@@ -565,6 +593,10 @@ func (c *int64Field) Min() Field {
 	return c.fct("Min", "MIN(%s)")
 }
 
+func (c *int64Field) Div(_0 interface{}) Field {	
+	return c.fct("Div", "%s / %v", _0)
+}
+
 
 
 
@@ -574,6 +606,7 @@ type timeField struct {
 	fun string
 	expr string
 	alias string
+	args []interface{}
 }
 
 type TimeField interface {
@@ -604,17 +637,22 @@ func (c *timeField) Expression() string {
 	return c.expr
 }
 
+func (c *timeField) FunctionArgs() []interface{} {
+	return c.args
+}
+
 func (c *timeField) fct(fun, expr string, args ...interface{}) Field {
 	return &timeField{
 		name:  c.name,
 		table: c.table,
 		fun:   fun,
 		expr:  expr,
+		args:  args,
 	}
 }
 
 func (c *timeField) As(alias string) Field {
-	return &timeField{name: c.name, table: c.table, fun: c.fun, alias: alias}
+	return &timeField{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
 }
 
 func (c *timeField) Alias() string {
@@ -710,6 +748,10 @@ func (c *timeField) Max() Field {
 
 func (c *timeField) Min() Field {	
 	return c.fct("Min", "MIN(%s)")
+}
+
+func (c *timeField) Div(_0 interface{}) Field {	
+	return c.fct("Div", "%s / %v", _0)
 }
 
 
