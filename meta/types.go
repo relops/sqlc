@@ -24,10 +24,11 @@ const (
 
 type FunctionInfo struct {
 	Name string
+	Expr string
 }
 
 var Funcs = []FunctionInfo{
-	FunctionInfo{Name: "Avg"},
-	FunctionInfo{Name: "Max"},
-	FunctionInfo{Name: "Min"},
+	FunctionInfo{Name: "Avg", Expr: "AVG(%s)"},
+	FunctionInfo{Name: "Max", Expr: "MAX(%s)"},
+	FunctionInfo{Name: "Min", Expr: "MIN(%s)"},
 }

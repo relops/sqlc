@@ -3,7 +3,6 @@ package sqlc
 import (
 	"bytes"
 	"database/sql"
-	"github.com/relops/sqlc/meta"
 	"io"
 )
 
@@ -49,7 +48,8 @@ type Field interface {
 	Functional
 	Name() string
 	As(string) Field
-	Function() meta.Function
+	Function() string
+	Expression() string
 }
 
 type TableField interface {

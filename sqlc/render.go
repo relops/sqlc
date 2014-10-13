@@ -3,7 +3,6 @@ package sqlc
 import (
 	"bytes"
 	"fmt"
-	"github.com/relops/sqlc/meta"
 	"io"
 	"strings"
 )
@@ -93,17 +92,15 @@ func columnClause(alias string, cols []Field) string {
 	for i, col := range cols {
 		al := resolveParentAlias(alias, col)
 		var f string
-		switch col.Function() {
-		case meta.Avg:
-			f = fmt.Sprintf("AVG(%s.%s)", al, col.Name())
-		case meta.Max:
-			f = fmt.Sprintf("MAX(%s.%s)", al, col.Name())
-		case meta.Min:
-			f = fmt.Sprintf("MIN(%s.%s)", al, col.Name())
-		case meta.Count:
-			f = fmt.Sprintf("COUNT(%s)", col.Name())
-		default:
-			f = fmt.Sprintf("%s.%s", al, col.Name())
+		if col.Function() == "Count" {
+			f = col.Expression()
+		} else {
+			aliased := fmt.Sprintf("%s.%s", al, col.Name())
+			if col.Expression() == "" {
+				f = aliased
+			} else {
+				f = fmt.Sprintf(col.Expression(), aliased)
+			}
 		}
 
 		if col.Alias() != "" {

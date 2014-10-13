@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"time"
-	"github.com/relops/sqlc/meta"
 )
 
 type InsertSetStep interface {
@@ -64,7 +63,8 @@ func (t table) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
 type {{ toLower $t.Prefix }}Field struct {
 	name string
 	table Selectable
-	fun meta.Function
+	fun string
+	expr string
 	alias string
 }
 
@@ -76,16 +76,20 @@ type {{ $t.Prefix }}Field interface {
 	{{ end }}
 }
 
-
-func (c *{{ toLower $t.Prefix }}Field) Function() meta.Function {
+func (c *{{ toLower $t.Prefix }}Field) Function() string {
 	return c.fun
 }
 
-func (c *{{ toLower $t.Prefix }}Field) fct(f meta.Function) Field {
+func (c *{{ toLower $t.Prefix }}Field) Expression() string {
+	return c.expr
+}
+
+func (c *{{ toLower $t.Prefix }}Field) fct(fun, expr string, args ...interface{}) Field {
 	return &{{ toLower $t.Prefix }}Field{
 		name:  c.name,
 		table: c.table,
-		fun:   f,
+		fun:   fun,
+		expr:  expr,
 	}
 }
 
@@ -137,7 +141,7 @@ func {{ $t.Prefix }}(table Selectable, name string) {{ $t.Prefix }}Field {
 
 {{ range $_, $f := $funcs }}
 func (c *{{ toLower $t.Prefix }}Field) {{ $f.Name }}() Field {	
-	return c.fct(meta.{{ $f.Name }})
+	return c.fct("{{ $f.Name }}", "{{ $f.Expr }}")
 }
 {{ end }}
 
