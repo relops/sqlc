@@ -158,16 +158,12 @@ type StringField interface {
 	
 }
 
-func (c *stringField) Function() string {
-	return c.fun
-}
-
-func (c *stringField) Expression() string {
-	return c.expr
-}
-
-func (c *stringField) FunctionArgs() []interface{} {
-	return c.args
+func (c *stringField) Function() FieldFunction {
+	return FieldFunction{
+		Name: c.fun,
+		Expr: c.expr,
+		Args: c.args,
+	}
 }
 
 func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
@@ -315,16 +311,12 @@ type IntField interface {
 	
 }
 
-func (c *intField) Function() string {
-	return c.fun
-}
-
-func (c *intField) Expression() string {
-	return c.expr
-}
-
-func (c *intField) FunctionArgs() []interface{} {
-	return c.args
+func (c *intField) Function() FieldFunction {
+	return FieldFunction{
+		Name: c.fun,
+		Expr: c.expr,
+		Args: c.args,
+	}
 }
 
 func (c *intField) fct(fun, expr string, args ...interface{}) Field {
@@ -472,16 +464,12 @@ type Int64Field interface {
 	
 }
 
-func (c *int64Field) Function() string {
-	return c.fun
-}
-
-func (c *int64Field) Expression() string {
-	return c.expr
-}
-
-func (c *int64Field) FunctionArgs() []interface{} {
-	return c.args
+func (c *int64Field) Function() FieldFunction {
+	return FieldFunction{
+		Name: c.fun,
+		Expr: c.expr,
+		Args: c.args,
+	}
 }
 
 func (c *int64Field) fct(fun, expr string, args ...interface{}) Field {
@@ -629,16 +617,12 @@ type TimeField interface {
 	
 }
 
-func (c *timeField) Function() string {
-	return c.fun
-}
-
-func (c *timeField) Expression() string {
-	return c.expr
-}
-
-func (c *timeField) FunctionArgs() []interface{} {
-	return c.args
+func (c *timeField) Function() FieldFunction {
+	return FieldFunction{
+		Name: c.fun,
+		Expr: c.expr,
+		Args: c.args,
+	}
 }
 
 func (c *timeField) fct(fun, expr string, args ...interface{}) Field {

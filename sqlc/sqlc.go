@@ -43,14 +43,18 @@ type TableLike interface {
 	Queryable
 }
 
+type FieldFunction struct {
+	Name string
+	Expr string
+	Args []interface{}
+}
+
 type Field interface {
 	Aliasable
 	Functional
 	Name() string
 	As(string) Field
-	Function() string
-	Expression() string
-	FunctionArgs() []interface{}
+	Function() FieldFunction
 }
 
 type TableField interface {

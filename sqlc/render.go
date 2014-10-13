@@ -91,21 +91,26 @@ func columnClause(alias string, cols []Field) string {
 	colFragments := make([]string, len(cols))
 	for i, col := range cols {
 		al := resolveParentAlias(alias, col)
+		aliased := fmt.Sprintf("%s.%s", al, col.Name())
+
 		var f string
-		if col.Function() == "Count" {
-			f = col.Expression()
+
+		fun := col.Function()
+
+		if fun.Name == "Count" {
+			f = fun.Expr
 		} else {
-			aliased := fmt.Sprintf("%s.%s", al, col.Name())
-			if col.Expression() == "" {
+
+			if fun.Expr == "" {
 				f = aliased
 			} else {
-				if len(col.FunctionArgs()) > 0 {
+				if len(fun.Args) > 0 {
 					args := make([]interface{}, 1)
 					args[0] = aliased
-					args = append(args, col.FunctionArgs()...)
-					f = fmt.Sprintf(col.Expression(), args...)
+					args = append(args, fun.Args...)
+					f = fmt.Sprintf(fun.Expr, args...)
 				} else {
-					f = fmt.Sprintf(col.Expression(), aliased)
+					f = fmt.Sprintf(fun.Expr, aliased)
 				}
 			}
 		}

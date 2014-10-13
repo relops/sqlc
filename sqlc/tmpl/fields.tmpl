@@ -77,16 +77,12 @@ type {{ $t.Prefix }}Field interface {
 	{{ end }}
 }
 
-func (c *{{ toLower $t.Prefix }}Field) Function() string {
-	return c.fun
-}
-
-func (c *{{ toLower $t.Prefix }}Field) Expression() string {
-	return c.expr
-}
-
-func (c *{{ toLower $t.Prefix }}Field) FunctionArgs() []interface{} {
-	return c.args
+func (c *{{ toLower $t.Prefix }}Field) Function() FieldFunction {
+	return FieldFunction{
+		Name: c.fun,
+		Expr: c.expr,
+		Args: c.args,
+	}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) fct(fun, expr string, args ...interface{}) Field {
