@@ -62,8 +62,8 @@ var rendered = []struct {
 		"SELECT f.bar AS x FROM foo AS f",
 	},
 	{
-		Select(Trunc(timestamp, "%Y-%m-%d")).From(quux),
-		"SELECT STRFTIME('%Y-%m-%d', quux.timestamp) FROM quux", // TODO this assumes sqlite - need to add broader dialect support
+		Select(Trunc(timestamp, "%Y-%m-%d").As("day")).From(quux),
+		"SELECT STRFTIME('%Y-%m-%d', quux.timestamp) AS day FROM quux", // TODO this assumes sqlite - need to add broader dialect support
 	},
 	{
 		Select(bar).From(foo).Where(baz.Eq("quux")),
