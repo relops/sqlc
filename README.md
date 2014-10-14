@@ -15,7 +15,9 @@ Taking heavy inspiration from [JOOQ][], `sqlc` generates SQL queries for you:
 
 	row, err := Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).QueryRow(d, db)
 
-If you don't want to use `database/sql`, you don't have to. `String(Dialect)` is an API call to just produce the SQL string that you use in any way that you want to:
+If you don't want to use `database/sql`, you don't have to - ultimately `sqlc` is just a string building tool.
+
+`String(Dialect)` is an API call to just produce the SQL string that you use in any way that you want to:
 
 	// Renders `SELECT foo.bar FROM foo WHERE foo.baz = ?`
 	sql := Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).String(d)
@@ -73,8 +75,18 @@ Aliasing
 By default, columns will be qualified by the name of their parent table. You can override this by aliasing the table, in addition to aliasing just the fields:
 
 	// Renders `SELECT f.bar AS x, f.baz AS y FROM foo AS f`
-	Select(bar.As("x"), baz.As("y")).From(foo.As("f")),
+	Select(bar.As("x"), baz.As("y")).From(foo.As("f")).String(d)
 
+
+Functions
+---------
+
+Functions can be applied to any field and they can be nested to any depth:
+
+```go
+	// Renders `SELECT LOWER(HEX(MD5(foo.bar))) FROM foo`
+	Select(bar.Md5().Hex().Lower()).From(foo).String(d)
+```
 
 Code Generation
 ---------------

@@ -8,6 +8,8 @@ import (
 
 var foo = Table("foo")
 var quux = Table("quux")
+var gorp = Table("gorp")
+var porg = String(gorp, "porg")
 var bar = String(foo, "bar")
 var baz = String(foo, "baz")
 var id = String(quux, "id")
@@ -129,8 +131,8 @@ var rendered = []struct {
 		"SELECT foo.bar, quux.col FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)",
 	},
 	{
-		Select(bar).From(foo).LeftOuterJoin(quux).On(id.IsEq(bar)),
-		"SELECT foo.bar FROM foo LEFT OUTER JOIN quux ON quux.id = foo.bar",
+		Select(bar).From(foo).LeftOuterJoin(quux).On(id.IsEq(bar)).LeftOuterJoin(gorp).On(porg.IsEq(bar)),
+		"SELECT foo.bar FROM foo LEFT OUTER JOIN quux ON quux.id = foo.bar LEFT OUTER JOIN gorp ON gorp.porg = foo.bar",
 	},
 	{
 		Select().From(Select(bar).From(foo)),
