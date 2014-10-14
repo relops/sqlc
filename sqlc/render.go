@@ -94,26 +94,9 @@ func columnClause(alias string, cols []Field) string {
 		aliased := fmt.Sprintf("%s.%s", al, col.Name())
 
 		var f string
-
 		fun := col.Function()
 
-		if fun.Name == "Count" {
-			f = fun.Expr
-		} else {
-
-			if fun.Expr == "" {
-				f = aliased
-			} else {
-				if len(fun.Args) > 0 {
-					args := make([]interface{}, 1)
-					args[0] = aliased
-					args = append(args, fun.Args...)
-					f = fmt.Sprintf(fun.Expr, args...)
-				} else {
-					f = fmt.Sprintf(fun.Expr, aliased)
-				}
-			}
-		}
+		f = renderFunction(aliased, fun)
 
 		if col.Alias() != "" {
 			f = fmt.Sprintf("%s AS %s", f, col.Alias())
@@ -123,6 +106,37 @@ func columnClause(alias string, cols []Field) string {
 
 	}
 	return strings.Join(colFragments, ", ")
+}
+
+func renderFunction(aliased string, fun FieldFunction) string {
+
+	if &fun == nil {
+		return ""
+	} else if fun.Child != nil {
+		aliased = renderFunction(aliased, *fun.Child)
+	}
+
+	var f string
+
+	if fun.Name == "Count" {
+		f = fun.Expr
+	} else {
+
+		if fun.Expr == "" {
+			f = aliased
+		} else {
+			if len(fun.Args) > 0 {
+				args := make([]interface{}, 1)
+				args[0] = aliased
+				args = append(args, fun.Args...)
+				f = fmt.Sprintf(fun.Expr, args...)
+			} else {
+				f = fmt.Sprintf(fun.Expr, aliased)
+			}
+		}
+	}
+
+	return f
 }
 
 func renderWhereClause(alias string, conds []Condition, d Dialect, paramCount int, w io.Writer) []interface{} {

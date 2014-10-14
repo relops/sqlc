@@ -38,7 +38,7 @@ test/generated/mysql/objects.go: sqlc/schema.go test/migration_steps.go test/gen
 test/generated/postgres/objects.go: sqlc/schema.go test/migration_steps.go test/generated/postgres main.go
 	go run main.go -p postgres -o $@ -u "postgres://sqlc:sqlc@localhost/sqlc?sslmode=disable" -t postgres -s public
 
-sqlc/fields.go: sqlc/tmpl/fields.tmpl sqlc/field_generator.go
+sqlc/fields.go: sqlc/tmpl/fields.tmpl sqlc/field_generator.go meta/types.go
 	go run sqlc/field_generator.go
 
 sqlc/schema.go: sqlc/fields.go sqlc/tmpl/schema.tmpl

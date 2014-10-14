@@ -30,6 +30,10 @@ var rendered = []struct {
 		"SELECT foo.bar / 5 FROM foo",
 	},
 	{
+		Select(Count().Cast("x")).From(foo),
+		"SELECT CAST(COUNT(*) AS x) FROM foo",
+	},
+	{
 		Select(bar.Div(5).As("result")).From(foo),
 		"SELECT foo.bar / 5 AS result FROM foo",
 	},

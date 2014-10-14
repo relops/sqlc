@@ -93,6 +93,8 @@ type Functional interface {
 
 	Div(_0 interface{}) Field
 
+	Cast(_0 interface{}) Field
+
 }
 
 
@@ -100,28 +102,28 @@ func (s *selection) StringField(name string) StringField {
 	return &stringField{name: name}
 }
 func (t table) StringField(name string) StringField {
-	return &stringField{name: name, table: t}
+	return &stringField{name: name, selection: t}
 }
 
 func (s *selection) IntField(name string) IntField {
 	return &intField{name: name}
 }
 func (t table) IntField(name string) IntField {
-	return &intField{name: name, table: t}
+	return &intField{name: name, selection: t}
 }
 
 func (s *selection) Int64Field(name string) Int64Field {
 	return &int64Field{name: name}
 }
 func (t table) Int64Field(name string) Int64Field {
-	return &int64Field{name: name, table: t}
+	return &int64Field{name: name, selection: t}
 }
 
 func (s *selection) TimeField(name string) TimeField {
 	return &timeField{name: name}
 }
 func (t table) TimeField(name string) TimeField {
-	return &timeField{name: name, table: t}
+	return &timeField{name: name, selection: t}
 }
 
 
@@ -131,11 +133,9 @@ func (t table) TimeField(name string) TimeField {
 
 type stringField struct {
 	name string
-	table Selectable
-	fun string
-	expr string
+	selection Selectable
 	alias string
-	args []interface{}
+	fun FieldFunction
 }
 
 type StringField interface {
@@ -160,24 +160,41 @@ type StringField interface {
 
 func (c *stringField) Function() FieldFunction {
 	return FieldFunction{
-		Name: c.fun,
-		Expr: c.expr,
-		Args: c.args,
+		Name:  c.fun.Name,
+		Expr:  c.fun.Expr,
+		Args:  c.fun.Args,
+		Child: c.fun.Child,
 	}
 }
 
 func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
-	return &stringField{
-		name:  c.name,
-		table: c.table,
-		fun:   fun,
-		expr:  expr,
-		args:  args,
+	if &c.fun == nil {
+		return &stringField{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+		}
+	} else {
+		return &stringField{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{
+				Name:  fun,
+				Expr:  expr, 
+				Args:  args,
+				Child: &FieldFunction{
+					Name: c.fun.Name,
+					Expr: c.fun.Expr,
+					Args: c.fun.Args,
+				},
+			},
+		}
 	}
 }
 
 func (c *stringField) As(alias string) Field {
-	return &stringField{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
+	return &stringField{name: c.name, selection: c.selection, alias: alias,
+										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
 }
 
 func (c *stringField) Alias() string {
@@ -197,7 +214,7 @@ func (c *stringField) Name() string {
 }
 
 func (c *stringField) Parent() Selectable {
-	return c.table
+	return c.selection
 }
 
 // --
@@ -256,8 +273,8 @@ func (c *stringField) IsLe(pred StringField) JoinCondition {
 
 // --
 
-func String(table Selectable, name string) StringField {
-	return &stringField{name: name, table:table}
+func String(s Selectable, name string) StringField {
+	return &stringField{name: name, selection: s}
 }
 
 //////
@@ -279,16 +296,18 @@ func (c *stringField) Div(_0 interface{}) Field {
 	return c.fct("Div", "%s / %v", _0)
 }
 
+func (c *stringField) Cast(_0 interface{}) Field {	
+	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
 
 
 
 type intField struct {
 	name string
-	table Selectable
-	fun string
-	expr string
+	selection Selectable
 	alias string
-	args []interface{}
+	fun FieldFunction
 }
 
 type IntField interface {
@@ -313,24 +332,41 @@ type IntField interface {
 
 func (c *intField) Function() FieldFunction {
 	return FieldFunction{
-		Name: c.fun,
-		Expr: c.expr,
-		Args: c.args,
+		Name:  c.fun.Name,
+		Expr:  c.fun.Expr,
+		Args:  c.fun.Args,
+		Child: c.fun.Child,
 	}
 }
 
 func (c *intField) fct(fun, expr string, args ...interface{}) Field {
-	return &intField{
-		name:  c.name,
-		table: c.table,
-		fun:   fun,
-		expr:  expr,
-		args:  args,
+	if &c.fun == nil {
+		return &intField{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+		}
+	} else {
+		return &intField{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{
+				Name:  fun,
+				Expr:  expr, 
+				Args:  args,
+				Child: &FieldFunction{
+					Name: c.fun.Name,
+					Expr: c.fun.Expr,
+					Args: c.fun.Args,
+				},
+			},
+		}
 	}
 }
 
 func (c *intField) As(alias string) Field {
-	return &intField{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
+	return &intField{name: c.name, selection: c.selection, alias: alias,
+										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
 }
 
 func (c *intField) Alias() string {
@@ -350,7 +386,7 @@ func (c *intField) Name() string {
 }
 
 func (c *intField) Parent() Selectable {
-	return c.table
+	return c.selection
 }
 
 // --
@@ -409,8 +445,8 @@ func (c *intField) IsLe(pred IntField) JoinCondition {
 
 // --
 
-func Int(table Selectable, name string) IntField {
-	return &intField{name: name, table:table}
+func Int(s Selectable, name string) IntField {
+	return &intField{name: name, selection: s}
 }
 
 //////
@@ -432,16 +468,18 @@ func (c *intField) Div(_0 interface{}) Field {
 	return c.fct("Div", "%s / %v", _0)
 }
 
+func (c *intField) Cast(_0 interface{}) Field {	
+	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
 
 
 
 type int64Field struct {
 	name string
-	table Selectable
-	fun string
-	expr string
+	selection Selectable
 	alias string
-	args []interface{}
+	fun FieldFunction
 }
 
 type Int64Field interface {
@@ -466,24 +504,41 @@ type Int64Field interface {
 
 func (c *int64Field) Function() FieldFunction {
 	return FieldFunction{
-		Name: c.fun,
-		Expr: c.expr,
-		Args: c.args,
+		Name:  c.fun.Name,
+		Expr:  c.fun.Expr,
+		Args:  c.fun.Args,
+		Child: c.fun.Child,
 	}
 }
 
 func (c *int64Field) fct(fun, expr string, args ...interface{}) Field {
-	return &int64Field{
-		name:  c.name,
-		table: c.table,
-		fun:   fun,
-		expr:  expr,
-		args:  args,
+	if &c.fun == nil {
+		return &int64Field{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+		}
+	} else {
+		return &int64Field{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{
+				Name:  fun,
+				Expr:  expr, 
+				Args:  args,
+				Child: &FieldFunction{
+					Name: c.fun.Name,
+					Expr: c.fun.Expr,
+					Args: c.fun.Args,
+				},
+			},
+		}
 	}
 }
 
 func (c *int64Field) As(alias string) Field {
-	return &int64Field{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
+	return &int64Field{name: c.name, selection: c.selection, alias: alias,
+										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
 }
 
 func (c *int64Field) Alias() string {
@@ -503,7 +558,7 @@ func (c *int64Field) Name() string {
 }
 
 func (c *int64Field) Parent() Selectable {
-	return c.table
+	return c.selection
 }
 
 // --
@@ -562,8 +617,8 @@ func (c *int64Field) IsLe(pred Int64Field) JoinCondition {
 
 // --
 
-func Int64(table Selectable, name string) Int64Field {
-	return &int64Field{name: name, table:table}
+func Int64(s Selectable, name string) Int64Field {
+	return &int64Field{name: name, selection: s}
 }
 
 //////
@@ -585,16 +640,18 @@ func (c *int64Field) Div(_0 interface{}) Field {
 	return c.fct("Div", "%s / %v", _0)
 }
 
+func (c *int64Field) Cast(_0 interface{}) Field {	
+	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
 
 
 
 type timeField struct {
 	name string
-	table Selectable
-	fun string
-	expr string
+	selection Selectable
 	alias string
-	args []interface{}
+	fun FieldFunction
 }
 
 type TimeField interface {
@@ -619,24 +676,41 @@ type TimeField interface {
 
 func (c *timeField) Function() FieldFunction {
 	return FieldFunction{
-		Name: c.fun,
-		Expr: c.expr,
-		Args: c.args,
+		Name:  c.fun.Name,
+		Expr:  c.fun.Expr,
+		Args:  c.fun.Args,
+		Child: c.fun.Child,
 	}
 }
 
 func (c *timeField) fct(fun, expr string, args ...interface{}) Field {
-	return &timeField{
-		name:  c.name,
-		table: c.table,
-		fun:   fun,
-		expr:  expr,
-		args:  args,
+	if &c.fun == nil {
+		return &timeField{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+		}
+	} else {
+		return &timeField{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{
+				Name:  fun,
+				Expr:  expr, 
+				Args:  args,
+				Child: &FieldFunction{
+					Name: c.fun.Name,
+					Expr: c.fun.Expr,
+					Args: c.fun.Args,
+				},
+			},
+		}
 	}
 }
 
 func (c *timeField) As(alias string) Field {
-	return &timeField{name: c.name, table: c.table, fun: c.fun, alias: alias, expr: c.expr, args: c.args}
+	return &timeField{name: c.name, selection: c.selection, alias: alias,
+										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
 }
 
 func (c *timeField) Alias() string {
@@ -656,7 +730,7 @@ func (c *timeField) Name() string {
 }
 
 func (c *timeField) Parent() Selectable {
-	return c.table
+	return c.selection
 }
 
 // --
@@ -715,8 +789,8 @@ func (c *timeField) IsLe(pred TimeField) JoinCondition {
 
 // --
 
-func Time(table Selectable, name string) TimeField {
-	return &timeField{name: name, table:table}
+func Time(s Selectable, name string) TimeField {
+	return &timeField{name: name, selection: s}
 }
 
 //////
@@ -736,6 +810,10 @@ func (c *timeField) Min() Field {
 
 func (c *timeField) Div(_0 interface{}) Field {	
 	return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *timeField) Cast(_0 interface{}) Field {	
+	return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
 

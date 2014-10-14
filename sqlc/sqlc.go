@@ -44,9 +44,10 @@ type TableLike interface {
 }
 
 type FieldFunction struct {
-	Name string
-	Expr string
-	Args []interface{}
+	Child *FieldFunction
+	Name  string
+	Expr  string
+	Args  []interface{}
 }
 
 type Field interface {

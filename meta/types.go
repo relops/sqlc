@@ -12,16 +12,6 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "Time", Literal: "time.Time"},
 }
 
-type Function int
-
-const (
-	None Function = iota
-	Avg
-	Max
-	Min
-	Count
-)
-
 type FunctionInfo struct {
 	Name string
 	Expr string
@@ -32,4 +22,5 @@ var Funcs = []FunctionInfo{
 	FunctionInfo{Name: "Max", Expr: "MAX(%s)"},
 	FunctionInfo{Name: "Min", Expr: "MIN(%s)"},
 	FunctionInfo{Name: "Div", Expr: "%s / %v"},
+	FunctionInfo{Name: "Cast", Expr: "CAST(%s AS %s)"},
 }

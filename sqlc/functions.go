@@ -1,5 +1,5 @@
 package sqlc
 
 func Count() IntField {
-	return &intField{name: "*", fun: "Count", expr: "COUNT(*)"}
+	return &intField{name: "*", fun: FieldFunction{Name: "Count", Expr: "COUNT(*)"}}
 }
