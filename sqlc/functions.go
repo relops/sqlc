@@ -15,3 +15,40 @@ func Trunc(field TimeField, format string) TimeField {
 		},
 	}
 }
+
+type groupConcat struct {
+	stringField
+}
+
+// This may indicate that the rendering pipeline needs to get adjusted so that things like can be less stateful
+func (g *groupConcat) OrderBy(f Field) *groupConcat {
+	al := resolveParentAlias(f.Alias(), f)
+	g.stringField.fun.Expr = "GROUP_CONCAT(%s ORDER BY %s.%s ASC)"
+	g.stringField.fun.Args = append(g.stringField.fun.Args, al, f.Name())
+	return g
+}
+
+func (g *groupConcat) Separator(s string) *groupConcat {
+	g.stringField.fun.Expr = "GROUP_CONCAT(%s ORDER BY %s.%s ASC SEPARATOR '%s')" // TODO ASC is hard coded and implementataion is sqlite specific
+	g.stringField.fun.Args = append(g.stringField.fun.Args, s)
+	return g
+}
+
+func GroupConcat(field Field) *groupConcat {
+
+	var s Selectable
+	if tf, ok := field.(TableField); ok {
+		s = tf.Parent()
+	}
+
+	return &groupConcat{
+		stringField: stringField{
+			name:      field.Name(),
+			selection: s,
+			fun: FieldFunction{
+				Name: "GroupConcat",
+				Expr: "GROUP_CONCAT(%s)",
+			},
+		},
+	}
+}
