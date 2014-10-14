@@ -109,7 +109,7 @@ Features
 * INNER JOINS (integration test only for single columns)
 * LEFT OUTER JOINS (unit tested only, no integration test)
 * Sub queries
-* Data types:
+* Data types currently implemented:
   * VARCHAR
   * INT
   * INTEGER
