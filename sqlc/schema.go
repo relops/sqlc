@@ -234,9 +234,9 @@ type _bintree_t struct {
 var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
 	"sqlc": &_bintree_t{nil, map[string]*_bintree_t{
 		"tmpl": &_bintree_t{nil, map[string]*_bintree_t{
-			"fields.tmpl": &_bintree_t{sqlc_tmpl_fields_tmpl, map[string]*_bintree_t{
-			}},
 			"schema.tmpl": &_bintree_t{sqlc_tmpl_schema_tmpl, map[string]*_bintree_t{
+			}},
+			"fields.tmpl": &_bintree_t{sqlc_tmpl_fields_tmpl, map[string]*_bintree_t{
 			}},
 		}},
 	}},

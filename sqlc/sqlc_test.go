@@ -12,6 +12,7 @@ var bar = String(foo, "bar")
 var baz = String(foo, "baz")
 var id = String(quux, "id")
 var col = String(quux, "col")
+var timestamp = Time(quux, "timestamp")
 
 var rendered = []struct {
 	Constructed Renderable
@@ -59,6 +60,10 @@ var rendered = []struct {
 		// to create aliased objects
 		Select(foo.As("f").StringField("bar").As("x")).From(foo.As("f")),
 		"SELECT f.bar AS x FROM foo AS f",
+	},
+	{
+		Select(Trunc(timestamp, "%Y-%m-%d")).From(quux),
+		"SELECT STRFTIME('%Y-%m-%d', quux.timestamp) FROM quux", // TODO this assumes sqlite - need to add broader dialect support
 	},
 	{
 		Select(bar).From(foo).Where(baz.Eq("quux")),
