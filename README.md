@@ -146,16 +146,18 @@ In addition to INNER JOINs, LEFT OUTER JOINs are also supported:
 ```go
 // Renders `SELECT foo.bar FROM foo LEFT OUTER JOIN quux ON quux.id = foo.bar`
 Select(bar).From(foo).LeftOuterJoin(quux).
-On(id.IsEq(bar)).String(d)
+			On(id.IsEq(bar)).String(d)
 ```
 
 An arbrirary number of joins can be constructed:
 
 ```go
-// Renders `SELECT foo.bar FROM foo LEFT OUTER JOIN quux 
-//          ON quux.id = foo.bar LEFT OUTER JOIN gorp ON gorp.porg = foo.bar`
+// Renders `SELECT foo.bar FROM foo 
+//          LEFT OUTER JOIN quux ON quux.id = foo.bar
+//          LEFT OUTER JOIN gorp ON gorp.porg = foo.bar`
 Select(bar).From(foo).LeftOuterJoin(quux).
-On(id.IsEq(bar)).LeftOuterJoin(gorp).On(porg.IsEq(bar)).String(d)
+			On(id.IsEq(bar)).LeftOuterJoin(gorp).
+			On(porg.IsEq(bar)).String(d)
 ```
 
 
