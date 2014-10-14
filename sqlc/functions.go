@@ -32,7 +32,7 @@ func (g *groupConcat) Separator(s string) *groupConcat {
 	if len(g.stringField.fun.Args) > 0 {
 		g.stringField.fun.Expr = "GROUP_CONCAT(%s ORDER BY %s.%s ASC SEPARATOR '%s')" // TODO ASC is hard coded
 	} else {
-		g.stringField.fun.Expr = "GROUP_CONCAT(%s SEPARATOR '%s')"
+		g.stringField.fun.Expr = "GROUP_CONCAT(%s, '%s')" // TODO sqlite specific (i.e. no SEPARATOR keyword)
 	}
 
 	g.stringField.fun.Args = append(g.stringField.fun.Args, s)

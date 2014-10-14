@@ -113,7 +113,7 @@ var rendered = []struct {
 	},
 	{
 		Select(bar, GroupConcat(baz).Separator("/").As("grouped")).From(foo).GroupBy(bar),
-		"SELECT foo.bar, GROUP_CONCAT(foo.baz SEPARATOR '/') AS grouped FROM foo GROUP BY foo.bar",
+		"SELECT foo.bar, GROUP_CONCAT(foo.baz, '/') AS grouped FROM foo GROUP BY foo.bar",
 	},
 	{
 		Select(bar, GroupConcat(baz).OrderBy(bar).Separator("/").As("grouped")).From(foo).GroupBy(bar),
