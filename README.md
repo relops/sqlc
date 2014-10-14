@@ -36,7 +36,7 @@ To install the runtime libraries and the `sqlc` command line tool into your `$GO
 Composing Queries
 -----------------
 
-You can compose query objects into reusebale and individually executable building blocks. For example, you can create a sub query that is in itself executable:
+You can compose query objects into reusable and individually executable building blocks. For example, you can create a sub query that is in itself executable:
 
 ```go
 subQuery := Select(
