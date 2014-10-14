@@ -102,8 +102,8 @@ var rendered = []struct {
 		"SELECT foo.bar, COUNT(*) FROM foo GROUP BY foo.bar",
 	},
 	{
-		Select(bar, GroupConcat(baz).OrderBy(bar).Separator("/")).From(foo).GroupBy(bar),
-		"SELECT foo.bar, GROUP_CONCAT(foo.baz ORDER BY foo.bar ASC SEPARATOR '/') FROM foo GROUP BY foo.bar",
+		Select(bar, GroupConcat(baz).OrderBy(bar).Separator("/").As("grouped")).From(foo).GroupBy(bar),
+		"SELECT foo.bar, GROUP_CONCAT(foo.baz ORDER BY foo.bar ASC SEPARATOR '/') AS grouped FROM foo GROUP BY foo.bar",
 	},
 	{
 		Select(bar).From(foo).Join(quux).On(id.IsEq(bar)),
