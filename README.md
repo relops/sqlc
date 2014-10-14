@@ -208,10 +208,14 @@ Features
 * Querying via database/sql
 * Code generation of table and field objects from an exising DB schema
 
-Pre-requisites
---------------
+Building
+--------
 
-The integration tests depend on [go-bindata](https://github.com/jteeuwen/go-bindata).
+To use the `sqlc` tool and runtime libraries, all that is required is a simple `go get`. However, if you want to build `sqlc` from scratch and run the integration tests, you'll need the following installed locally:
+
+* [go-bindata](https://github.com/jteeuwen/go-bindata)
+* Postgres
+* MySQL
 
 Status
 ------
