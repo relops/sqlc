@@ -196,8 +196,17 @@ func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
 }
 
 func (c *stringField) As(alias string) Field {
-	return &stringField{name: c.name, selection: c.selection, alias: alias,
-										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
+	return &stringField{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
 }
 
 func (c *stringField) Alias() string {
@@ -373,8 +382,17 @@ func (c *intField) fct(fun, expr string, args ...interface{}) Field {
 }
 
 func (c *intField) As(alias string) Field {
-	return &intField{name: c.name, selection: c.selection, alias: alias,
-										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
+	return &intField{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
 }
 
 func (c *intField) Alias() string {
@@ -550,8 +568,17 @@ func (c *int64Field) fct(fun, expr string, args ...interface{}) Field {
 }
 
 func (c *int64Field) As(alias string) Field {
-	return &int64Field{name: c.name, selection: c.selection, alias: alias,
-										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
+	return &int64Field{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
 }
 
 func (c *int64Field) Alias() string {
@@ -727,8 +754,17 @@ func (c *timeField) fct(fun, expr string, args ...interface{}) Field {
 }
 
 func (c *timeField) As(alias string) Field {
-	return &timeField{name: c.name, selection: c.selection, alias: alias,
-										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
+	return &timeField{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
 }
 
 func (c *timeField) Alias() string {

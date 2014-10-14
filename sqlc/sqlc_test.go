@@ -46,8 +46,8 @@ var rendered = []struct {
 		"SELECT CAST(COUNT(*) AS REAL) / 20 FROM foo",
 	},
 	{
-		Select(Count().Cast("REAL").Div(20).Ceil().Cast("INT")).From(foo),
-		"SELECT CAST(CEIL(CAST(COUNT(*) AS REAL) / 20) AS INT) FROM foo",
+		Select(Count().Cast("REAL").Div(20).Ceil().Cast("INT").As("calc")).From(foo),
+		"SELECT CAST(CEIL(CAST(COUNT(*) AS REAL) / 20) AS INT) AS calc FROM foo",
 	},
 	{
 		Select(bar.As("x"), baz.As("y")).From(foo),

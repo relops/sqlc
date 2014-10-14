@@ -111,8 +111,17 @@ func (c *{{ toLower $t.Prefix }}Field) fct(fun, expr string, args ...interface{}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) As(alias string) Field {
-	return &{{ toLower $t.Prefix }}Field{name: c.name, selection: c.selection, alias: alias,
-										 fun: FieldFunction{Name: c.fun.Name,Expr:c.fun.Expr, Args:c.fun.Args}}
+	return &{{ toLower $t.Prefix }}Field{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Alias() string {
