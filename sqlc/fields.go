@@ -183,9 +183,10 @@ func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
 				Expr:  expr, 
 				Args:  args,
 				Child: &FieldFunction{
-					Name: c.fun.Name,
-					Expr: c.fun.Expr,
-					Args: c.fun.Args,
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
 				},
 			},
 		}
@@ -355,9 +356,10 @@ func (c *intField) fct(fun, expr string, args ...interface{}) Field {
 				Expr:  expr, 
 				Args:  args,
 				Child: &FieldFunction{
-					Name: c.fun.Name,
-					Expr: c.fun.Expr,
-					Args: c.fun.Args,
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
 				},
 			},
 		}
@@ -527,9 +529,10 @@ func (c *int64Field) fct(fun, expr string, args ...interface{}) Field {
 				Expr:  expr, 
 				Args:  args,
 				Child: &FieldFunction{
-					Name: c.fun.Name,
-					Expr: c.fun.Expr,
-					Args: c.fun.Args,
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
 				},
 			},
 		}
@@ -699,9 +702,10 @@ func (c *timeField) fct(fun, expr string, args ...interface{}) Field {
 				Expr:  expr, 
 				Args:  args,
 				Child: &FieldFunction{
-					Name: c.fun.Name,
-					Expr: c.fun.Expr,
-					Args: c.fun.Args,
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
 				},
 			},
 		}

@@ -100,9 +100,10 @@ func (c *{{ toLower $t.Prefix }}Field) fct(fun, expr string, args ...interface{}
 				Expr:  expr, 
 				Args:  args,
 				Child: &FieldFunction{
-					Name: c.fun.Name,
-					Expr: c.fun.Expr,
-					Args: c.fun.Args,
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
 				},
 			},
 		}
