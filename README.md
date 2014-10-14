@@ -115,6 +115,7 @@ Features
   * INTEGER
   * TIMESTAMP
 * Functions (implemented on an as needs basis, easily extended):
+  * COUNT
   * CAST
   * AVG
   * MAX
