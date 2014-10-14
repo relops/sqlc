@@ -62,6 +62,20 @@ For example, the following invocation would not compile:
 
 If you use the `sqlc` code generator, you can keep your application in sync with your current DB schema any divergence between your code and the DDL will be flagged by the Go compiler.
 
+Aliasing
+--------
+
+`sqlc` allows you to alias your projections easily:
+
+	// Renders `SELECT foo.bar AS x, foo.baz AS y FROM foo`
+	Select(bar.As("x"), baz.As("y")).From(foo).String(d)
+
+By default, columns will be qualified by the name of their parent table. You can override this by aliasing the table, in addition to aliasing just the fields:
+
+	// Renders `SELECT f.bar AS x, f.baz AS y FROM foo AS f`
+	Select(bar.As("x"), baz.As("y")).From(foo.As("f")),
+
+
 Code Generation
 ---------------
 
