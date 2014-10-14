@@ -83,6 +83,26 @@ SetTime(CALL_RECORDS.TIMESTAMP, "some string"). // Results in a compile time err
 
 If you use the `sqlc` code generator, you can keep your application in sync with your current DB schema any divergence between your code and the DDL will be flagged by the Go compiler.
 
+INSERTs, UPDATEs, DELETEs
+-------------------------
+
+The support for inserting, updating and deleting rows is basic right now:
+
+```go
+// Renders `INSERT INTO foo (bar) VALUES (?)` on MySQL
+// Renders `INSERT INTO foo (bar) VALUES ($1)` on Postgres
+InsertInto(foo).SetString(bar, "quux").String(d)
+
+// Renders `UPDATE foo SET bar = ? WHERE foo.baz = ?"` on MySQL
+// Renders `UPDATE foo SET bar = $1 WHERE foo.baz = $2"` on Postgres
+Update(foo).SetString(bar, "quux").Where(baz.Eq("gorp")).String(d)
+
+// Renders `DELETE FROM foo WHERE foo.baz = ?`
+Delete(foo).Where(baz.Eq("gorp")).String(d)
+```
+
+Currently `sqlc` assumes that you want to generate prepared statements and (re)bind application parameters.
+
 Aliasing
 --------
 
