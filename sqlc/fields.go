@@ -91,6 +91,8 @@ type Functional interface {
 
 	Min() Field
 
+	Ceil() Field
+
 	Div(_0 interface{}) Field
 
 	Cast(_0 interface{}) Field
@@ -293,6 +295,10 @@ func (c *stringField) Min() Field {
 	return c.fct("Min", "MIN(%s)")
 }
 
+func (c *stringField) Ceil() Field {	
+	return c.fct("Ceil", "CEIL(%s)")
+}
+
 func (c *stringField) Div(_0 interface{}) Field {	
 	return c.fct("Div", "%s / %v", _0)
 }
@@ -464,6 +470,10 @@ func (c *intField) Max() Field {
 
 func (c *intField) Min() Field {	
 	return c.fct("Min", "MIN(%s)")
+}
+
+func (c *intField) Ceil() Field {	
+	return c.fct("Ceil", "CEIL(%s)")
 }
 
 func (c *intField) Div(_0 interface{}) Field {	
@@ -639,6 +649,10 @@ func (c *int64Field) Min() Field {
 	return c.fct("Min", "MIN(%s)")
 }
 
+func (c *int64Field) Ceil() Field {	
+	return c.fct("Ceil", "CEIL(%s)")
+}
+
 func (c *int64Field) Div(_0 interface{}) Field {	
 	return c.fct("Div", "%s / %v", _0)
 }
@@ -810,6 +824,10 @@ func (c *timeField) Max() Field {
 
 func (c *timeField) Min() Field {	
 	return c.fct("Min", "MIN(%s)")
+}
+
+func (c *timeField) Ceil() Field {	
+	return c.fct("Ceil", "CEIL(%s)")
 }
 
 func (c *timeField) Div(_0 interface{}) Field {	
