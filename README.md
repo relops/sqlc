@@ -102,7 +102,7 @@ Features
 
 * SELECT ... FROM ... WHERE
 * GROUP BY
-* ORDER BY
+* ORDER BY (assumes ASC right now)
 * INSERTs
 * UPDATEs
 * DELETEs
@@ -111,12 +111,21 @@ Features
 * Sub queries
 * Data types:
   * VARCHAR
+  * INT
   * INTEGER
   * TIMESTAMP
-* Functions:
+* Functions (implemented on an as needs basis, easily extended):
+  * CAST
   * AVG
   * MAX
   * MIN
+  * DIV
+  * CEIL
+  * MD5
+  * LOWER
+  * HEX
+  * GROUP_CONCAT
+  * TRUNC
 * Statement rendering
 * Querying via database/sql
 * Code generation of table and field objects from an exising DB schema
