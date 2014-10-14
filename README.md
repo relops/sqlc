@@ -84,9 +84,34 @@ Functions
 Functions can be applied to any field and they can be nested to any depth:
 
 ```go
-	// Renders `SELECT LOWER(HEX(MD5(foo.bar))) FROM foo`
-	Select(bar.Md5().Hex().Lower()).From(foo).String(d)
+// Renders `SELECT LOWER(HEX(MD5(foo.bar))) FROM foo`
+Select(bar.Md5().Hex().Lower()).From(foo).String(d)
 ```
+
+Joins
+-----
+
+There is basic support for support for joins:
+
+```go
+// Renders `SELECT foo.bar, quux.col FROM foo JOIN quux ON (quux.id = foo.bar AND quux.col = foo.baz)`
+Select(bar, col).From(foo).Join(quux).On(id.IsEq(bar), col.IsEq(baz)).String(d)
+```
+
+In addition to INNER JOINs, LEFT OUTER JOINs are also supported:
+
+```go
+// Render `SELECT foo.bar FROM foo LEFT OUTER JOIN quux ON quux.id = foo.bar`
+Select(bar).From(foo).LeftOuterJoin(quux).On(id.IsEq(bar)).String(d)
+```
+
+An arbrirary number of joins can be constructed:
+
+```go
+// Renders `SELECT foo.bar FROM foo LEFT OUTER JOIN quux ON quux.id = foo.bar LEFT OUTER JOIN gorp ON gorp.porg = foo.bar`
+Select(bar).From(foo).LeftOuterJoin(quux).On(id.IsEq(bar)).LeftOuterJoin(gorp).On(porg.IsEq(bar)).String(d)
+```
+
 
 Code Generation
 ---------------
