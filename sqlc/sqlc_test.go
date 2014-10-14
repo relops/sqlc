@@ -102,6 +102,10 @@ var rendered = []struct {
 		"SELECT foo.bar, COUNT(*) FROM foo GROUP BY foo.bar",
 	},
 	{
+		Select(bar.Md5().Hex().Lower()).From(foo),
+		"SELECT LOWER(HEX(MD5(foo.bar))) FROM foo",
+	},
+	{
 		Select(bar, GroupConcat(baz).OrderBy(bar).Separator("/").As("grouped")).From(foo).GroupBy(bar),
 		"SELECT foo.bar, GROUP_CONCAT(foo.baz ORDER BY foo.bar ASC SEPARATOR '/') AS grouped FROM foo GROUP BY foo.bar",
 	},

@@ -97,6 +97,12 @@ type Functional interface {
 
 	Cast(_0 interface{}) Field
 
+	Md5() Field
+
+	Lower() Field
+
+	Hex() Field
+
 }
 
 
@@ -316,6 +322,18 @@ func (c *stringField) Cast(_0 interface{}) Field {
 	return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
+func (c *stringField) Md5() Field {	
+	return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *stringField) Lower() Field {	
+	return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *stringField) Hex() Field {	
+	return c.fct("Hex", "HEX(%s)")
+}
+
 
 
 
@@ -500,6 +518,18 @@ func (c *intField) Div(_0 interface{}) Field {
 
 func (c *intField) Cast(_0 interface{}) Field {	
 	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *intField) Md5() Field {	
+	return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *intField) Lower() Field {	
+	return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *intField) Hex() Field {	
+	return c.fct("Hex", "HEX(%s)")
 }
 
 
@@ -688,6 +718,18 @@ func (c *int64Field) Cast(_0 interface{}) Field {
 	return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
+func (c *int64Field) Md5() Field {	
+	return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *int64Field) Lower() Field {	
+	return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *int64Field) Hex() Field {	
+	return c.fct("Hex", "HEX(%s)")
+}
+
 
 
 
@@ -872,6 +914,18 @@ func (c *timeField) Div(_0 interface{}) Field {
 
 func (c *timeField) Cast(_0 interface{}) Field {	
 	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *timeField) Md5() Field {	
+	return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *timeField) Lower() Field {	
+	return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *timeField) Hex() Field {	
+	return c.fct("Hex", "HEX(%s)")
 }
 
 

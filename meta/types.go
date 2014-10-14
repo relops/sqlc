@@ -24,4 +24,7 @@ var Funcs = []FunctionInfo{
 	FunctionInfo{Name: "Ceil", Expr: "CEIL(%s)"},
 	FunctionInfo{Name: "Div", Expr: "%s / %v"},
 	FunctionInfo{Name: "Cast", Expr: "CAST(%s AS %s)"},
+	FunctionInfo{Name: "Md5", Expr: "MD5(%s)"},
+	FunctionInfo{Name: "Lower", Expr: "LOWER(%s)"},
+	FunctionInfo{Name: "Hex", Expr: "HEX(%s)"},
 }
