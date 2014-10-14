@@ -26,6 +26,13 @@ If you don't want to use `database/sql`, you don't have to - ultimately `sqlc` i
 sql := Select(FOO.BAR).From(FOO).Where(FOO.BAZ.Eq("quux")).String(d)
 ```
 
+Installing
+----------
+
+To install the runtime libraries and the `sqlc` command line tool into your `$GOPATH`:
+
+	$ go get github.com/relops/sqlc
+
 Composing Queries
 -----------------
 
@@ -70,7 +77,7 @@ For example, the following invocation would not compile:
 
 ```go
 ...
-SetTime(CALL_RECORDS.TIMESTAMP, "some string"). // Results in compile time error
+SetTime(CALL_RECORDS.TIMESTAMP, "some string"). // Results in a compile time error
 ...
 ```
 
