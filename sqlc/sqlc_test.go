@@ -112,6 +112,10 @@ var rendered = []struct {
 		"SELECT LOWER(HEX(MD5(foo.bar))) FROM foo",
 	},
 	{
+		Select(bar, GroupConcat(baz).Separator("/").As("grouped")).From(foo).GroupBy(bar),
+		"SELECT foo.bar, GROUP_CONCAT(foo.baz SEPARATOR '/') AS grouped FROM foo GROUP BY foo.bar",
+	},
+	{
 		Select(bar, GroupConcat(baz).OrderBy(bar).Separator("/").As("grouped")).From(foo).GroupBy(bar),
 		"SELECT foo.bar, GROUP_CONCAT(foo.baz ORDER BY foo.bar ASC SEPARATOR '/') AS grouped FROM foo GROUP BY foo.bar",
 	},
