@@ -13,7 +13,7 @@ import (
 	"os"
 )
 
-var VERSION string = "0.1.4"
+var VERSION string = "0.1.5"
 
 var opts sqlc.Options
 var parser = flags.NewParser(&opts, flags.Default)
@@ -41,7 +41,7 @@ func main() {
 
 	opts.Dialect = dialect
 
-	err = sqlc.Generate(db, &opts)
+	err = sqlc.Generate(db, VERSION, &opts)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)

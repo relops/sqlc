@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
+	"time"
 )
 
 var integer = regexp.MustCompile("INT")
@@ -19,6 +20,11 @@ var int_64 = regexp.MustCompile("INTEGER|BIGINT")
 var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
 var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
+
+type Provenance struct {
+	Version   string
+	Timestamp time.Time
+}
 
 type TableMeta struct {
 	Name   string
@@ -82,17 +88,23 @@ func (o *Options) Validate() error {
 	return nil
 }
 
-func Generate(db *sql.DB, opts *Options) error {
+func Generate(db *sql.DB, version string, opts *Options) error {
 
 	tables, err := opts.Dialect.metadata(opts.Schema, db)
 	if err != nil {
 		return err
 	}
 
+	provenance := Provenance{
+		Version:   version,
+		Timestamp: time.Now(),
+	}
+
 	params := make(map[string]interface{})
 	params["Tables"] = tables
 	params["Package"] = opts.Package
 	params["Types"] = meta.Types
+	params["Provenance"] = provenance
 
 	m := template.FuncMap{
 		"toLower": strings.ToLower,
