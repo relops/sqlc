@@ -163,7 +163,7 @@ Select(bar).From(foo).LeftOuterJoin(quux).
 Returning From Insert
 ---------------------
 
-(This is Postgres only feature)
+(This is a Postgres only feature)
 
 You can specify a column from an INSERT to return back to the app:
 
