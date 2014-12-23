@@ -160,6 +160,25 @@ Select(bar).From(foo).LeftOuterJoin(quux).
 			On(porg.IsEq(bar)).String(d)
 ```
 
+Returning From Insert
+---------------------
+
+(This is Postgres only feature)
+
+You can specify a column from an INSERT to return back to the app:
+
+```go
+// Renders `INSERT INTO foo (bar) VALUES ($1) RETURNING id` on Postgres
+InsertInto(foo).SetString(bar, "quux").Returning(id).String(d)
+```
+
+`Returning()` returns a fetchable row that you can bind from:
+
+```go
+var id int
+row, _ := InsertInto(foo).SetString(bar, "quux").Returning(id).Fetch(d, db)
+row.Scan(&id)
+```
 
 Code Generation
 ---------------
