@@ -71,6 +71,11 @@ func (i *insert) Render(d Dialect, w io.Writer) (placeholders []interface{}) {
 	fmt.Fprint(w, placeHolderClause)
 	fmt.Fprint(w, ")")
 
+	if i.returning != nil {
+		fmt.Fprint(w, " RETURNING ")
+		fmt.Fprint(w, i.returning.Name())
+	}
+
 	return values
 }
 

@@ -116,9 +116,15 @@ type SelectLimitStep interface {
 	Query
 }
 
+type InsertResultStep interface {
+	Renderable
+	Fetch(Dialect, *sql.DB) (*sql.Row, error)
+}
+
 type InsertSetMoreStep interface {
 	Executable
 	InsertSetStep
+	Returning(TableField) InsertResultStep
 }
 
 type UpdateSetMoreStep interface {
@@ -165,19 +171,10 @@ type join struct {
 	conds    []JoinCondition
 }
 
-type insert struct {
-	table    TableLike
-	bindings []TableFieldBinding
-}
-
 type update struct {
 	table     TableLike
 	bindings  []TableFieldBinding
 	predicate []Condition
-}
-
-func InsertInto(t TableLike) InsertSetStep {
-	return &insert{table: t}
 }
 
 func Update(t TableLike) UpdateSetStep {
@@ -193,16 +190,6 @@ func (u *update) set(f TableField, v interface{}) UpdateSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	u.bindings = append(u.bindings, binding)
 	return u
-}
-
-func (i *insert) set(f TableField, v interface{}) InsertSetMoreStep {
-	binding := TableFieldBinding{Field: f, Value: v}
-	i.bindings = append(i.bindings, binding)
-	return i
-}
-
-func (s *insert) Exec(d Dialect, db *sql.DB) (sql.Result, error) {
-	return exec(d, s, db)
 }
 
 func (u *update) Exec(d Dialect, db *sql.DB) (sql.Result, error) {
