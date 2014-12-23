@@ -227,6 +227,7 @@ Features
 * INNER JOINS (integration test only for single columns)
 * LEFT OUTER JOINS (unit tested only, no integration test)
 * Sub queries
+* RETURNING (Postgres only)
 * Data types currently implemented:
   * VARCHAR
   * INT
