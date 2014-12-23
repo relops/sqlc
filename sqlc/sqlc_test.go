@@ -147,6 +147,10 @@ var rendered = []struct {
 		"INSERT INTO foo (bar) VALUES (?)",
 	},
 	{
+		InsertInto(quux).SetString(col, "col").Returning(id),
+		"INSERT INTO quux (col) VALUES (?) RETURNING id",
+	},
+	{
 		Update(foo).SetString(bar, "quux").Where(baz.Eq("gorp")),
 		"UPDATE foo SET bar = ? WHERE foo.baz = ?",
 	},
