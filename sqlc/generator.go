@@ -15,6 +15,7 @@ import (
 	"time"
 )
 
+var boolean = regexp.MustCompile("BOOLEAN")
 var integer = regexp.MustCompile("INT")
 var int_64 = regexp.MustCompile("INTEGER|BIGINT")
 var float_32 = regexp.MustCompile("FLOAT")
@@ -185,6 +186,8 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 				fieldType = "String"
 			} else if ts.MatchString(colType.String) {
 				fieldType = "Time"
+			} else if boolean.MatchString(colType.String) {
+				fieldType = "Bool"
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}
@@ -242,6 +245,8 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				fieldType = "String"
 			} else if ts.MatchString(colType.String) {
 				fieldType = "Time"
+			} else if boolean.MatchString(colType.String) {
+				fieldType = "Bool"
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}

@@ -6,62 +6,62 @@
 package {{ .Package }}
 
 import (
-	"github.com/relops/sqlc/sqlc"
-	"strings"
+  "github.com/shutej/sqlc/sqlc"
+  "strings"
 )
 
 {{ range $_, $t := .Tables }}
 
 type {{ toLower $t.Name }} struct {
-	{{ range $_, $f := $t.Fields }}
-	{{ toUpper $f.Name }} sqlc.{{ $f.Type }}Field
-	{{ end }}
-	alias string
+  {{ range $_, $f := $t.Fields }}
+  {{ toUpper $f.Name }} sqlc.{{ $f.Type }}Field
+  {{ end }}
+  alias string
 }
 
 func (t *{{ toLower $t.Name }}) IsSelectable() {}
 
 func (t *{{ toLower $t.Name }}) Name() string {
-	return "{{ toLower $t.Name }}"
+  return "{{ toLower $t.Name }}"
 }
 
 func (t *{{ toLower $t.Name }}) As(a string) sqlc.Selectable {
-	return &{{ toLower $t.Name }}{
-		{{ range $_, $f := $t.Fields }}
-		{{ toUpper $f.Name }}: t.{{ toUpper $f.Name }},
-		{{ end }}
-		alias:a,
-	}
+  return &{{ toLower $t.Name }}{
+    {{ range $_, $f := $t.Fields }}
+    {{ toUpper $f.Name }}: t.{{ toUpper $f.Name }},
+    {{ end }}
+    alias:a,
+  }
 }
 
 func (t *{{ toLower $t.Name }}) Alias() string {
-	return t.alias
+  return t.alias
 }
 
 func (t *{{ toLower $t.Name }}) MaybeAlias() string {
-	if t.alias == "" {
-		return "{{ toLower $t.Name }}"
-	} else {
-		return t.alias
-	}
+  if t.alias == "" {
+    return "{{ toLower $t.Name }}"
+  } else {
+    return t.alias
+  }
 }
 
 /////
 
 {{ range $_, $ty := $types }}
 func (t *{{ toLower $t.Name }}) {{ $ty.Prefix }}Field(name string) sqlc.{{ $ty.Prefix }}Field {
-	return sqlc.{{ $ty.Prefix }}({{ toUpper $t.Name }}, strings.ToUpper(name))
+  return sqlc.{{ $ty.Prefix }}({{ toUpper $t.Name }}, strings.ToUpper(name))
 }
 {{ end }}
 
 /////
 
 func (t *{{ toLower $t.Name }}) Fields() []sqlc.Field {
-	return []sqlc.Field{
-		{{ range $_, $f := $t.Fields }}
-		sqlc.{{ $f.Type }}({{ toUpper $t.Name }}, "{{ toUpper $f.Name }}"),
-		{{ end }}
-	}
+  return []sqlc.Field{
+    {{ range $_, $f := $t.Fields }}
+    sqlc.{{ $f.Type }}({{ toUpper $t.Name }}, "{{ toUpper $f.Name }}"),
+    {{ end }}
+  }
 }
 
 {{ end }}
@@ -69,9 +69,9 @@ func (t *{{ toLower $t.Name }}) Fields() []sqlc.Field {
 {{ range $_, $t := .Tables }}
 var __{{ toLower $t.Name }} = &{{ toLower $t.Name }}{}
 var {{ toUpper $t.Name }} = &{{ toLower $t.Name }} {
-	
+
 {{ range $_, $f := $t.Fields }}
-	{{ toUpper $f.Name }}: sqlc.{{ $f.Type }}(__{{ toLower $t.Name }}, "{{ toUpper $f.Name }}"),
+  {{ toUpper $f.Name }}: sqlc.{{ $f.Type }}(__{{ toLower $t.Name }}, "{{ toUpper $f.Name }}"),
 {{ end }}
 
 }

@@ -7,6 +7,7 @@ type TypeInfo struct {
 
 var Types = []TypeInfo{
 	TypeInfo{Prefix: "String", Literal: "string"},
+	TypeInfo{Prefix: "Bool", Literal: "bool"},
 	TypeInfo{Prefix: "Int", Literal: "int"},
 	TypeInfo{Prefix: "Int64", Literal: "int64"},
 	TypeInfo{Prefix: "Float32", Literal: "float32"},
