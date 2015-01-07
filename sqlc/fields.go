@@ -17,6 +17,10 @@ type InsertSetStep interface {
  	
  	SetInt64(Int64Field, int64) InsertSetMoreStep
  	
+ 	SetFloat32(Float32Field, float32) InsertSetMoreStep
+ 	
+ 	SetFloat64(Float64Field, float64) InsertSetMoreStep
+ 	
  	SetTime(TimeField, time.Time) InsertSetMoreStep
  	
 }
@@ -28,6 +32,10 @@ type UpdateSetStep interface {
  	SetInt(IntField, int) UpdateSetMoreStep
  	
  	SetInt64(Int64Field, int64) UpdateSetMoreStep
+ 	
+ 	SetFloat32(Float32Field, float32) UpdateSetMoreStep
+ 	
+ 	SetFloat64(Float64Field, float64) UpdateSetMoreStep
  	
  	SetTime(TimeField, time.Time) UpdateSetMoreStep
  	
@@ -43,6 +51,14 @@ func (i *insert) SetInt(f IntField, v int) InsertSetMoreStep {
 }
 
 func (i *insert) SetInt64(f Int64Field, v int64) InsertSetMoreStep {
+	return i.set(f,v)
+}
+
+func (i *insert) SetFloat32(f Float32Field, v float32) InsertSetMoreStep {
+	return i.set(f,v)
+}
+
+func (i *insert) SetFloat64(f Float64Field, v float64) InsertSetMoreStep {
 	return i.set(f,v)
 }
 
@@ -64,6 +80,14 @@ func (u *update) SetInt64(f Int64Field, v int64) UpdateSetMoreStep {
 	return u.set(f,v)
 }
 
+func (u *update) SetFloat32(f Float32Field, v float32) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+
+func (u *update) SetFloat64(f Float64Field, v float64) UpdateSetMoreStep {
+	return u.set(f,v)
+}
+
 func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
 	return u.set(f,v)
 }
@@ -78,6 +102,10 @@ type Reflectable interface {
 	IntField(name string) IntField
 
 	Int64Field(name string) Int64Field
+
+	Float32Field(name string) Float32Field
+
+	Float64Field(name string) Float64Field
 
 	TimeField(name string) TimeField
 
@@ -125,6 +153,20 @@ func (s *selection) Int64Field(name string) Int64Field {
 }
 func (t table) Int64Field(name string) Int64Field {
 	return &int64Field{name: name, selection: t}
+}
+
+func (s *selection) Float32Field(name string) Float32Field {
+	return &float32Field{name: name}
+}
+func (t table) Float32Field(name string) Float32Field {
+	return &float32Field{name: name, selection: t}
+}
+
+func (s *selection) Float64Field(name string) Float64Field {
+	return &float64Field{name: name}
+}
+func (t table) Float64Field(name string) Float64Field {
+	return &float64Field{name: name, selection: t}
 }
 
 func (s *selection) TimeField(name string) TimeField {
@@ -727,6 +769,402 @@ func (c *int64Field) Lower() Field {
 }
 
 func (c *int64Field) Hex() Field {	
+	return c.fct("Hex", "HEX(%s)")
+}
+
+
+
+
+type float32Field struct {
+	name string
+	selection Selectable
+	alias string
+	fun FieldFunction
+}
+
+type Float32Field interface {
+	TableField
+	
+	Eq(value float32) Condition
+	IsEq(value Float32Field) JoinCondition
+	
+	Gt(value float32) Condition
+	IsGt(value Float32Field) JoinCondition
+	
+	Ge(value float32) Condition
+	IsGe(value Float32Field) JoinCondition
+	
+	Lt(value float32) Condition
+	IsLt(value Float32Field) JoinCondition
+	
+	Le(value float32) Condition
+	IsLe(value Float32Field) JoinCondition
+	
+}
+
+func (c *float32Field) Function() FieldFunction {
+	return FieldFunction{
+		Name:  c.fun.Name,
+		Expr:  c.fun.Expr,
+		Args:  c.fun.Args,
+		Child: c.fun.Child,
+	}
+}
+
+func (c *float32Field) fct(fun, expr string, args ...interface{}) Field {
+	if &c.fun == nil {
+		return &float32Field{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+		}
+	} else {
+		return &float32Field{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{
+				Name:  fun,
+				Expr:  expr, 
+				Args:  args,
+				Child: &FieldFunction{
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
+				},
+			},
+		}
+	}
+}
+
+func (c *float32Field) As(alias string) Field {
+	return &float32Field{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
+}
+
+func (c *float32Field) Alias() string {
+	return c.alias
+}
+
+func (c *float32Field) MaybeAlias() string {
+	if c.alias == "" {
+		return c.name
+	} else {
+		return c.alias
+	}
+}
+
+func (c *float32Field) Name() string {
+	return c.name
+}
+
+func (c *float32Field) Parent() Selectable {
+	return c.selection
+}
+
+// --
+
+
+
+func (c *float32Field) Eq(pred float32) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *float32Field) IsEq(pred Float32Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *float32Field) Gt(pred float32) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *float32Field) IsGt(pred Float32Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *float32Field) Ge(pred float32) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *float32Field) IsGe(pred Float32Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *float32Field) Lt(pred float32) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *float32Field) IsLt(pred Float32Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *float32Field) Le(pred float32) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *float32Field) IsLe(pred Float32Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Float32(s Selectable, name string) Float32Field {
+	return &float32Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *float32Field) Avg() Field {	
+	return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *float32Field) Max() Field {	
+	return c.fct("Max", "MAX(%s)")
+}
+
+func (c *float32Field) Min() Field {	
+	return c.fct("Min", "MIN(%s)")
+}
+
+func (c *float32Field) Ceil() Field {	
+	return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *float32Field) Div(_0 interface{}) Field {	
+	return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *float32Field) Cast(_0 interface{}) Field {	
+	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *float32Field) Md5() Field {	
+	return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *float32Field) Lower() Field {	
+	return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *float32Field) Hex() Field {	
+	return c.fct("Hex", "HEX(%s)")
+}
+
+
+
+
+type float64Field struct {
+	name string
+	selection Selectable
+	alias string
+	fun FieldFunction
+}
+
+type Float64Field interface {
+	TableField
+	
+	Eq(value float64) Condition
+	IsEq(value Float64Field) JoinCondition
+	
+	Gt(value float64) Condition
+	IsGt(value Float64Field) JoinCondition
+	
+	Ge(value float64) Condition
+	IsGe(value Float64Field) JoinCondition
+	
+	Lt(value float64) Condition
+	IsLt(value Float64Field) JoinCondition
+	
+	Le(value float64) Condition
+	IsLe(value Float64Field) JoinCondition
+	
+}
+
+func (c *float64Field) Function() FieldFunction {
+	return FieldFunction{
+		Name:  c.fun.Name,
+		Expr:  c.fun.Expr,
+		Args:  c.fun.Args,
+		Child: c.fun.Child,
+	}
+}
+
+func (c *float64Field) fct(fun, expr string, args ...interface{}) Field {
+	if &c.fun == nil {
+		return &float64Field{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+		}
+	} else {
+		return &float64Field{
+			name:      c.name,
+			selection: c.selection,
+			fun:       FieldFunction{
+				Name:  fun,
+				Expr:  expr, 
+				Args:  args,
+				Child: &FieldFunction{
+					Name:  c.fun.Name,
+					Expr:  c.fun.Expr,
+					Args:  c.fun.Args,
+					Child: c.fun.Child,
+				},
+			},
+		}
+	}
+}
+
+func (c *float64Field) As(alias string) Field {
+	return &float64Field{
+		name: c.name, 
+		selection: c.selection,
+		alias: alias,
+		fun: FieldFunction{
+			Name:  c.fun.Name,
+			Expr:  c.fun.Expr,
+			Args:  c.fun.Args,
+			Child: c.fun.Child,
+		},
+	}
+}
+
+func (c *float64Field) Alias() string {
+	return c.alias
+}
+
+func (c *float64Field) MaybeAlias() string {
+	if c.alias == "" {
+		return c.name
+	} else {
+		return c.alias
+	}
+}
+
+func (c *float64Field) Name() string {
+	return c.name
+}
+
+func (c *float64Field) Parent() Selectable {
+	return c.selection
+}
+
+// --
+
+
+
+func (c *float64Field) Eq(pred float64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *float64Field) IsEq(pred Float64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *float64Field) Gt(pred float64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *float64Field) IsGt(pred Float64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *float64Field) Ge(pred float64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *float64Field) IsGe(pred Float64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *float64Field) Lt(pred float64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *float64Field) IsLt(pred Float64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *float64Field) Le(pred float64) Condition {
+	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *float64Field) IsLe(pred Float64Field) JoinCondition {
+	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Float64(s Selectable, name string) Float64Field {
+	return &float64Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *float64Field) Avg() Field {	
+	return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *float64Field) Max() Field {	
+	return c.fct("Max", "MAX(%s)")
+}
+
+func (c *float64Field) Min() Field {	
+	return c.fct("Min", "MIN(%s)")
+}
+
+func (c *float64Field) Ceil() Field {	
+	return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *float64Field) Div(_0 interface{}) Field {	
+	return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *float64Field) Cast(_0 interface{}) Field {	
+	return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *float64Field) Md5() Field {	
+	return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *float64Field) Lower() Field {	
+	return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *float64Field) Hex() Field {	
 	return c.fct("Hex", "HEX(%s)")
 }
 

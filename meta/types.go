@@ -9,6 +9,8 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "String", Literal: "string"},
 	TypeInfo{Prefix: "Int", Literal: "int"},
 	TypeInfo{Prefix: "Int64", Literal: "int64"},
+	TypeInfo{Prefix: "Float32", Literal: "float32"},
+	TypeInfo{Prefix: "Float64", Literal: "float64"},
 	TypeInfo{Prefix: "Time", Literal: "time.Time"},
 }
 

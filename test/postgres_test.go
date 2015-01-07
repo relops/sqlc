@@ -3,9 +3,9 @@ package test
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
-	"github.com/relops/sqlc/sqlc"
-	. "github.com/relops/sqlc/test/generated/postgres"
-	"github.com/relops/sqlc/test/generic"
+	"github.com/shutej/sqlc/sqlc"
+	. "github.com/shutej/sqlc/test/generated/postgres"
+	"github.com/shutej/sqlc/test/generic"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

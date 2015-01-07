@@ -207,17 +207,14 @@ var _bindata = map[string]func() ([]byte, error){
 // then AssetDir("data") would return []string{"foo.txt", "img"}
 // AssetDir("data/img") would return []string{"a.png", "b.png"}
 // AssetDir("foo.txt") and AssetDir("notexist") would return an error
-// AssetDir("") will return []string{"data"}.
 func AssetDir(name string) ([]string, error) {
+	cannonicalName := strings.Replace(name, "\\", "/", -1)
+	pathList := strings.Split(cannonicalName, "/")
 	node := _bintree
-	if len(name) != 0 {
-		cannonicalName := strings.Replace(name, "\\", "/", -1)
-		pathList := strings.Split(cannonicalName, "/")
-		for _, p := range pathList {
-			node = node.Children[p]
-			if node == nil {
-				return nil, fmt.Errorf("Asset %s not found", name)
-			}
+	for _, p := range pathList {
+		node = node.Children[p]
+		if node == nil {
+			return nil, fmt.Errorf("Asset %s not found", name)
 		}
 	}
 	if node.Func != nil {
@@ -237,9 +234,9 @@ type _bintree_t struct {
 var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
 	"sqlc": &_bintree_t{nil, map[string]*_bintree_t{
 		"tmpl": &_bintree_t{nil, map[string]*_bintree_t{
-			"schema.tmpl": &_bintree_t{sqlc_tmpl_schema_tmpl, map[string]*_bintree_t{
-			}},
 			"fields.tmpl": &_bintree_t{sqlc_tmpl_fields_tmpl, map[string]*_bintree_t{
+			}},
+			"schema.tmpl": &_bintree_t{sqlc_tmpl_schema_tmpl, map[string]*_bintree_t{
 			}},
 		}},
 	}},

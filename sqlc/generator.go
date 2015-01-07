@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/relops/sqlc/meta"
+	"github.com/shutej/sqlc/meta"
 	"io/ioutil"
 	"log"
 	"os"
@@ -17,6 +17,8 @@ import (
 
 var integer = regexp.MustCompile("INT")
 var int_64 = regexp.MustCompile("INTEGER|BIGINT")
+var float_32 = regexp.MustCompile("FLOAT")
+var float_64 = regexp.MustCompile("DOUBLE PRECISION")
 var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
 var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
@@ -175,6 +177,10 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 				fieldType = "Int64"
 			} else if integer.MatchString(colType.String) {
 				fieldType = "Int"
+			} else if float_64.MatchString(colType.String) {
+				fieldType = "Float64"
+			} else if float_32.MatchString(colType.String) {
+				fieldType = "Float32"
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
 			} else if ts.MatchString(colType.String) {
@@ -228,6 +234,10 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				fieldType = "Int64"
 			} else if integer.MatchString(colType.String) {
 				fieldType = "Int"
+			} else if float_64.MatchString(colType.String) {
+				fieldType = "Float64"
+			} else if float_32.MatchString(colType.String) {
+				fieldType = "Float32"
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
 			} else if ts.MatchString(colType.String) {
@@ -260,6 +270,6 @@ const infoTablesTmpl = `
 
 const infoColumnsTmpl = `
 	SELECT column_name, UPPER(data_type)
-	FROM information_schema.columns 
+	FROM information_schema.columns
 	WHERE table_schema = %s and table_name = %s;
 `
