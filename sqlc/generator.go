@@ -104,6 +104,7 @@ func Generate(db *sql.DB, version string, opts *Options) error {
 	}
 
 	params := make(map[string]interface{})
+	params["Schema"] = opts.Schema
 	params["Tables"] = tables
 	params["Package"] = opts.Package
 	params["Types"] = meta.Types

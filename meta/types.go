@@ -1,8 +1,13 @@
 package meta
 
+import (
+	"reflect"
+)
+
 type TypeInfo struct {
 	Prefix  string
 	Literal string
+	Type    reflect.Type
 }
 
 var Types = []TypeInfo{

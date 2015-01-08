@@ -10,6 +10,8 @@ import (
   "strings"
 )
 
+const Schema = "{{ .Schema }}"
+
 {{ range $_, $t := .Tables }}
 
 type {{ toLower $t.Name }} struct {
@@ -21,8 +23,12 @@ type {{ toLower $t.Name }} struct {
 
 func (t *{{ toLower $t.Name }}) IsSelectable() {}
 
+func (t *{{ toLower $t.Name }}) Schema() string {
+  return Schema
+}
+
 func (t *{{ toLower $t.Name }}) Name() string {
-  return "{{ toLower $t.Name }}"
+  return sqlc.Qualified(t.Schema(), "{{ toLower $t.Name }}")
 }
 
 func (t *{{ toLower $t.Name }}) As(a string) sqlc.Selectable {
@@ -76,5 +82,9 @@ var {{ toUpper $t.Name }} = &{{ toLower $t.Name }} {
 
 }
 
-
 {{ end }}
+var TableLikes = []sqlc.TableLike{
+{{ range $_, $t := .Tables }}
+  {{ toUpper $t.Name }},
+{{ end }}
+}

@@ -6,30 +6,41 @@
 package sqlc
 
 import (
-	"time"
+  "reflect"
+  "time"
+)
+
+var (
+  typeString = reflect.TypeOf("")
+  typeBool = reflect.TypeOf(false)
+  typeInt = reflect.TypeOf(int(0))
+  typeInt64 = reflect.TypeOf(int64(0))
+  typeFloat32 = reflect.TypeOf(float32(0.))
+  typeFloat64 = reflect.TypeOf(float64(0.))
+  typeTime = reflect.TypeOf(time.Unix(0, 0))
 )
 
 type InsertSetStep interface {
-	{{ range $_, $t := .types }}
- 	Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) InsertSetMoreStep
- 	{{ end }}
+  {{ range $_, $t := .types }}
+  Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) InsertSetMoreStep
+  {{ end }}
 }
 
 type UpdateSetStep interface {
-	{{ range $_, $t := .types }}
- 	Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) UpdateSetMoreStep
- 	{{ end }}
+  {{ range $_, $t := .types }}
+  Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) UpdateSetMoreStep
+  {{ end }}
 }
 
 {{ range $_, $t := .types }}
 func (i *insert) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) InsertSetMoreStep {
-	return i.set(f,v)
+  return i.set(f,v)
 }
 {{ end }}
 
 {{ range $_, $t := .types }}
 func (u *update) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) UpdateSetMoreStep {
-	return u.set(f,v)
+  return u.set(f,v)
 }
 {{ end }}
 
@@ -37,22 +48,22 @@ func (u *update) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) 
 
 type Reflectable interface {
 {{ range $_, $t := .types }}
-	{{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field
+  {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field
 {{ end }}
 }
 
 type Functional interface {
 {{ range $_, $f := $funcs }}
-	{{ $f.Name }}({{ signifier $f }}) Field
+  {{ $f.Name }}({{ signifier $f }}) Field
 {{ end }}
 }
 
 {{ range $_, $t := .types }}
 func (s *selection) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
-	return &{{ toLower $t.Prefix }}Field{name: name}
+  return &{{ toLower $t.Prefix }}Field{name: name}
 }
 func (t table) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
-	return &{{ toLower $t.Prefix }}Field{name: name, selection: t}
+  return &{{ toLower $t.Prefix }}Field{name: name, selection: t}
 }
 {{ end }}
 
@@ -61,87 +72,91 @@ func (t table) {{ $t.Prefix }}Field(name string) {{ $t.Prefix }}Field {
 {{ range $_, $t := .types }}
 
 type {{ toLower $t.Prefix }}Field struct {
-	name string
-	selection Selectable
-	alias string
-	fun FieldFunction
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
 }
 
 type {{ $t.Prefix }}Field interface {
-	TableField
-	{{ range $_, $p := $preds }}
-	{{ $p.FieldFunction }}(value {{ $t.Literal }}) Condition
-	{{ $p.JoinFunction }}(value {{ $t.Prefix }}Field) JoinCondition
-	{{ end }}
+  TableField
+  {{ range $_, $p := $preds }}
+  {{ $p.FieldFunction }}(value {{ $t.Literal }}) Condition
+  {{ $p.JoinFunction }}(value {{ $t.Prefix }}Field) JoinCondition
+  {{ end }}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Function() FieldFunction {
-	return FieldFunction{
-		Name:  c.fun.Name,
-		Expr:  c.fun.Expr,
-		Args:  c.fun.Args,
-		Child: c.fun.Child,
-	}
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
 }
 
 func (c *{{ toLower $t.Prefix }}Field) fct(fun, expr string, args ...interface{}) Field {
-	if &c.fun == nil {
-		return &{{ toLower $t.Prefix }}Field{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
-		}
-	} else {
-		return &{{ toLower $t.Prefix }}Field{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{
-				Name:  fun,
-				Expr:  expr, 
-				Args:  args,
-				Child: &FieldFunction{
-					Name:  c.fun.Name,
-					Expr:  c.fun.Expr,
-					Args:  c.fun.Args,
-					Child: c.fun.Child,
-				},
-			},
-		}
-	}
+  if &c.fun == nil {
+    return &{{ toLower $t.Prefix }}Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &{{ toLower $t.Prefix }}Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
 }
 
 func (c *{{ toLower $t.Prefix }}Field) As(alias string) Field {
-	return &{{ toLower $t.Prefix }}Field{
-		name: c.name, 
-		selection: c.selection,
-		alias: alias,
-		fun: FieldFunction{
-			Name:  c.fun.Name,
-			Expr:  c.fun.Expr,
-			Args:  c.fun.Args,
-			Child: c.fun.Child,
-		},
-	}
+  return &{{ toLower $t.Prefix }}Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Alias() string {
-	return c.alias
+  return c.alias
 }
 
 func (c *{{ toLower $t.Prefix }}Field) MaybeAlias() string {
-	if c.alias == "" {
-		return c.name
-	} else {
-		return c.alias
-	}
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Name() string {
-	return c.name
+  return c.name
+}
+
+func (c *{{ toLower $t.Prefix }}Field) Type() reflect.Type {
+  return type{{ $t.Prefix }}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) Parent() Selectable {
-	return c.selection
+  return c.selection
 }
 
 // --
@@ -149,11 +164,11 @@ func (c *{{ toLower $t.Prefix }}Field) Parent() Selectable {
 {{ range $_, $p := $preds }}
 
 func (c *{{ toLower $t.Prefix }}Field) {{ $p.FieldFunction }}(pred {{ $t.Literal }}) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: {{ $p.Predicate }}}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: {{ $p.Predicate }}}
 }
 
 func (c *{{ toLower $t.Prefix }}Field) {{ $p.JoinFunction }}(pred {{ $t.Prefix }}Field) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: {{ $p.Predicate }}}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: {{ $p.Predicate }}}
 }
 
 {{ end }}
@@ -161,14 +176,14 @@ func (c *{{ toLower $t.Prefix }}Field) {{ $p.JoinFunction }}(pred {{ $t.Prefix }
 // --
 
 func {{ $t.Prefix }}(s Selectable, name string) {{ $t.Prefix }}Field {
-	return &{{ toLower $t.Prefix }}Field{name: name, selection: s}
+  return &{{ toLower $t.Prefix }}Field{name: name, selection: s}
 }
 
 //////
 
 {{ range $_, $f := $funcs }}
-func (c *{{ toLower $t.Prefix }}Field) {{ $f.Name }}({{ signifier $f }}) Field {	
-	return c.fct("{{ $f.Name }}", "{{ $f.Expr }}"{{ injectifier $f }})
+func (c *{{ toLower $t.Prefix }}Field) {{ $f.Name }}({{ signifier $f }}) Field {
+  return c.fct("{{ $f.Name }}", "{{ $f.Expr }}"{{ injectifier $f }})
 }
 {{ end }}
 

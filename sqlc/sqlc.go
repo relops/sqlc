@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"database/sql"
 	"io"
+	"reflect"
+	"strings"
 )
 
 type PredicateType int
@@ -54,6 +56,7 @@ type Field interface {
 	Aliasable
 	Functional
 	Name() string
+	Type() reflect.Type
 	As(string) Field
 	Function() FieldFunction
 }
@@ -200,4 +203,14 @@ func exec(d Dialect, r Renderable, db *sql.DB) (sql.Result, error) {
 	var buf bytes.Buffer
 	args := r.Render(d, &buf)
 	return db.Exec(buf.String(), args...)
+}
+
+func Qualified(parts ...string) string {
+	tmp := []string{}
+	for _, part := range parts {
+		if part != "" {
+			tmp = append(tmp, part)
+		}
+	}
+	return strings.Join(tmp, ".")
 }
