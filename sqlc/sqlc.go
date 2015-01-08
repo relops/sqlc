@@ -3,9 +3,11 @@ package sqlc
 import (
 	"bytes"
 	"database/sql"
+	"database/sql/driver"
 	"io"
 	"reflect"
 	"strings"
+	"time"
 )
 
 type PredicateType int
@@ -213,4 +215,23 @@ func Qualified(parts ...string) string {
 		}
 	}
 	return strings.Join(tmp, ".")
+}
+
+type NullableTime struct {
+	Time  time.Time
+	Valid bool // Valid is true if Time is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (self *NullableTime) Scan(value interface{}) error {
+	self.Time, self.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableTime) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Time, nil
 }

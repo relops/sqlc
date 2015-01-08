@@ -167,13 +167,15 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 		fields := make([]FieldMeta, 0)
 
 		for rows.Next() {
-			var colName, colType sql.NullString
-			err = rows.Scan(&colName, &colType)
+			var colName, colType, colIsNullable sql.NullString
+			err = rows.Scan(&colName, &colType, &colIsNullable)
 			if err != nil {
 				return nil, err
 			}
 
 			var fieldType string
+
+			nullable := strings.ToUpper(colIsNullable.String) == "YES"
 
 			if int_64.MatchString(colType.String) {
 				fieldType = "Int64"
@@ -189,6 +191,10 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 				fieldType = "Time"
 			} else if boolean.MatchString(colType.String) {
 				fieldType = "Bool"
+			}
+
+			if nullable {
+				fieldType = "Null" + fieldType
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}
@@ -232,6 +238,8 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				return nil, err
 			}
 
+			nullable := !notNull.Bool
+
 			var fieldType string
 
 			if int_64.MatchString(colType.String) {
@@ -248,6 +256,10 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				fieldType = "Time"
 			} else if boolean.MatchString(colType.String) {
 				fieldType = "Bool"
+			}
+
+			if nullable {
+				fieldType = "Null" + fieldType
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}
@@ -275,7 +287,7 @@ const infoTablesTmpl = `
 `
 
 const infoColumnsTmpl = `
-	SELECT column_name, UPPER(data_type)
+	SELECT column_name, UPPER(data_type), is_nullable
 	FROM information_schema.columns
 	WHERE table_schema = %s and table_name = %s;
 `

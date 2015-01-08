@@ -18,6 +18,14 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "Float32", Literal: "float32"},
 	TypeInfo{Prefix: "Float64", Literal: "float64"},
 	TypeInfo{Prefix: "Time", Literal: "time.Time"},
+
+	TypeInfo{Prefix: "NullString", Literal: "sql.NullString"},
+	TypeInfo{Prefix: "NullBool", Literal: "sql.NullBool"},
+	TypeInfo{Prefix: "NullInt", Literal: "sql.NullInt64"}, // TODO(shutej): test
+	TypeInfo{Prefix: "NullInt64", Literal: "sql.NullInt64"},
+	TypeInfo{Prefix: "NullFloat32", Literal: "sql.NullFloat64"}, // TODO(shutej): test
+	TypeInfo{Prefix: "NullFloat64", Literal: "sql.NullFloat64"},
+	TypeInfo{Prefix: "NullTime", Literal: "NullableTime"},
 }
 
 type FunctionInfo struct {

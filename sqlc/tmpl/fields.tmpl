@@ -6,17 +6,25 @@
 package sqlc
 
 import (
+  "database/sql"
   "reflect"
   "time"
 )
 
 var (
-  typeString = reflect.TypeOf("")
   typeBool = reflect.TypeOf(false)
-  typeInt = reflect.TypeOf(int(0))
-  typeInt64 = reflect.TypeOf(int64(0))
   typeFloat32 = reflect.TypeOf(float32(0.))
   typeFloat64 = reflect.TypeOf(float64(0.))
+  typeInt = reflect.TypeOf(int(0))
+  typeInt64 = reflect.TypeOf(int64(0))
+  typeNullBool = reflect.TypeOf(sql.NullBool{})
+  typeNullFloat32 = reflect.TypeOf(sql.NullFloat64{})
+  typeNullFloat64 = reflect.TypeOf(sql.NullFloat64{})
+  typeNullInt = reflect.TypeOf(sql.NullInt64{})
+  typeNullInt64 = reflect.TypeOf(sql.NullInt64{})
+  typeNullString = reflect.TypeOf(sql.NullString{})
+  typeNullTime = reflect.TypeOf(NullableTime{})
+  typeString = reflect.TypeOf("")
   typeTime = reflect.TypeOf(time.Unix(0, 0))
 )
 
