@@ -29,12 +29,14 @@ var (
 )
 
 type InsertSetStep interface {
+  Set(TableField, interface{}) InsertSetMoreStep
   {{ range $_, $t := .types }}
   Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) InsertSetMoreStep
   {{ end }}
 }
 
 type UpdateSetStep interface {
+  Set(TableField, interface{}) UpdateSetMoreStep
   {{ range $_, $t := .types }}
   Set{{ $t.Prefix }}({{ $t.Prefix }}Field, {{ $t.Literal }}) UpdateSetMoreStep
   {{ end }}

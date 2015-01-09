@@ -29,6 +29,7 @@ var (
 )
 
 type InsertSetStep interface {
+  Set(TableField, interface{}) InsertSetMoreStep
   
   SetString(StringField, string) InsertSetMoreStep
   
@@ -61,6 +62,7 @@ type InsertSetStep interface {
 }
 
 type UpdateSetStep interface {
+  Set(TableField, interface{}) UpdateSetMoreStep
   
   SetString(StringField, string) UpdateSetMoreStep
   
