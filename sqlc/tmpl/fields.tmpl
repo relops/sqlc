@@ -42,13 +42,13 @@ type UpdateSetStep interface {
 
 {{ range $_, $t := .types }}
 func (i *insert) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 {{ end }}
 
 {{ range $_, $t := .types }}
 func (u *update) Set{{ $t.Prefix }}(f {{ $t.Prefix }}Field, v {{ $t.Literal }}) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 {{ end }}
 

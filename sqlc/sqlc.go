@@ -191,7 +191,7 @@ func (u *update) Where(c ...Condition) Executable {
 	return u
 }
 
-func (u *update) set(f TableField, v interface{}) UpdateSetMoreStep {
+func (u *update) Set(f TableField, v interface{}) UpdateSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	u.bindings = append(u.bindings, binding)
 	return u

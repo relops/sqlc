@@ -94,117 +94,117 @@ type UpdateSetStep interface {
 
 
 func (i *insert) SetString(f StringField, v string) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetBool(f BoolField, v bool) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetInt(f IntField, v int) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetInt64(f Int64Field, v int64) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetFloat32(f Float32Field, v float32) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetFloat64(f Float64Field, v float64) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetTime(f TimeField, v time.Time) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullString(f NullStringField, v sql.NullString) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullBool(f NullBoolField, v sql.NullBool) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullInt(f NullIntField, v sql.NullInt64) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullInt64(f NullInt64Field, v sql.NullInt64) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullFloat32(f NullFloat32Field, v sql.NullFloat64) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetNullTime(f NullTimeField, v NullableTime) InsertSetMoreStep {
-  return i.set(f,v)
+  return i.Set(f, v)
 }
 
 
 
 func (u *update) SetString(f StringField, v string) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetBool(f BoolField, v bool) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetInt(f IntField, v int) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetInt64(f Int64Field, v int64) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetFloat32(f Float32Field, v float32) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetFloat64(f Float64Field, v float64) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullString(f NullStringField, v sql.NullString) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullBool(f NullBoolField, v sql.NullBool) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullInt(f NullIntField, v sql.NullInt64) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullInt64(f NullInt64Field, v sql.NullInt64) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullFloat32(f NullFloat32Field, v sql.NullFloat64) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetNullTime(f NullTimeField, v NullableTime) UpdateSetMoreStep {
-  return u.set(f,v)
+  return u.Set(f, v)
 }
 
 

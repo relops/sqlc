@@ -30,7 +30,7 @@ func (i *insert) Fetch(d Dialect, db *sql.DB) (*sql.Row, error) {
 	return db.QueryRow(buf.String(), args...), nil
 }
 
-func (i *insert) set(f TableField, v interface{}) InsertSetMoreStep {
+func (i *insert) Set(f TableField, v interface{}) InsertSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	i.bindings = append(i.bindings, binding)
 	return i
