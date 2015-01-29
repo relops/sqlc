@@ -11,22 +11,24 @@ type TypeInfo struct {
 }
 
 var Types = []TypeInfo{
-	TypeInfo{Prefix: "String", Literal: "string"},
 	TypeInfo{Prefix: "Bool", Literal: "bool"},
-	TypeInfo{Prefix: "Int", Literal: "int"},
-	TypeInfo{Prefix: "Int64", Literal: "int64"},
+	TypeInfo{Prefix: "Date", Literal: "time.Time"},     // TODO(shutej): test
+	TypeInfo{Prefix: "Datetime", Literal: "time.Time"}, // TODO(shutej): test
 	TypeInfo{Prefix: "Float32", Literal: "float32"},
 	TypeInfo{Prefix: "Float64", Literal: "float64"},
-	TypeInfo{Prefix: "Time", Literal: "time.Time"},
-	TypeInfo{Prefix: "Date", Literal: "time.Time"},
-
-	TypeInfo{Prefix: "NullString", Literal: "sql.NullString"},
+	TypeInfo{Prefix: "Int", Literal: "int"},
+	TypeInfo{Prefix: "Int64", Literal: "int64"},
 	TypeInfo{Prefix: "NullBool", Literal: "sql.NullBool"},
+	TypeInfo{Prefix: "NullDate", Literal: "NullableDate"},         // TODO(shutej): test
+	TypeInfo{Prefix: "NullDatetime", Literal: "NullableDatetime"}, // TODO(shutej): test
+	TypeInfo{Prefix: "NullFloat32", Literal: "sql.NullFloat64"},   // TODO(shutej): test
+	TypeInfo{Prefix: "NullFloat64", Literal: "sql.NullFloat64"},
 	TypeInfo{Prefix: "NullInt", Literal: "sql.NullInt64"}, // TODO(shutej): test
 	TypeInfo{Prefix: "NullInt64", Literal: "sql.NullInt64"},
-	TypeInfo{Prefix: "NullFloat32", Literal: "sql.NullFloat64"}, // TODO(shutej): test
-	TypeInfo{Prefix: "NullFloat64", Literal: "sql.NullFloat64"},
-	TypeInfo{Prefix: "NullTime", Literal: "NullableTime"},
+	TypeInfo{Prefix: "NullString", Literal: "sql.NullString"},
+	TypeInfo{Prefix: "NullTime", Literal: "NullableTime"}, // TODO(shutej): test
+	TypeInfo{Prefix: "String", Literal: "string"},
+	TypeInfo{Prefix: "Time", Literal: "time.Time"}, // TODO(shutej): test
 }
 
 type FunctionInfo struct {

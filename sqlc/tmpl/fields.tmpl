@@ -13,11 +13,15 @@ import (
 
 var (
   typeBool = reflect.TypeOf(false)
+  typeDate = reflect.TypeOf(time.Unix(0, 0))
+  typeDatetime = reflect.TypeOf(time.Unix(0, 0))
   typeFloat32 = reflect.TypeOf(float32(0.))
   typeFloat64 = reflect.TypeOf(float64(0.))
   typeInt = reflect.TypeOf(int(0))
   typeInt64 = reflect.TypeOf(int64(0))
   typeNullBool = reflect.TypeOf(sql.NullBool{})
+  typeNullDate = reflect.TypeOf(NullableDate{})
+  typeNullDatetime = reflect.TypeOf(NullableDatetime{})
   typeNullFloat32 = reflect.TypeOf(sql.NullFloat64{})
   typeNullFloat64 = reflect.TypeOf(sql.NullFloat64{})
   typeNullInt = reflect.TypeOf(sql.NullInt64{})
@@ -26,7 +30,6 @@ var (
   typeNullTime = reflect.TypeOf(NullableTime{})
   typeString = reflect.TypeOf("")
   typeTime = reflect.TypeOf(time.Unix(0, 0))
-  typeDate = reflect.TypeOf(time.Unix(0, 0))
 )
 
 type InsertSetStep interface {

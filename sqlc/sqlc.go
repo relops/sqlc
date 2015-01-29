@@ -217,9 +217,19 @@ func Qualified(parts ...string) string {
 	return strings.Join(tmp, ".")
 }
 
+type NullableDate struct {
+	Date  time.Time
+	Valid bool // Valid is true if Date is not NULL
+}
+
 type NullableTime struct {
 	Time  time.Time
 	Valid bool // Valid is true if Time is not NULL
+}
+
+type NullableDatetime struct {
+	Datetime time.Time
+	Valid    bool // Valid is true if Datetime is not NULL
 }
 
 // Scan implements the Scanner interface.
