@@ -18,6 +18,7 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "Float32", Literal: "float32"},
 	TypeInfo{Prefix: "Float64", Literal: "float64"},
 	TypeInfo{Prefix: "Time", Literal: "time.Time"},
+	TypeInfo{Prefix: "Date", Literal: "time.Time"},
 
 	TypeInfo{Prefix: "NullString", Literal: "sql.NullString"},
 	TypeInfo{Prefix: "NullBool", Literal: "sql.NullBool"},

@@ -22,6 +22,7 @@ var float_32 = regexp.MustCompile("FLOAT")
 var float_64 = regexp.MustCompile("DOUBLE PRECISION")
 var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
 var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
+var date = regexp.MustCompile("DATE")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
 
 type Provenance struct {
@@ -189,6 +190,8 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 				fieldType = "String"
 			} else if ts.MatchString(colType.String) {
 				fieldType = "Time"
+			} else if date.MatchString(colType.String) {
+				fieldType = "Date"
 			} else if boolean.MatchString(colType.String) {
 				fieldType = "Bool"
 			}
@@ -254,6 +257,8 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				fieldType = "String"
 			} else if ts.MatchString(colType.String) {
 				fieldType = "Time"
+			} else if ts.MatchString(colType.String) {
+				fieldType = "Date"
 			} else if boolean.MatchString(colType.String) {
 				fieldType = "Bool"
 			}

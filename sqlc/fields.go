@@ -26,6 +26,7 @@ var (
   typeNullTime = reflect.TypeOf(NullableTime{})
   typeString = reflect.TypeOf("")
   typeTime = reflect.TypeOf(time.Unix(0, 0))
+  typeDate = reflect.TypeOf(time.Unix(0, 0))
 )
 
 type InsertSetStep interface {
@@ -44,6 +45,8 @@ type InsertSetStep interface {
   SetFloat64(Float64Field, float64) InsertSetMoreStep
   
   SetTime(TimeField, time.Time) InsertSetMoreStep
+  
+  SetDate(DateField, time.Time) InsertSetMoreStep
   
   SetNullString(NullStringField, sql.NullString) InsertSetMoreStep
   
@@ -77,6 +80,8 @@ type UpdateSetStep interface {
   SetFloat64(Float64Field, float64) UpdateSetMoreStep
   
   SetTime(TimeField, time.Time) UpdateSetMoreStep
+  
+  SetDate(DateField, time.Time) UpdateSetMoreStep
   
   SetNullString(NullStringField, sql.NullString) UpdateSetMoreStep
   
@@ -120,6 +125,10 @@ func (i *insert) SetFloat64(f Float64Field, v float64) InsertSetMoreStep {
 }
 
 func (i *insert) SetTime(f TimeField, v time.Time) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetDate(f DateField, v time.Time) InsertSetMoreStep {
   return i.Set(f, v)
 }
 
@@ -181,6 +190,10 @@ func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
   return u.Set(f, v)
 }
 
+func (u *update) SetDate(f DateField, v time.Time) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
 func (u *update) SetNullString(f NullStringField, v sql.NullString) UpdateSetMoreStep {
   return u.Set(f, v)
 }
@@ -227,6 +240,8 @@ type Reflectable interface {
   Float64Field(name string) Float64Field
 
   TimeField(name string) TimeField
+
+  DateField(name string) DateField
 
   NullStringField(name string) NullStringField
 
@@ -318,6 +333,13 @@ func (s *selection) TimeField(name string) TimeField {
 }
 func (t table) TimeField(name string) TimeField {
   return &timeField{name: name, selection: t}
+}
+
+func (s *selection) DateField(name string) DateField {
+  return &dateField{name: name}
+}
+func (t table) DateField(name string) DateField {
+  return &dateField{name: name, selection: t}
 }
 
 func (s *selection) NullStringField(name string) NullStringField {
@@ -1838,6 +1860,216 @@ func (c *timeField) Substr2(_0 interface{}) Field {
 }
 
 func (c *timeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type dateField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type DateField interface {
+  TableField
+  
+  Eq(value time.Time) Condition
+  IsEq(value DateField) JoinCondition
+  
+  Gt(value time.Time) Condition
+  IsGt(value DateField) JoinCondition
+  
+  Ge(value time.Time) Condition
+  IsGe(value DateField) JoinCondition
+  
+  Lt(value time.Time) Condition
+  IsLt(value DateField) JoinCondition
+  
+  Le(value time.Time) Condition
+  IsLe(value DateField) JoinCondition
+  
+}
+
+func (c *dateField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *dateField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &dateField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &dateField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *dateField) As(alias string) Field {
+  return &dateField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *dateField) Alias() string {
+  return c.alias
+}
+
+func (c *dateField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *dateField) Name() string {
+  return c.name
+}
+
+func (c *dateField) Type() reflect.Type {
+  return typeDate
+}
+
+func (c *dateField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *dateField) Eq(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *dateField) IsEq(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *dateField) Gt(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *dateField) IsGt(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *dateField) Ge(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *dateField) IsGe(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *dateField) Lt(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *dateField) IsLt(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *dateField) Le(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *dateField) IsLe(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Date(s Selectable, name string) DateField {
+  return &dateField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *dateField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *dateField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *dateField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *dateField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *dateField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *dateField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *dateField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *dateField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *dateField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *dateField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *dateField) Substr3(_0,_1 interface{}) Field {
   return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
