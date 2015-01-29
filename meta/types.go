@@ -16,6 +16,7 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "Datetime", Literal: "time.Time"}, // TODO(shutej): test
 	TypeInfo{Prefix: "Float32", Literal: "float32"},
 	TypeInfo{Prefix: "Float64", Literal: "float64"},
+	TypeInfo{Prefix: "Inet", Literal: "[]byte"}, // TODO(shutej): test
 	TypeInfo{Prefix: "Int", Literal: "int"},
 	TypeInfo{Prefix: "Int64", Literal: "int64"},
 	TypeInfo{Prefix: "NullBool", Literal: "sql.NullBool"},
@@ -23,6 +24,7 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "NullDatetime", Literal: "NullableDatetime"}, // TODO(shutej): test
 	TypeInfo{Prefix: "NullFloat32", Literal: "sql.NullFloat64"},   // TODO(shutej): test
 	TypeInfo{Prefix: "NullFloat64", Literal: "sql.NullFloat64"},
+	TypeInfo{Prefix: "NullInet", Literal: "NullableInet"}, // TODO(shutej): test
 	TypeInfo{Prefix: "NullInt", Literal: "sql.NullInt64"}, // TODO(shutej): test
 	TypeInfo{Prefix: "NullInt64", Literal: "sql.NullInt64"},
 	TypeInfo{Prefix: "NullString", Literal: "sql.NullString"},

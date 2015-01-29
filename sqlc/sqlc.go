@@ -217,10 +217,8 @@ func Qualified(parts ...string) string {
 	return strings.Join(tmp, ".")
 }
 
-type Inet []byte
-
 type NullableInet struct {
-	Inet  Inet
+	Inet  []byte
 	Valid bool // Valid is true if Inet is not NULL
 }
 

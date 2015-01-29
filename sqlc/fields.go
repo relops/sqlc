@@ -18,7 +18,7 @@ var (
   typeFloat32 = reflect.TypeOf(float32(0.))
   typeFloat64 = reflect.TypeOf(float64(0.))
   typeInt = reflect.TypeOf(int(0))
-  typeInet = reflect.TypeOf(Inet{})
+  typeInet = reflect.TypeOf([]byte{})
   typeInt64 = reflect.TypeOf(int64(0))
   typeNullBool = reflect.TypeOf(sql.NullBool{})
   typeNullDate = reflect.TypeOf(NullableDate{})
@@ -47,6 +47,8 @@ type InsertSetStep interface {
   
   SetFloat64(Float64Field, float64) InsertSetMoreStep
   
+  SetInet(InetField, []byte) InsertSetMoreStep
+  
   SetInt(IntField, int) InsertSetMoreStep
   
   SetInt64(Int64Field, int64) InsertSetMoreStep
@@ -60,6 +62,8 @@ type InsertSetStep interface {
   SetNullFloat32(NullFloat32Field, sql.NullFloat64) InsertSetMoreStep
   
   SetNullFloat64(NullFloat64Field, sql.NullFloat64) InsertSetMoreStep
+  
+  SetNullInet(NullInetField, NullableInet) InsertSetMoreStep
   
   SetNullInt(NullIntField, sql.NullInt64) InsertSetMoreStep
   
@@ -88,6 +92,8 @@ type UpdateSetStep interface {
   
   SetFloat64(Float64Field, float64) UpdateSetMoreStep
   
+  SetInet(InetField, []byte) UpdateSetMoreStep
+  
   SetInt(IntField, int) UpdateSetMoreStep
   
   SetInt64(Int64Field, int64) UpdateSetMoreStep
@@ -101,6 +107,8 @@ type UpdateSetStep interface {
   SetNullFloat32(NullFloat32Field, sql.NullFloat64) UpdateSetMoreStep
   
   SetNullFloat64(NullFloat64Field, sql.NullFloat64) UpdateSetMoreStep
+  
+  SetNullInet(NullInetField, NullableInet) UpdateSetMoreStep
   
   SetNullInt(NullIntField, sql.NullInt64) UpdateSetMoreStep
   
@@ -137,6 +145,10 @@ func (i *insert) SetFloat64(f Float64Field, v float64) InsertSetMoreStep {
   return i.Set(f, v)
 }
 
+func (i *insert) SetInet(f InetField, v []byte) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
 func (i *insert) SetInt(f IntField, v int) InsertSetMoreStep {
   return i.Set(f, v)
 }
@@ -162,6 +174,10 @@ func (i *insert) SetNullFloat32(f NullFloat32Field, v sql.NullFloat64) InsertSet
 }
 
 func (i *insert) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullInet(f NullInetField, v NullableInet) InsertSetMoreStep {
   return i.Set(f, v)
 }
 
@@ -211,6 +227,10 @@ func (u *update) SetFloat64(f Float64Field, v float64) UpdateSetMoreStep {
   return u.Set(f, v)
 }
 
+func (u *update) SetInet(f InetField, v []byte) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
 func (u *update) SetInt(f IntField, v int) UpdateSetMoreStep {
   return u.Set(f, v)
 }
@@ -236,6 +256,10 @@ func (u *update) SetNullFloat32(f NullFloat32Field, v sql.NullFloat64) UpdateSet
 }
 
 func (u *update) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullInet(f NullInetField, v NullableInet) UpdateSetMoreStep {
   return u.Set(f, v)
 }
 
@@ -278,6 +302,8 @@ type Reflectable interface {
 
   Float64Field(name string) Float64Field
 
+  InetField(name string) InetField
+
   IntField(name string) IntField
 
   Int64Field(name string) Int64Field
@@ -291,6 +317,8 @@ type Reflectable interface {
   NullFloat32Field(name string) NullFloat32Field
 
   NullFloat64Field(name string) NullFloat64Field
+
+  NullInetField(name string) NullInetField
 
   NullIntField(name string) NullIntField
 
@@ -368,6 +396,13 @@ func (t table) Float64Field(name string) Float64Field {
   return &float64Field{name: name, selection: t}
 }
 
+func (s *selection) InetField(name string) InetField {
+  return &inetField{name: name}
+}
+func (t table) InetField(name string) InetField {
+  return &inetField{name: name, selection: t}
+}
+
 func (s *selection) IntField(name string) IntField {
   return &intField{name: name}
 }
@@ -415,6 +450,13 @@ func (s *selection) NullFloat64Field(name string) NullFloat64Field {
 }
 func (t table) NullFloat64Field(name string) NullFloat64Field {
   return &nullfloat64Field{name: name, selection: t}
+}
+
+func (s *selection) NullInetField(name string) NullInetField {
+  return &nullinetField{name: name}
+}
+func (t table) NullInetField(name string) NullInetField {
+  return &nullinetField{name: name, selection: t}
 }
 
 func (s *selection) NullIntField(name string) NullIntField {
@@ -1508,6 +1550,216 @@ func (c *float64Field) Substr2(_0 interface{}) Field {
 }
 
 func (c *float64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type inetField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type InetField interface {
+  TableField
+  
+  Eq(value []byte) Condition
+  IsEq(value InetField) JoinCondition
+  
+  Gt(value []byte) Condition
+  IsGt(value InetField) JoinCondition
+  
+  Ge(value []byte) Condition
+  IsGe(value InetField) JoinCondition
+  
+  Lt(value []byte) Condition
+  IsLt(value InetField) JoinCondition
+  
+  Le(value []byte) Condition
+  IsLe(value InetField) JoinCondition
+  
+}
+
+func (c *inetField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *inetField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &inetField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &inetField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *inetField) As(alias string) Field {
+  return &inetField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *inetField) Alias() string {
+  return c.alias
+}
+
+func (c *inetField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *inetField) Name() string {
+  return c.name
+}
+
+func (c *inetField) Type() reflect.Type {
+  return typeInet
+}
+
+func (c *inetField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *inetField) Eq(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *inetField) IsEq(pred InetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *inetField) Gt(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *inetField) IsGt(pred InetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *inetField) Ge(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *inetField) IsGe(pred InetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *inetField) Lt(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *inetField) IsLt(pred InetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *inetField) Le(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *inetField) IsLe(pred InetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Inet(s Selectable, name string) InetField {
+  return &inetField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *inetField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *inetField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *inetField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *inetField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *inetField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *inetField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *inetField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *inetField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *inetField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *inetField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *inetField) Substr3(_0,_1 interface{}) Field {
   return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
@@ -2978,6 +3230,216 @@ func (c *nullfloat64Field) Substr2(_0 interface{}) Field {
 }
 
 func (c *nullfloat64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullinetField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullInetField interface {
+  TableField
+  
+  Eq(value NullableInet) Condition
+  IsEq(value NullInetField) JoinCondition
+  
+  Gt(value NullableInet) Condition
+  IsGt(value NullInetField) JoinCondition
+  
+  Ge(value NullableInet) Condition
+  IsGe(value NullInetField) JoinCondition
+  
+  Lt(value NullableInet) Condition
+  IsLt(value NullInetField) JoinCondition
+  
+  Le(value NullableInet) Condition
+  IsLe(value NullInetField) JoinCondition
+  
+}
+
+func (c *nullinetField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullinetField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullinetField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullinetField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullinetField) As(alias string) Field {
+  return &nullinetField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullinetField) Alias() string {
+  return c.alias
+}
+
+func (c *nullinetField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullinetField) Name() string {
+  return c.name
+}
+
+func (c *nullinetField) Type() reflect.Type {
+  return typeNullInet
+}
+
+func (c *nullinetField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullinetField) Eq(pred NullableInet) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullinetField) IsEq(pred NullInetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullinetField) Gt(pred NullableInet) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullinetField) IsGt(pred NullInetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullinetField) Ge(pred NullableInet) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullinetField) IsGe(pred NullInetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullinetField) Lt(pred NullableInet) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullinetField) IsLt(pred NullInetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullinetField) Le(pred NullableInet) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullinetField) IsLe(pred NullInetField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullInet(s Selectable, name string) NullInetField {
+  return &nullinetField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullinetField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullinetField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullinetField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullinetField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullinetField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullinetField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullinetField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullinetField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullinetField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullinetField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullinetField) Substr3(_0,_1 interface{}) Field {
   return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
