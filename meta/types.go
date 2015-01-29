@@ -43,4 +43,6 @@ var Funcs = []FunctionInfo{
 	FunctionInfo{Name: "Md5", Expr: "MD5(%s)"},
 	FunctionInfo{Name: "Lower", Expr: "LOWER(%s)"},
 	FunctionInfo{Name: "Hex", Expr: "HEX(%s)"},
+	FunctionInfo{Name: "Substr2", Expr: "SUBSTR(%s, %v)"},
+	FunctionInfo{Name: "Substr3", Expr: "SUBSTR(%s, %v, %v)"},
 }

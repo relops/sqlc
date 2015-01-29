@@ -264,6 +264,10 @@ type Functional interface {
 
   Hex() Field
 
+  Substr2(_0 interface{}) Field
+
+  Substr3(_0,_1 interface{}) Field
+
 }
 
 
@@ -569,6 +573,14 @@ func (c *stringField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *stringField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *stringField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -769,6 +781,14 @@ func (c *boolField) Lower() Field {
 
 func (c *boolField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *boolField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *boolField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
@@ -973,6 +993,14 @@ func (c *intField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *intField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *intField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -1173,6 +1201,14 @@ func (c *int64Field) Lower() Field {
 
 func (c *int64Field) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *int64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *int64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
@@ -1377,6 +1413,14 @@ func (c *float32Field) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *float32Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *float32Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -1577,6 +1621,14 @@ func (c *float64Field) Lower() Field {
 
 func (c *float64Field) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *float64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *float64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
@@ -1781,6 +1833,14 @@ func (c *timeField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *timeField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *timeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -1981,6 +2041,14 @@ func (c *nullstringField) Lower() Field {
 
 func (c *nullstringField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullstringField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullstringField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
@@ -2185,6 +2253,14 @@ func (c *nullboolField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *nullboolField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullboolField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -2385,6 +2461,14 @@ func (c *nullintField) Lower() Field {
 
 func (c *nullintField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullintField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullintField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
@@ -2589,6 +2673,14 @@ func (c *nullint64Field) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *nullint64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullint64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -2789,6 +2881,14 @@ func (c *nullfloat32Field) Lower() Field {
 
 func (c *nullfloat32Field) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullfloat32Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullfloat32Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
@@ -2993,6 +3093,14 @@ func (c *nullfloat64Field) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
+func (c *nullfloat64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullfloat64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
 
 
 
@@ -3193,6 +3301,14 @@ func (c *nulltimeField) Lower() Field {
 
 func (c *nulltimeField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nulltimeField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nulltimeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
