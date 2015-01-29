@@ -224,19 +224,42 @@ type NullableInet struct {
 	Valid bool // Valid is true if Inet is not NULL
 }
 
+// Scan implements the Scanner interface.
+func (self *NullableInet) Scan(value interface{}) error {
+	self.Inet, self.Valid = value.([]byte)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableInet) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Inet, nil
+}
+
 type NullableDate struct {
 	Date  time.Time
 	Valid bool // Valid is true if Date is not NULL
 }
 
+// Scan implements the Scanner interface.
+func (self *NullableDate) Scan(value interface{}) error {
+	self.Date, self.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableDate) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Date, nil
+}
+
 type NullableTime struct {
 	Time  time.Time
 	Valid bool // Valid is true if Time is not NULL
-}
-
-type NullableDatetime struct {
-	Datetime time.Time
-	Valid    bool // Valid is true if Datetime is not NULL
 }
 
 // Scan implements the Scanner interface.
@@ -251,4 +274,23 @@ func (self NullableTime) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return self.Time, nil
+}
+
+type NullableDatetime struct {
+	Datetime time.Time
+	Valid    bool // Valid is true if Datetime is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (self *NullableDatetime) Scan(value interface{}) error {
+	self.Datetime, self.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableDatetime) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Datetime, nil
 }
