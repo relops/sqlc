@@ -191,7 +191,7 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
 			} else if datetime.MatchString(colType.String) {
-				fieldType = "Time"
+				fieldType = "Datetime"
 			} else if date.MatchString(colType.String) {
 				fieldType = "Date"
 			} else if time_.MatchString(colType.String) {
