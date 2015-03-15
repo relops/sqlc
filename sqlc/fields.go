@@ -18,14 +18,14 @@ var (
   typeFloat32 = reflect.TypeOf(float32(0.))
   typeFloat64 = reflect.TypeOf(float64(0.))
   typeInt = reflect.TypeOf(int(0))
-  typeInet = reflect.TypeOf([]byte{})
+  typeBlob = reflect.TypeOf([]byte{})
   typeInt64 = reflect.TypeOf(int64(0))
   typeNullBool = reflect.TypeOf(sql.NullBool{})
   typeNullDate = reflect.TypeOf(NullableDate{})
   typeNullDatetime = reflect.TypeOf(NullableDatetime{})
   typeNullFloat32 = reflect.TypeOf(sql.NullFloat64{})
   typeNullFloat64 = reflect.TypeOf(sql.NullFloat64{})
-  typeNullInet = reflect.TypeOf(NullableInet{})
+  typeNullBlob = reflect.TypeOf(NullableBlob{})
   typeNullInt = reflect.TypeOf(sql.NullInt64{})
   typeNullInt64 = reflect.TypeOf(sql.NullInt64{})
   typeNullString = reflect.TypeOf(sql.NullString{})
@@ -47,7 +47,7 @@ type InsertSetStep interface {
   
   SetFloat64(Float64Field, float64) InsertSetMoreStep
   
-  SetInet(InetField, []byte) InsertSetMoreStep
+  SetBlob(BlobField, []byte) InsertSetMoreStep
   
   SetInt(IntField, int) InsertSetMoreStep
   
@@ -63,7 +63,7 @@ type InsertSetStep interface {
   
   SetNullFloat64(NullFloat64Field, sql.NullFloat64) InsertSetMoreStep
   
-  SetNullInet(NullInetField, NullableInet) InsertSetMoreStep
+  SetNullBlob(NullBlobField, NullableBlob) InsertSetMoreStep
   
   SetNullInt(NullIntField, sql.NullInt64) InsertSetMoreStep
   
@@ -92,7 +92,7 @@ type UpdateSetStep interface {
   
   SetFloat64(Float64Field, float64) UpdateSetMoreStep
   
-  SetInet(InetField, []byte) UpdateSetMoreStep
+  SetBlob(BlobField, []byte) UpdateSetMoreStep
   
   SetInt(IntField, int) UpdateSetMoreStep
   
@@ -108,7 +108,7 @@ type UpdateSetStep interface {
   
   SetNullFloat64(NullFloat64Field, sql.NullFloat64) UpdateSetMoreStep
   
-  SetNullInet(NullInetField, NullableInet) UpdateSetMoreStep
+  SetNullBlob(NullBlobField, NullableBlob) UpdateSetMoreStep
   
   SetNullInt(NullIntField, sql.NullInt64) UpdateSetMoreStep
   
@@ -145,7 +145,7 @@ func (i *insert) SetFloat64(f Float64Field, v float64) InsertSetMoreStep {
   return i.Set(f, v)
 }
 
-func (i *insert) SetInet(f InetField, v []byte) InsertSetMoreStep {
+func (i *insert) SetBlob(f BlobField, v []byte) InsertSetMoreStep {
   return i.Set(f, v)
 }
 
@@ -177,7 +177,7 @@ func (i *insert) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) InsertSet
   return i.Set(f, v)
 }
 
-func (i *insert) SetNullInet(f NullInetField, v NullableInet) InsertSetMoreStep {
+func (i *insert) SetNullBlob(f NullBlobField, v NullableBlob) InsertSetMoreStep {
   return i.Set(f, v)
 }
 
@@ -227,7 +227,7 @@ func (u *update) SetFloat64(f Float64Field, v float64) UpdateSetMoreStep {
   return u.Set(f, v)
 }
 
-func (u *update) SetInet(f InetField, v []byte) UpdateSetMoreStep {
+func (u *update) SetBlob(f BlobField, v []byte) UpdateSetMoreStep {
   return u.Set(f, v)
 }
 
@@ -259,7 +259,7 @@ func (u *update) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) UpdateSet
   return u.Set(f, v)
 }
 
-func (u *update) SetNullInet(f NullInetField, v NullableInet) UpdateSetMoreStep {
+func (u *update) SetNullBlob(f NullBlobField, v NullableBlob) UpdateSetMoreStep {
   return u.Set(f, v)
 }
 
@@ -302,7 +302,7 @@ type Reflectable interface {
 
   Float64Field(name string) Float64Field
 
-  InetField(name string) InetField
+  BlobField(name string) BlobField
 
   IntField(name string) IntField
 
@@ -318,7 +318,7 @@ type Reflectable interface {
 
   NullFloat64Field(name string) NullFloat64Field
 
-  NullInetField(name string) NullInetField
+  NullBlobField(name string) NullBlobField
 
   NullIntField(name string) NullIntField
 
@@ -396,11 +396,11 @@ func (t table) Float64Field(name string) Float64Field {
   return &float64Field{name: name, selection: t}
 }
 
-func (s *selection) InetField(name string) InetField {
-  return &inetField{name: name}
+func (s *selection) BlobField(name string) BlobField {
+  return &blobField{name: name}
 }
-func (t table) InetField(name string) InetField {
-  return &inetField{name: name, selection: t}
+func (t table) BlobField(name string) BlobField {
+  return &blobField{name: name, selection: t}
 }
 
 func (s *selection) IntField(name string) IntField {
@@ -452,11 +452,11 @@ func (t table) NullFloat64Field(name string) NullFloat64Field {
   return &nullfloat64Field{name: name, selection: t}
 }
 
-func (s *selection) NullInetField(name string) NullInetField {
-  return &nullinetField{name: name}
+func (s *selection) NullBlobField(name string) NullBlobField {
+  return &nullblobField{name: name}
 }
-func (t table) NullInetField(name string) NullInetField {
-  return &nullinetField{name: name, selection: t}
+func (t table) NullBlobField(name string) NullBlobField {
+  return &nullblobField{name: name, selection: t}
 }
 
 func (s *selection) NullIntField(name string) NullIntField {
@@ -1556,34 +1556,34 @@ func (c *float64Field) Substr3(_0,_1 interface{}) Field {
 
 
 
-type inetField struct {
+type blobField struct {
   name string
   selection Selectable
   alias string
   fun FieldFunction
 }
 
-type InetField interface {
+type BlobField interface {
   TableField
   
   Eq(value []byte) Condition
-  IsEq(value InetField) JoinCondition
+  IsEq(value BlobField) JoinCondition
   
   Gt(value []byte) Condition
-  IsGt(value InetField) JoinCondition
+  IsGt(value BlobField) JoinCondition
   
   Ge(value []byte) Condition
-  IsGe(value InetField) JoinCondition
+  IsGe(value BlobField) JoinCondition
   
   Lt(value []byte) Condition
-  IsLt(value InetField) JoinCondition
+  IsLt(value BlobField) JoinCondition
   
   Le(value []byte) Condition
-  IsLe(value InetField) JoinCondition
+  IsLe(value BlobField) JoinCondition
   
 }
 
-func (c *inetField) Function() FieldFunction {
+func (c *blobField) Function() FieldFunction {
   return FieldFunction{
     Name:  c.fun.Name,
     Expr:  c.fun.Expr,
@@ -1592,15 +1592,15 @@ func (c *inetField) Function() FieldFunction {
   }
 }
 
-func (c *inetField) fct(fun, expr string, args ...interface{}) Field {
+func (c *blobField) fct(fun, expr string, args ...interface{}) Field {
   if &c.fun == nil {
-    return &inetField{
+    return &blobField{
       name:      c.name,
       selection: c.selection,
       fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
     }
   } else {
-    return &inetField{
+    return &blobField{
       name:      c.name,
       selection: c.selection,
       fun:       FieldFunction{
@@ -1618,8 +1618,8 @@ func (c *inetField) fct(fun, expr string, args ...interface{}) Field {
   }
 }
 
-func (c *inetField) As(alias string) Field {
-  return &inetField{
+func (c *blobField) As(alias string) Field {
+  return &blobField{
     name: c.name,
     selection: c.selection,
     alias: alias,
@@ -1632,11 +1632,11 @@ func (c *inetField) As(alias string) Field {
   }
 }
 
-func (c *inetField) Alias() string {
+func (c *blobField) Alias() string {
   return c.alias
 }
 
-func (c *inetField) MaybeAlias() string {
+func (c *blobField) MaybeAlias() string {
   if c.alias == "" {
     return c.name
   } else {
@@ -1644,15 +1644,15 @@ func (c *inetField) MaybeAlias() string {
   }
 }
 
-func (c *inetField) Name() string {
+func (c *blobField) Name() string {
   return c.name
 }
 
-func (c *inetField) Type() reflect.Type {
-  return typeInet
+func (c *blobField) Type() reflect.Type {
+  return typeBlob
 }
 
-func (c *inetField) Parent() Selectable {
+func (c *blobField) Parent() Selectable {
   return c.selection
 }
 
@@ -1660,51 +1660,51 @@ func (c *inetField) Parent() Selectable {
 
 
 
-func (c *inetField) Eq(pred []byte) Condition {
+func (c *blobField) Eq(pred []byte) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
-func (c *inetField) IsEq(pred InetField) JoinCondition {
+func (c *blobField) IsEq(pred BlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
 
 
-func (c *inetField) Gt(pred []byte) Condition {
+func (c *blobField) Gt(pred []byte) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
-func (c *inetField) IsGt(pred InetField) JoinCondition {
+func (c *blobField) IsGt(pred BlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
 }
 
 
 
-func (c *inetField) Ge(pred []byte) Condition {
+func (c *blobField) Ge(pred []byte) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
-func (c *inetField) IsGe(pred InetField) JoinCondition {
+func (c *blobField) IsGe(pred BlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
 }
 
 
 
-func (c *inetField) Lt(pred []byte) Condition {
+func (c *blobField) Lt(pred []byte) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
-func (c *inetField) IsLt(pred InetField) JoinCondition {
+func (c *blobField) IsLt(pred BlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
 }
 
 
 
-func (c *inetField) Le(pred []byte) Condition {
+func (c *blobField) Le(pred []byte) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
-func (c *inetField) IsLe(pred InetField) JoinCondition {
+func (c *blobField) IsLe(pred BlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
@@ -1712,54 +1712,54 @@ func (c *inetField) IsLe(pred InetField) JoinCondition {
 
 // --
 
-func Inet(s Selectable, name string) InetField {
-  return &inetField{name: name, selection: s}
+func Blob(s Selectable, name string) BlobField {
+  return &blobField{name: name, selection: s}
 }
 
 //////
 
 
-func (c *inetField) Avg() Field {
+func (c *blobField) Avg() Field {
   return c.fct("Avg", "AVG(%s)")
 }
 
-func (c *inetField) Max() Field {
+func (c *blobField) Max() Field {
   return c.fct("Max", "MAX(%s)")
 }
 
-func (c *inetField) Min() Field {
+func (c *blobField) Min() Field {
   return c.fct("Min", "MIN(%s)")
 }
 
-func (c *inetField) Ceil() Field {
+func (c *blobField) Ceil() Field {
   return c.fct("Ceil", "CEIL(%s)")
 }
 
-func (c *inetField) Div(_0 interface{}) Field {
+func (c *blobField) Div(_0 interface{}) Field {
   return c.fct("Div", "%s / %v", _0)
 }
 
-func (c *inetField) Cast(_0 interface{}) Field {
+func (c *blobField) Cast(_0 interface{}) Field {
   return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
-func (c *inetField) Md5() Field {
+func (c *blobField) Md5() Field {
   return c.fct("Md5", "MD5(%s)")
 }
 
-func (c *inetField) Lower() Field {
+func (c *blobField) Lower() Field {
   return c.fct("Lower", "LOWER(%s)")
 }
 
-func (c *inetField) Hex() Field {
+func (c *blobField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
-func (c *inetField) Substr2(_0 interface{}) Field {
+func (c *blobField) Substr2(_0 interface{}) Field {
   return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
 }
 
-func (c *inetField) Substr3(_0,_1 interface{}) Field {
+func (c *blobField) Substr3(_0,_1 interface{}) Field {
   return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
@@ -3236,34 +3236,34 @@ func (c *nullfloat64Field) Substr3(_0,_1 interface{}) Field {
 
 
 
-type nullinetField struct {
+type nullblobField struct {
   name string
   selection Selectable
   alias string
   fun FieldFunction
 }
 
-type NullInetField interface {
+type NullBlobField interface {
   TableField
   
-  Eq(value NullableInet) Condition
-  IsEq(value NullInetField) JoinCondition
+  Eq(value NullableBlob) Condition
+  IsEq(value NullBlobField) JoinCondition
   
-  Gt(value NullableInet) Condition
-  IsGt(value NullInetField) JoinCondition
+  Gt(value NullableBlob) Condition
+  IsGt(value NullBlobField) JoinCondition
   
-  Ge(value NullableInet) Condition
-  IsGe(value NullInetField) JoinCondition
+  Ge(value NullableBlob) Condition
+  IsGe(value NullBlobField) JoinCondition
   
-  Lt(value NullableInet) Condition
-  IsLt(value NullInetField) JoinCondition
+  Lt(value NullableBlob) Condition
+  IsLt(value NullBlobField) JoinCondition
   
-  Le(value NullableInet) Condition
-  IsLe(value NullInetField) JoinCondition
+  Le(value NullableBlob) Condition
+  IsLe(value NullBlobField) JoinCondition
   
 }
 
-func (c *nullinetField) Function() FieldFunction {
+func (c *nullblobField) Function() FieldFunction {
   return FieldFunction{
     Name:  c.fun.Name,
     Expr:  c.fun.Expr,
@@ -3272,15 +3272,15 @@ func (c *nullinetField) Function() FieldFunction {
   }
 }
 
-func (c *nullinetField) fct(fun, expr string, args ...interface{}) Field {
+func (c *nullblobField) fct(fun, expr string, args ...interface{}) Field {
   if &c.fun == nil {
-    return &nullinetField{
+    return &nullblobField{
       name:      c.name,
       selection: c.selection,
       fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
     }
   } else {
-    return &nullinetField{
+    return &nullblobField{
       name:      c.name,
       selection: c.selection,
       fun:       FieldFunction{
@@ -3298,8 +3298,8 @@ func (c *nullinetField) fct(fun, expr string, args ...interface{}) Field {
   }
 }
 
-func (c *nullinetField) As(alias string) Field {
-  return &nullinetField{
+func (c *nullblobField) As(alias string) Field {
+  return &nullblobField{
     name: c.name,
     selection: c.selection,
     alias: alias,
@@ -3312,11 +3312,11 @@ func (c *nullinetField) As(alias string) Field {
   }
 }
 
-func (c *nullinetField) Alias() string {
+func (c *nullblobField) Alias() string {
   return c.alias
 }
 
-func (c *nullinetField) MaybeAlias() string {
+func (c *nullblobField) MaybeAlias() string {
   if c.alias == "" {
     return c.name
   } else {
@@ -3324,15 +3324,15 @@ func (c *nullinetField) MaybeAlias() string {
   }
 }
 
-func (c *nullinetField) Name() string {
+func (c *nullblobField) Name() string {
   return c.name
 }
 
-func (c *nullinetField) Type() reflect.Type {
-  return typeNullInet
+func (c *nullblobField) Type() reflect.Type {
+  return typeNullBlob
 }
 
-func (c *nullinetField) Parent() Selectable {
+func (c *nullblobField) Parent() Selectable {
   return c.selection
 }
 
@@ -3340,51 +3340,51 @@ func (c *nullinetField) Parent() Selectable {
 
 
 
-func (c *nullinetField) Eq(pred NullableInet) Condition {
+func (c *nullblobField) Eq(pred NullableBlob) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
-func (c *nullinetField) IsEq(pred NullInetField) JoinCondition {
+func (c *nullblobField) IsEq(pred NullBlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
 
 
-func (c *nullinetField) Gt(pred NullableInet) Condition {
+func (c *nullblobField) Gt(pred NullableBlob) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
-func (c *nullinetField) IsGt(pred NullInetField) JoinCondition {
+func (c *nullblobField) IsGt(pred NullBlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
 }
 
 
 
-func (c *nullinetField) Ge(pred NullableInet) Condition {
+func (c *nullblobField) Ge(pred NullableBlob) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
-func (c *nullinetField) IsGe(pred NullInetField) JoinCondition {
+func (c *nullblobField) IsGe(pred NullBlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
 }
 
 
 
-func (c *nullinetField) Lt(pred NullableInet) Condition {
+func (c *nullblobField) Lt(pred NullableBlob) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
-func (c *nullinetField) IsLt(pred NullInetField) JoinCondition {
+func (c *nullblobField) IsLt(pred NullBlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
 }
 
 
 
-func (c *nullinetField) Le(pred NullableInet) Condition {
+func (c *nullblobField) Le(pred NullableBlob) Condition {
   return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
-func (c *nullinetField) IsLe(pred NullInetField) JoinCondition {
+func (c *nullblobField) IsLe(pred NullBlobField) JoinCondition {
   return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
@@ -3392,54 +3392,54 @@ func (c *nullinetField) IsLe(pred NullInetField) JoinCondition {
 
 // --
 
-func NullInet(s Selectable, name string) NullInetField {
-  return &nullinetField{name: name, selection: s}
+func NullBlob(s Selectable, name string) NullBlobField {
+  return &nullblobField{name: name, selection: s}
 }
 
 //////
 
 
-func (c *nullinetField) Avg() Field {
+func (c *nullblobField) Avg() Field {
   return c.fct("Avg", "AVG(%s)")
 }
 
-func (c *nullinetField) Max() Field {
+func (c *nullblobField) Max() Field {
   return c.fct("Max", "MAX(%s)")
 }
 
-func (c *nullinetField) Min() Field {
+func (c *nullblobField) Min() Field {
   return c.fct("Min", "MIN(%s)")
 }
 
-func (c *nullinetField) Ceil() Field {
+func (c *nullblobField) Ceil() Field {
   return c.fct("Ceil", "CEIL(%s)")
 }
 
-func (c *nullinetField) Div(_0 interface{}) Field {
+func (c *nullblobField) Div(_0 interface{}) Field {
   return c.fct("Div", "%s / %v", _0)
 }
 
-func (c *nullinetField) Cast(_0 interface{}) Field {
+func (c *nullblobField) Cast(_0 interface{}) Field {
   return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
-func (c *nullinetField) Md5() Field {
+func (c *nullblobField) Md5() Field {
   return c.fct("Md5", "MD5(%s)")
 }
 
-func (c *nullinetField) Lower() Field {
+func (c *nullblobField) Lower() Field {
   return c.fct("Lower", "LOWER(%s)")
 }
 
-func (c *nullinetField) Hex() Field {
+func (c *nullblobField) Hex() Field {
   return c.fct("Hex", "HEX(%s)")
 }
 
-func (c *nullinetField) Substr2(_0 interface{}) Field {
+func (c *nullblobField) Substr2(_0 interface{}) Field {
   return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
 }
 
-func (c *nullinetField) Substr3(_0,_1 interface{}) Field {
+func (c *nullblobField) Substr3(_0,_1 interface{}) Field {
   return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 

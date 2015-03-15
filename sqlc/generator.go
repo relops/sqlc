@@ -20,11 +20,11 @@ var integer = regexp.MustCompile("INT")
 var int_64 = regexp.MustCompile("INTEGER|BIGINT")
 var float_32 = regexp.MustCompile("FLOAT")
 var float_64 = regexp.MustCompile("DOUBLE PRECISION|NUMERIC")
-var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
+var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT|CHAR")
 var datetime = regexp.MustCompile("TIMESTAMP|DATETIME")
 var date = regexp.MustCompile("DATE")
 var time_ = regexp.MustCompile("TIME")
-var inet = regexp.MustCompile("INET")
+var blob = regexp.MustCompile("INET|TINYBLOB|BLOB|MEDIUMBLOB|LONGBLOB")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
 
 type Provenance struct {
@@ -198,8 +198,8 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 				fieldType = "Time"
 			} else if boolean.MatchString(colType.String) {
 				fieldType = "Bool"
-			} else if inet.MatchString(colType.String) {
-				fieldType = "Inet"
+			} else if blob.MatchString(colType.String) {
+				fieldType = "Blob"
 			}
 
 			if nullable {
@@ -269,8 +269,8 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				fieldType = "Time"
 			} else if boolean.MatchString(colType.String) {
 				fieldType = "Bool"
-			} else if inet.MatchString(colType.String) {
-				fieldType = "Inet"
+			} else if blob.MatchString(colType.String) {
+				fieldType = "Blob"
 			}
 
 			if nullable {

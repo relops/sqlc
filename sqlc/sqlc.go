@@ -217,19 +217,19 @@ func Qualified(parts ...string) string {
 	return strings.Join(tmp, ".")
 }
 
-type NullableInet struct {
+type NullableBlob struct {
 	Inet  []byte
 	Valid bool // Valid is true if Inet is not NULL
 }
 
 // Scan implements the Scanner interface.
-func (self *NullableInet) Scan(value interface{}) error {
+func (self *NullableBlob) Scan(value interface{}) error {
 	self.Inet, self.Valid = value.([]byte)
 	return nil
 }
 
 // Value implements the driver Valuer interface.
-func (self NullableInet) Value() (driver.Value, error) {
+func (self NullableBlob) Value() (driver.Value, error) {
 	if !self.Valid {
 		return nil, nil
 	}
