@@ -8,7 +8,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/relops/sqlc/sqlc"
+	"github.com/shutej/sqlc/sqlc"
 	"log"
 	"os"
 )

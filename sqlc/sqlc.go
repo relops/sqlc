@@ -3,7 +3,11 @@ package sqlc
 import (
 	"bytes"
 	"database/sql"
+	"database/sql/driver"
 	"io"
+	"reflect"
+	"strings"
+	"time"
 )
 
 type PredicateType int
@@ -54,6 +58,7 @@ type Field interface {
 	Aliasable
 	Functional
 	Name() string
+	Type() reflect.Type
 	As(string) Field
 	Function() FieldFunction
 }
@@ -186,7 +191,7 @@ func (u *update) Where(c ...Condition) Executable {
 	return u
 }
 
-func (u *update) set(f TableField, v interface{}) UpdateSetMoreStep {
+func (u *update) Set(f TableField, v interface{}) UpdateSetMoreStep {
 	binding := TableFieldBinding{Field: f, Value: v}
 	u.bindings = append(u.bindings, binding)
 	return u
@@ -200,4 +205,90 @@ func exec(d Dialect, r Renderable, db *sql.DB) (sql.Result, error) {
 	var buf bytes.Buffer
 	args := r.Render(d, &buf)
 	return db.Exec(buf.String(), args...)
+}
+
+func Qualified(parts ...string) string {
+	tmp := []string{}
+	for _, part := range parts {
+		if part != "" {
+			tmp = append(tmp, part)
+		}
+	}
+	return strings.Join(tmp, ".")
+}
+
+type NullableBlob struct {
+	Inet  []byte
+	Valid bool // Valid is true if Inet is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (self *NullableBlob) Scan(value interface{}) error {
+	self.Inet, self.Valid = value.([]byte)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableBlob) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Inet, nil
+}
+
+type NullableDate struct {
+	Date  time.Time
+	Valid bool // Valid is true if Date is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (self *NullableDate) Scan(value interface{}) error {
+	self.Date, self.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableDate) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Date, nil
+}
+
+type NullableTime struct {
+	Time  time.Time
+	Valid bool // Valid is true if Time is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (self *NullableTime) Scan(value interface{}) error {
+	self.Time, self.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableTime) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Time, nil
+}
+
+type NullableDatetime struct {
+	Datetime time.Time
+	Valid    bool // Valid is true if Datetime is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (self *NullableDatetime) Scan(value interface{}) error {
+	self.Datetime, self.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (self NullableDatetime) Value() (driver.Value, error) {
+	if !self.Valid {
+		return nil, nil
+	}
+	return self.Datetime, nil
 }

@@ -6,66 +6,285 @@
 package sqlc
 
 import (
-	"time"
+  "database/sql"
+  "reflect"
+  "time"
+)
+
+var (
+  typeBool = reflect.TypeOf(false)
+  typeDate = reflect.TypeOf(time.Unix(0, 0))
+  typeDatetime = reflect.TypeOf(time.Unix(0, 0))
+  typeFloat32 = reflect.TypeOf(float32(0.))
+  typeFloat64 = reflect.TypeOf(float64(0.))
+  typeInt = reflect.TypeOf(int(0))
+  typeBlob = reflect.TypeOf([]byte{})
+  typeInt64 = reflect.TypeOf(int64(0))
+  typeNullBool = reflect.TypeOf(sql.NullBool{})
+  typeNullDate = reflect.TypeOf(NullableDate{})
+  typeNullDatetime = reflect.TypeOf(NullableDatetime{})
+  typeNullFloat32 = reflect.TypeOf(sql.NullFloat64{})
+  typeNullFloat64 = reflect.TypeOf(sql.NullFloat64{})
+  typeNullBlob = reflect.TypeOf(NullableBlob{})
+  typeNullInt = reflect.TypeOf(sql.NullInt64{})
+  typeNullInt64 = reflect.TypeOf(sql.NullInt64{})
+  typeNullString = reflect.TypeOf(sql.NullString{})
+  typeNullTime = reflect.TypeOf(NullableTime{})
+  typeString = reflect.TypeOf("")
+  typeTime = reflect.TypeOf(time.Unix(0, 0))
 )
 
 type InsertSetStep interface {
-	
- 	SetString(StringField, string) InsertSetMoreStep
- 	
- 	SetInt(IntField, int) InsertSetMoreStep
- 	
- 	SetInt64(Int64Field, int64) InsertSetMoreStep
- 	
- 	SetTime(TimeField, time.Time) InsertSetMoreStep
- 	
+  Set(TableField, interface{}) InsertSetMoreStep
+  
+  SetBool(BoolField, bool) InsertSetMoreStep
+  
+  SetDate(DateField, time.Time) InsertSetMoreStep
+  
+  SetDatetime(DatetimeField, time.Time) InsertSetMoreStep
+  
+  SetFloat32(Float32Field, float32) InsertSetMoreStep
+  
+  SetFloat64(Float64Field, float64) InsertSetMoreStep
+  
+  SetBlob(BlobField, []byte) InsertSetMoreStep
+  
+  SetInt(IntField, int) InsertSetMoreStep
+  
+  SetInt64(Int64Field, int64) InsertSetMoreStep
+  
+  SetNullBool(NullBoolField, sql.NullBool) InsertSetMoreStep
+  
+  SetNullDate(NullDateField, NullableDate) InsertSetMoreStep
+  
+  SetNullDatetime(NullDatetimeField, NullableDatetime) InsertSetMoreStep
+  
+  SetNullFloat32(NullFloat32Field, sql.NullFloat64) InsertSetMoreStep
+  
+  SetNullFloat64(NullFloat64Field, sql.NullFloat64) InsertSetMoreStep
+  
+  SetNullBlob(NullBlobField, NullableBlob) InsertSetMoreStep
+  
+  SetNullInt(NullIntField, sql.NullInt64) InsertSetMoreStep
+  
+  SetNullInt64(NullInt64Field, sql.NullInt64) InsertSetMoreStep
+  
+  SetNullString(NullStringField, sql.NullString) InsertSetMoreStep
+  
+  SetNullTime(NullTimeField, NullableTime) InsertSetMoreStep
+  
+  SetString(StringField, string) InsertSetMoreStep
+  
+  SetTime(TimeField, time.Time) InsertSetMoreStep
+  
 }
 
 type UpdateSetStep interface {
-	
- 	SetString(StringField, string) UpdateSetMoreStep
- 	
- 	SetInt(IntField, int) UpdateSetMoreStep
- 	
- 	SetInt64(Int64Field, int64) UpdateSetMoreStep
- 	
- 	SetTime(TimeField, time.Time) UpdateSetMoreStep
- 	
+  Set(TableField, interface{}) UpdateSetMoreStep
+  
+  SetBool(BoolField, bool) UpdateSetMoreStep
+  
+  SetDate(DateField, time.Time) UpdateSetMoreStep
+  
+  SetDatetime(DatetimeField, time.Time) UpdateSetMoreStep
+  
+  SetFloat32(Float32Field, float32) UpdateSetMoreStep
+  
+  SetFloat64(Float64Field, float64) UpdateSetMoreStep
+  
+  SetBlob(BlobField, []byte) UpdateSetMoreStep
+  
+  SetInt(IntField, int) UpdateSetMoreStep
+  
+  SetInt64(Int64Field, int64) UpdateSetMoreStep
+  
+  SetNullBool(NullBoolField, sql.NullBool) UpdateSetMoreStep
+  
+  SetNullDate(NullDateField, NullableDate) UpdateSetMoreStep
+  
+  SetNullDatetime(NullDatetimeField, NullableDatetime) UpdateSetMoreStep
+  
+  SetNullFloat32(NullFloat32Field, sql.NullFloat64) UpdateSetMoreStep
+  
+  SetNullFloat64(NullFloat64Field, sql.NullFloat64) UpdateSetMoreStep
+  
+  SetNullBlob(NullBlobField, NullableBlob) UpdateSetMoreStep
+  
+  SetNullInt(NullIntField, sql.NullInt64) UpdateSetMoreStep
+  
+  SetNullInt64(NullInt64Field, sql.NullInt64) UpdateSetMoreStep
+  
+  SetNullString(NullStringField, sql.NullString) UpdateSetMoreStep
+  
+  SetNullTime(NullTimeField, NullableTime) UpdateSetMoreStep
+  
+  SetString(StringField, string) UpdateSetMoreStep
+  
+  SetTime(TimeField, time.Time) UpdateSetMoreStep
+  
 }
 
 
-func (i *insert) SetString(f StringField, v string) InsertSetMoreStep {
-	return i.set(f,v)
+func (i *insert) SetBool(f BoolField, v bool) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetDate(f DateField, v time.Time) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetDatetime(f DatetimeField, v time.Time) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetFloat32(f Float32Field, v float32) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetFloat64(f Float64Field, v float64) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetBlob(f BlobField, v []byte) InsertSetMoreStep {
+  return i.Set(f, v)
 }
 
 func (i *insert) SetInt(f IntField, v int) InsertSetMoreStep {
-	return i.set(f,v)
+  return i.Set(f, v)
 }
 
 func (i *insert) SetInt64(f Int64Field, v int64) InsertSetMoreStep {
-	return i.set(f,v)
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullBool(f NullBoolField, v sql.NullBool) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullDate(f NullDateField, v NullableDate) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullDatetime(f NullDatetimeField, v NullableDatetime) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullFloat32(f NullFloat32Field, v sql.NullFloat64) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullBlob(f NullBlobField, v NullableBlob) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullInt(f NullIntField, v sql.NullInt64) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullInt64(f NullInt64Field, v sql.NullInt64) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullString(f NullStringField, v sql.NullString) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetNullTime(f NullTimeField, v NullableTime) InsertSetMoreStep {
+  return i.Set(f, v)
+}
+
+func (i *insert) SetString(f StringField, v string) InsertSetMoreStep {
+  return i.Set(f, v)
 }
 
 func (i *insert) SetTime(f TimeField, v time.Time) InsertSetMoreStep {
-	return i.set(f,v)
+  return i.Set(f, v)
 }
 
 
 
-func (u *update) SetString(f StringField, v string) UpdateSetMoreStep {
-	return u.set(f,v)
+func (u *update) SetBool(f BoolField, v bool) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetDate(f DateField, v time.Time) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetDatetime(f DatetimeField, v time.Time) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetFloat32(f Float32Field, v float32) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetFloat64(f Float64Field, v float64) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetBlob(f BlobField, v []byte) UpdateSetMoreStep {
+  return u.Set(f, v)
 }
 
 func (u *update) SetInt(f IntField, v int) UpdateSetMoreStep {
-	return u.set(f,v)
+  return u.Set(f, v)
 }
 
 func (u *update) SetInt64(f Int64Field, v int64) UpdateSetMoreStep {
-	return u.set(f,v)
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullBool(f NullBoolField, v sql.NullBool) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullDate(f NullDateField, v NullableDate) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullDatetime(f NullDatetimeField, v NullableDatetime) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullFloat32(f NullFloat32Field, v sql.NullFloat64) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullFloat64(f NullFloat64Field, v sql.NullFloat64) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullBlob(f NullBlobField, v NullableBlob) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullInt(f NullIntField, v sql.NullInt64) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullInt64(f NullInt64Field, v sql.NullInt64) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullString(f NullStringField, v sql.NullString) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetNullTime(f NullTimeField, v NullableTime) UpdateSetMoreStep {
+  return u.Set(f, v)
+}
+
+func (u *update) SetString(f StringField, v string) UpdateSetMoreStep {
+  return u.Set(f, v)
 }
 
 func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
-	return u.set(f,v)
+  return u.Set(f, v)
 }
 
 
@@ -73,65 +292,213 @@ func (u *update) SetTime(f TimeField, v time.Time) UpdateSetMoreStep {
 
 type Reflectable interface {
 
-	StringField(name string) StringField
+  BoolField(name string) BoolField
 
-	IntField(name string) IntField
+  DateField(name string) DateField
 
-	Int64Field(name string) Int64Field
+  DatetimeField(name string) DatetimeField
 
-	TimeField(name string) TimeField
+  Float32Field(name string) Float32Field
+
+  Float64Field(name string) Float64Field
+
+  BlobField(name string) BlobField
+
+  IntField(name string) IntField
+
+  Int64Field(name string) Int64Field
+
+  NullBoolField(name string) NullBoolField
+
+  NullDateField(name string) NullDateField
+
+  NullDatetimeField(name string) NullDatetimeField
+
+  NullFloat32Field(name string) NullFloat32Field
+
+  NullFloat64Field(name string) NullFloat64Field
+
+  NullBlobField(name string) NullBlobField
+
+  NullIntField(name string) NullIntField
+
+  NullInt64Field(name string) NullInt64Field
+
+  NullStringField(name string) NullStringField
+
+  NullTimeField(name string) NullTimeField
+
+  StringField(name string) StringField
+
+  TimeField(name string) TimeField
 
 }
 
 type Functional interface {
 
-	Avg() Field
+  Avg() Field
 
-	Max() Field
+  Max() Field
 
-	Min() Field
+  Min() Field
 
-	Ceil() Field
+  Ceil() Field
 
-	Div(_0 interface{}) Field
+  Div(_0 interface{}) Field
 
-	Cast(_0 interface{}) Field
+  Cast(_0 interface{}) Field
 
-	Md5() Field
+  Md5() Field
 
-	Lower() Field
+  Lower() Field
 
-	Hex() Field
+  Hex() Field
+
+  Substr2(_0 interface{}) Field
+
+  Substr3(_0,_1 interface{}) Field
 
 }
 
 
-func (s *selection) StringField(name string) StringField {
-	return &stringField{name: name}
+func (s *selection) BoolField(name string) BoolField {
+  return &boolField{name: name}
 }
-func (t table) StringField(name string) StringField {
-	return &stringField{name: name, selection: t}
+func (t table) BoolField(name string) BoolField {
+  return &boolField{name: name, selection: t}
+}
+
+func (s *selection) DateField(name string) DateField {
+  return &dateField{name: name}
+}
+func (t table) DateField(name string) DateField {
+  return &dateField{name: name, selection: t}
+}
+
+func (s *selection) DatetimeField(name string) DatetimeField {
+  return &datetimeField{name: name}
+}
+func (t table) DatetimeField(name string) DatetimeField {
+  return &datetimeField{name: name, selection: t}
+}
+
+func (s *selection) Float32Field(name string) Float32Field {
+  return &float32Field{name: name}
+}
+func (t table) Float32Field(name string) Float32Field {
+  return &float32Field{name: name, selection: t}
+}
+
+func (s *selection) Float64Field(name string) Float64Field {
+  return &float64Field{name: name}
+}
+func (t table) Float64Field(name string) Float64Field {
+  return &float64Field{name: name, selection: t}
+}
+
+func (s *selection) BlobField(name string) BlobField {
+  return &blobField{name: name}
+}
+func (t table) BlobField(name string) BlobField {
+  return &blobField{name: name, selection: t}
 }
 
 func (s *selection) IntField(name string) IntField {
-	return &intField{name: name}
+  return &intField{name: name}
 }
 func (t table) IntField(name string) IntField {
-	return &intField{name: name, selection: t}
+  return &intField{name: name, selection: t}
 }
 
 func (s *selection) Int64Field(name string) Int64Field {
-	return &int64Field{name: name}
+  return &int64Field{name: name}
 }
 func (t table) Int64Field(name string) Int64Field {
-	return &int64Field{name: name, selection: t}
+  return &int64Field{name: name, selection: t}
+}
+
+func (s *selection) NullBoolField(name string) NullBoolField {
+  return &nullboolField{name: name}
+}
+func (t table) NullBoolField(name string) NullBoolField {
+  return &nullboolField{name: name, selection: t}
+}
+
+func (s *selection) NullDateField(name string) NullDateField {
+  return &nulldateField{name: name}
+}
+func (t table) NullDateField(name string) NullDateField {
+  return &nulldateField{name: name, selection: t}
+}
+
+func (s *selection) NullDatetimeField(name string) NullDatetimeField {
+  return &nulldatetimeField{name: name}
+}
+func (t table) NullDatetimeField(name string) NullDatetimeField {
+  return &nulldatetimeField{name: name, selection: t}
+}
+
+func (s *selection) NullFloat32Field(name string) NullFloat32Field {
+  return &nullfloat32Field{name: name}
+}
+func (t table) NullFloat32Field(name string) NullFloat32Field {
+  return &nullfloat32Field{name: name, selection: t}
+}
+
+func (s *selection) NullFloat64Field(name string) NullFloat64Field {
+  return &nullfloat64Field{name: name}
+}
+func (t table) NullFloat64Field(name string) NullFloat64Field {
+  return &nullfloat64Field{name: name, selection: t}
+}
+
+func (s *selection) NullBlobField(name string) NullBlobField {
+  return &nullblobField{name: name}
+}
+func (t table) NullBlobField(name string) NullBlobField {
+  return &nullblobField{name: name, selection: t}
+}
+
+func (s *selection) NullIntField(name string) NullIntField {
+  return &nullintField{name: name}
+}
+func (t table) NullIntField(name string) NullIntField {
+  return &nullintField{name: name, selection: t}
+}
+
+func (s *selection) NullInt64Field(name string) NullInt64Field {
+  return &nullint64Field{name: name}
+}
+func (t table) NullInt64Field(name string) NullInt64Field {
+  return &nullint64Field{name: name, selection: t}
+}
+
+func (s *selection) NullStringField(name string) NullStringField {
+  return &nullstringField{name: name}
+}
+func (t table) NullStringField(name string) NullStringField {
+  return &nullstringField{name: name, selection: t}
+}
+
+func (s *selection) NullTimeField(name string) NullTimeField {
+  return &nulltimeField{name: name}
+}
+func (t table) NullTimeField(name string) NullTimeField {
+  return &nulltimeField{name: name, selection: t}
+}
+
+func (s *selection) StringField(name string) StringField {
+  return &stringField{name: name}
+}
+func (t table) StringField(name string) StringField {
+  return &stringField{name: name, selection: t}
 }
 
 func (s *selection) TimeField(name string) TimeField {
-	return &timeField{name: name}
+  return &timeField{name: name}
 }
 func (t table) TimeField(name string) TimeField {
-	return &timeField{name: name, selection: t}
+  return &timeField{name: name, selection: t}
 }
 
 
@@ -139,298 +506,1364 @@ func (t table) TimeField(name string) TimeField {
 
 
 
-type stringField struct {
-	name string
-	selection Selectable
-	alias string
-	fun FieldFunction
+type boolField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
 }
 
-type StringField interface {
-	TableField
-	
-	Eq(value string) Condition
-	IsEq(value StringField) JoinCondition
-	
-	Gt(value string) Condition
-	IsGt(value StringField) JoinCondition
-	
-	Ge(value string) Condition
-	IsGe(value StringField) JoinCondition
-	
-	Lt(value string) Condition
-	IsLt(value StringField) JoinCondition
-	
-	Le(value string) Condition
-	IsLe(value StringField) JoinCondition
-	
+type BoolField interface {
+  TableField
+  
+  Eq(value bool) Condition
+  IsEq(value BoolField) JoinCondition
+  
+  Gt(value bool) Condition
+  IsGt(value BoolField) JoinCondition
+  
+  Ge(value bool) Condition
+  IsGe(value BoolField) JoinCondition
+  
+  Lt(value bool) Condition
+  IsLt(value BoolField) JoinCondition
+  
+  Le(value bool) Condition
+  IsLe(value BoolField) JoinCondition
+  
 }
 
-func (c *stringField) Function() FieldFunction {
-	return FieldFunction{
-		Name:  c.fun.Name,
-		Expr:  c.fun.Expr,
-		Args:  c.fun.Args,
-		Child: c.fun.Child,
-	}
+func (c *boolField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
 }
 
-func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
-	if &c.fun == nil {
-		return &stringField{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
-		}
-	} else {
-		return &stringField{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{
-				Name:  fun,
-				Expr:  expr, 
-				Args:  args,
-				Child: &FieldFunction{
-					Name:  c.fun.Name,
-					Expr:  c.fun.Expr,
-					Args:  c.fun.Args,
-					Child: c.fun.Child,
-				},
-			},
-		}
-	}
+func (c *boolField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &boolField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &boolField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
 }
 
-func (c *stringField) As(alias string) Field {
-	return &stringField{
-		name: c.name, 
-		selection: c.selection,
-		alias: alias,
-		fun: FieldFunction{
-			Name:  c.fun.Name,
-			Expr:  c.fun.Expr,
-			Args:  c.fun.Args,
-			Child: c.fun.Child,
-		},
-	}
+func (c *boolField) As(alias string) Field {
+  return &boolField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
 }
 
-func (c *stringField) Alias() string {
-	return c.alias
+func (c *boolField) Alias() string {
+  return c.alias
 }
 
-func (c *stringField) MaybeAlias() string {
-	if c.alias == "" {
-		return c.name
-	} else {
-		return c.alias
-	}
+func (c *boolField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
 }
 
-func (c *stringField) Name() string {
-	return c.name
+func (c *boolField) Name() string {
+  return c.name
 }
 
-func (c *stringField) Parent() Selectable {
-	return c.selection
+func (c *boolField) Type() reflect.Type {
+  return typeBool
+}
+
+func (c *boolField) Parent() Selectable {
+  return c.selection
 }
 
 // --
 
 
 
-func (c *stringField) Eq(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+func (c *boolField) Eq(pred bool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
-func (c *stringField) IsEq(pred StringField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
-}
-
-
-
-func (c *stringField) Gt(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
-}
-
-func (c *stringField) IsGt(pred StringField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+func (c *boolField) IsEq(pred BoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
 
 
-func (c *stringField) Ge(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+func (c *boolField) Gt(pred bool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
-func (c *stringField) IsGe(pred StringField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
-}
-
-
-
-func (c *stringField) Lt(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
-}
-
-func (c *stringField) IsLt(pred StringField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+func (c *boolField) IsGt(pred BoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
 }
 
 
 
-func (c *stringField) Le(pred string) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+func (c *boolField) Ge(pred bool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
-func (c *stringField) IsLe(pred StringField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+func (c *boolField) IsGe(pred BoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *boolField) Lt(pred bool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *boolField) IsLt(pred BoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *boolField) Le(pred bool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *boolField) IsLe(pred BoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
 
 
 // --
 
-func String(s Selectable, name string) StringField {
-	return &stringField{name: name, selection: s}
+func Bool(s Selectable, name string) BoolField {
+  return &boolField{name: name, selection: s}
 }
 
 //////
 
 
-func (c *stringField) Avg() Field {	
-	return c.fct("Avg", "AVG(%s)")
+func (c *boolField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
 }
 
-func (c *stringField) Max() Field {	
-	return c.fct("Max", "MAX(%s)")
+func (c *boolField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
 }
 
-func (c *stringField) Min() Field {	
-	return c.fct("Min", "MIN(%s)")
+func (c *boolField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
 }
 
-func (c *stringField) Ceil() Field {	
-	return c.fct("Ceil", "CEIL(%s)")
+func (c *boolField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
 }
 
-func (c *stringField) Div(_0 interface{}) Field {	
-	return c.fct("Div", "%s / %v", _0)
+func (c *boolField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
 }
 
-func (c *stringField) Cast(_0 interface{}) Field {	
-	return c.fct("Cast", "CAST(%s AS %s)", _0)
+func (c *boolField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
-func (c *stringField) Md5() Field {	
-	return c.fct("Md5", "MD5(%s)")
+func (c *boolField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
 }
 
-func (c *stringField) Lower() Field {	
-	return c.fct("Lower", "LOWER(%s)")
+func (c *boolField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
 }
 
-func (c *stringField) Hex() Field {	
-	return c.fct("Hex", "HEX(%s)")
+func (c *boolField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *boolField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *boolField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type dateField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type DateField interface {
+  TableField
+  
+  Eq(value time.Time) Condition
+  IsEq(value DateField) JoinCondition
+  
+  Gt(value time.Time) Condition
+  IsGt(value DateField) JoinCondition
+  
+  Ge(value time.Time) Condition
+  IsGe(value DateField) JoinCondition
+  
+  Lt(value time.Time) Condition
+  IsLt(value DateField) JoinCondition
+  
+  Le(value time.Time) Condition
+  IsLe(value DateField) JoinCondition
+  
+}
+
+func (c *dateField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *dateField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &dateField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &dateField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *dateField) As(alias string) Field {
+  return &dateField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *dateField) Alias() string {
+  return c.alias
+}
+
+func (c *dateField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *dateField) Name() string {
+  return c.name
+}
+
+func (c *dateField) Type() reflect.Type {
+  return typeDate
+}
+
+func (c *dateField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *dateField) Eq(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *dateField) IsEq(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *dateField) Gt(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *dateField) IsGt(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *dateField) Ge(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *dateField) IsGe(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *dateField) Lt(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *dateField) IsLt(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *dateField) Le(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *dateField) IsLe(pred DateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Date(s Selectable, name string) DateField {
+  return &dateField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *dateField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *dateField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *dateField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *dateField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *dateField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *dateField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *dateField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *dateField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *dateField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *dateField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *dateField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type datetimeField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type DatetimeField interface {
+  TableField
+  
+  Eq(value time.Time) Condition
+  IsEq(value DatetimeField) JoinCondition
+  
+  Gt(value time.Time) Condition
+  IsGt(value DatetimeField) JoinCondition
+  
+  Ge(value time.Time) Condition
+  IsGe(value DatetimeField) JoinCondition
+  
+  Lt(value time.Time) Condition
+  IsLt(value DatetimeField) JoinCondition
+  
+  Le(value time.Time) Condition
+  IsLe(value DatetimeField) JoinCondition
+  
+}
+
+func (c *datetimeField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *datetimeField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &datetimeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &datetimeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *datetimeField) As(alias string) Field {
+  return &datetimeField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *datetimeField) Alias() string {
+  return c.alias
+}
+
+func (c *datetimeField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *datetimeField) Name() string {
+  return c.name
+}
+
+func (c *datetimeField) Type() reflect.Type {
+  return typeDatetime
+}
+
+func (c *datetimeField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *datetimeField) Eq(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *datetimeField) IsEq(pred DatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *datetimeField) Gt(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *datetimeField) IsGt(pred DatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *datetimeField) Ge(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *datetimeField) IsGe(pred DatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *datetimeField) Lt(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *datetimeField) IsLt(pred DatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *datetimeField) Le(pred time.Time) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *datetimeField) IsLe(pred DatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Datetime(s Selectable, name string) DatetimeField {
+  return &datetimeField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *datetimeField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *datetimeField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *datetimeField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *datetimeField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *datetimeField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *datetimeField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *datetimeField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *datetimeField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *datetimeField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *datetimeField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *datetimeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type float32Field struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type Float32Field interface {
+  TableField
+  
+  Eq(value float32) Condition
+  IsEq(value Float32Field) JoinCondition
+  
+  Gt(value float32) Condition
+  IsGt(value Float32Field) JoinCondition
+  
+  Ge(value float32) Condition
+  IsGe(value Float32Field) JoinCondition
+  
+  Lt(value float32) Condition
+  IsLt(value Float32Field) JoinCondition
+  
+  Le(value float32) Condition
+  IsLe(value Float32Field) JoinCondition
+  
+}
+
+func (c *float32Field) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *float32Field) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &float32Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &float32Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *float32Field) As(alias string) Field {
+  return &float32Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *float32Field) Alias() string {
+  return c.alias
+}
+
+func (c *float32Field) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *float32Field) Name() string {
+  return c.name
+}
+
+func (c *float32Field) Type() reflect.Type {
+  return typeFloat32
+}
+
+func (c *float32Field) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *float32Field) Eq(pred float32) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *float32Field) IsEq(pred Float32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *float32Field) Gt(pred float32) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *float32Field) IsGt(pred Float32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *float32Field) Ge(pred float32) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *float32Field) IsGe(pred Float32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *float32Field) Lt(pred float32) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *float32Field) IsLt(pred Float32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *float32Field) Le(pred float32) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *float32Field) IsLe(pred Float32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Float32(s Selectable, name string) Float32Field {
+  return &float32Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *float32Field) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *float32Field) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *float32Field) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *float32Field) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *float32Field) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *float32Field) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *float32Field) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *float32Field) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *float32Field) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *float32Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *float32Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type float64Field struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type Float64Field interface {
+  TableField
+  
+  Eq(value float64) Condition
+  IsEq(value Float64Field) JoinCondition
+  
+  Gt(value float64) Condition
+  IsGt(value Float64Field) JoinCondition
+  
+  Ge(value float64) Condition
+  IsGe(value Float64Field) JoinCondition
+  
+  Lt(value float64) Condition
+  IsLt(value Float64Field) JoinCondition
+  
+  Le(value float64) Condition
+  IsLe(value Float64Field) JoinCondition
+  
+}
+
+func (c *float64Field) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *float64Field) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &float64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &float64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *float64Field) As(alias string) Field {
+  return &float64Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *float64Field) Alias() string {
+  return c.alias
+}
+
+func (c *float64Field) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *float64Field) Name() string {
+  return c.name
+}
+
+func (c *float64Field) Type() reflect.Type {
+  return typeFloat64
+}
+
+func (c *float64Field) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *float64Field) Eq(pred float64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *float64Field) IsEq(pred Float64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *float64Field) Gt(pred float64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *float64Field) IsGt(pred Float64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *float64Field) Ge(pred float64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *float64Field) IsGe(pred Float64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *float64Field) Lt(pred float64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *float64Field) IsLt(pred Float64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *float64Field) Le(pred float64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *float64Field) IsLe(pred Float64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Float64(s Selectable, name string) Float64Field {
+  return &float64Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *float64Field) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *float64Field) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *float64Field) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *float64Field) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *float64Field) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *float64Field) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *float64Field) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *float64Field) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *float64Field) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *float64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *float64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type blobField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type BlobField interface {
+  TableField
+  
+  Eq(value []byte) Condition
+  IsEq(value BlobField) JoinCondition
+  
+  Gt(value []byte) Condition
+  IsGt(value BlobField) JoinCondition
+  
+  Ge(value []byte) Condition
+  IsGe(value BlobField) JoinCondition
+  
+  Lt(value []byte) Condition
+  IsLt(value BlobField) JoinCondition
+  
+  Le(value []byte) Condition
+  IsLe(value BlobField) JoinCondition
+  
+}
+
+func (c *blobField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *blobField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &blobField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &blobField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *blobField) As(alias string) Field {
+  return &blobField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *blobField) Alias() string {
+  return c.alias
+}
+
+func (c *blobField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *blobField) Name() string {
+  return c.name
+}
+
+func (c *blobField) Type() reflect.Type {
+  return typeBlob
+}
+
+func (c *blobField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *blobField) Eq(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *blobField) IsEq(pred BlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *blobField) Gt(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *blobField) IsGt(pred BlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *blobField) Ge(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *blobField) IsGe(pred BlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *blobField) Lt(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *blobField) IsLt(pred BlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *blobField) Le(pred []byte) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *blobField) IsLe(pred BlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func Blob(s Selectable, name string) BlobField {
+  return &blobField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *blobField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *blobField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *blobField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *blobField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *blobField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *blobField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *blobField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *blobField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *blobField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *blobField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *blobField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
 
 
 type intField struct {
-	name string
-	selection Selectable
-	alias string
-	fun FieldFunction
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
 }
 
 type IntField interface {
-	TableField
-	
-	Eq(value int) Condition
-	IsEq(value IntField) JoinCondition
-	
-	Gt(value int) Condition
-	IsGt(value IntField) JoinCondition
-	
-	Ge(value int) Condition
-	IsGe(value IntField) JoinCondition
-	
-	Lt(value int) Condition
-	IsLt(value IntField) JoinCondition
-	
-	Le(value int) Condition
-	IsLe(value IntField) JoinCondition
-	
+  TableField
+  
+  Eq(value int) Condition
+  IsEq(value IntField) JoinCondition
+  
+  Gt(value int) Condition
+  IsGt(value IntField) JoinCondition
+  
+  Ge(value int) Condition
+  IsGe(value IntField) JoinCondition
+  
+  Lt(value int) Condition
+  IsLt(value IntField) JoinCondition
+  
+  Le(value int) Condition
+  IsLe(value IntField) JoinCondition
+  
 }
 
 func (c *intField) Function() FieldFunction {
-	return FieldFunction{
-		Name:  c.fun.Name,
-		Expr:  c.fun.Expr,
-		Args:  c.fun.Args,
-		Child: c.fun.Child,
-	}
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
 }
 
 func (c *intField) fct(fun, expr string, args ...interface{}) Field {
-	if &c.fun == nil {
-		return &intField{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
-		}
-	} else {
-		return &intField{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{
-				Name:  fun,
-				Expr:  expr, 
-				Args:  args,
-				Child: &FieldFunction{
-					Name:  c.fun.Name,
-					Expr:  c.fun.Expr,
-					Args:  c.fun.Args,
-					Child: c.fun.Child,
-				},
-			},
-		}
-	}
+  if &c.fun == nil {
+    return &intField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &intField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
 }
 
 func (c *intField) As(alias string) Field {
-	return &intField{
-		name: c.name, 
-		selection: c.selection,
-		alias: alias,
-		fun: FieldFunction{
-			Name:  c.fun.Name,
-			Expr:  c.fun.Expr,
-			Args:  c.fun.Args,
-			Child: c.fun.Child,
-		},
-	}
+  return &intField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
 }
 
 func (c *intField) Alias() string {
-	return c.alias
+  return c.alias
 }
 
 func (c *intField) MaybeAlias() string {
-	if c.alias == "" {
-		return c.name
-	} else {
-		return c.alias
-	}
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
 }
 
 func (c *intField) Name() string {
-	return c.name
+  return c.name
+}
+
+func (c *intField) Type() reflect.Type {
+  return typeInt
 }
 
 func (c *intField) Parent() Selectable {
-	return c.selection
+  return c.selection
 }
 
 // --
@@ -438,51 +1871,51 @@ func (c *intField) Parent() Selectable {
 
 
 func (c *intField) Eq(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *intField) IsEq(pred IntField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
 
 
 func (c *intField) Gt(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *intField) IsGt(pred IntField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
 }
 
 
 
 func (c *intField) Ge(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *intField) IsGe(pred IntField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
 }
 
 
 
 func (c *intField) Lt(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *intField) IsLt(pred IntField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
 }
 
 
 
 func (c *intField) Le(pred int) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *intField) IsLe(pred IntField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
 
@@ -490,145 +1923,157 @@ func (c *intField) IsLe(pred IntField) JoinCondition {
 // --
 
 func Int(s Selectable, name string) IntField {
-	return &intField{name: name, selection: s}
+  return &intField{name: name, selection: s}
 }
 
 //////
 
 
-func (c *intField) Avg() Field {	
-	return c.fct("Avg", "AVG(%s)")
+func (c *intField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
 }
 
-func (c *intField) Max() Field {	
-	return c.fct("Max", "MAX(%s)")
+func (c *intField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
 }
 
-func (c *intField) Min() Field {	
-	return c.fct("Min", "MIN(%s)")
+func (c *intField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
 }
 
-func (c *intField) Ceil() Field {	
-	return c.fct("Ceil", "CEIL(%s)")
+func (c *intField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
 }
 
-func (c *intField) Div(_0 interface{}) Field {	
-	return c.fct("Div", "%s / %v", _0)
+func (c *intField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
 }
 
-func (c *intField) Cast(_0 interface{}) Field {	
-	return c.fct("Cast", "CAST(%s AS %s)", _0)
+func (c *intField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
-func (c *intField) Md5() Field {	
-	return c.fct("Md5", "MD5(%s)")
+func (c *intField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
 }
 
-func (c *intField) Lower() Field {	
-	return c.fct("Lower", "LOWER(%s)")
+func (c *intField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
 }
 
-func (c *intField) Hex() Field {	
-	return c.fct("Hex", "HEX(%s)")
+func (c *intField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *intField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *intField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
 
 
 type int64Field struct {
-	name string
-	selection Selectable
-	alias string
-	fun FieldFunction
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
 }
 
 type Int64Field interface {
-	TableField
-	
-	Eq(value int64) Condition
-	IsEq(value Int64Field) JoinCondition
-	
-	Gt(value int64) Condition
-	IsGt(value Int64Field) JoinCondition
-	
-	Ge(value int64) Condition
-	IsGe(value Int64Field) JoinCondition
-	
-	Lt(value int64) Condition
-	IsLt(value Int64Field) JoinCondition
-	
-	Le(value int64) Condition
-	IsLe(value Int64Field) JoinCondition
-	
+  TableField
+  
+  Eq(value int64) Condition
+  IsEq(value Int64Field) JoinCondition
+  
+  Gt(value int64) Condition
+  IsGt(value Int64Field) JoinCondition
+  
+  Ge(value int64) Condition
+  IsGe(value Int64Field) JoinCondition
+  
+  Lt(value int64) Condition
+  IsLt(value Int64Field) JoinCondition
+  
+  Le(value int64) Condition
+  IsLe(value Int64Field) JoinCondition
+  
 }
 
 func (c *int64Field) Function() FieldFunction {
-	return FieldFunction{
-		Name:  c.fun.Name,
-		Expr:  c.fun.Expr,
-		Args:  c.fun.Args,
-		Child: c.fun.Child,
-	}
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
 }
 
 func (c *int64Field) fct(fun, expr string, args ...interface{}) Field {
-	if &c.fun == nil {
-		return &int64Field{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
-		}
-	} else {
-		return &int64Field{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{
-				Name:  fun,
-				Expr:  expr, 
-				Args:  args,
-				Child: &FieldFunction{
-					Name:  c.fun.Name,
-					Expr:  c.fun.Expr,
-					Args:  c.fun.Args,
-					Child: c.fun.Child,
-				},
-			},
-		}
-	}
+  if &c.fun == nil {
+    return &int64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &int64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
 }
 
 func (c *int64Field) As(alias string) Field {
-	return &int64Field{
-		name: c.name, 
-		selection: c.selection,
-		alias: alias,
-		fun: FieldFunction{
-			Name:  c.fun.Name,
-			Expr:  c.fun.Expr,
-			Args:  c.fun.Args,
-			Child: c.fun.Child,
-		},
-	}
+  return &int64Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
 }
 
 func (c *int64Field) Alias() string {
-	return c.alias
+  return c.alias
 }
 
 func (c *int64Field) MaybeAlias() string {
-	if c.alias == "" {
-		return c.name
-	} else {
-		return c.alias
-	}
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
 }
 
 func (c *int64Field) Name() string {
-	return c.name
+  return c.name
+}
+
+func (c *int64Field) Type() reflect.Type {
+  return typeInt64
 }
 
 func (c *int64Field) Parent() Selectable {
-	return c.selection
+  return c.selection
 }
 
 // --
@@ -636,51 +2081,51 @@ func (c *int64Field) Parent() Selectable {
 
 
 func (c *int64Field) Eq(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *int64Field) IsEq(pred Int64Field) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
 
 
 func (c *int64Field) Gt(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *int64Field) IsGt(pred Int64Field) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
 }
 
 
 
 func (c *int64Field) Ge(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *int64Field) IsGe(pred Int64Field) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
 }
 
 
 
 func (c *int64Field) Lt(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *int64Field) IsLt(pred Int64Field) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
 }
 
 
 
 func (c *int64Field) Le(pred int64) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *int64Field) IsLe(pred Int64Field) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
 
@@ -688,145 +2133,2467 @@ func (c *int64Field) IsLe(pred Int64Field) JoinCondition {
 // --
 
 func Int64(s Selectable, name string) Int64Field {
-	return &int64Field{name: name, selection: s}
+  return &int64Field{name: name, selection: s}
 }
 
 //////
 
 
-func (c *int64Field) Avg() Field {	
-	return c.fct("Avg", "AVG(%s)")
+func (c *int64Field) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
 }
 
-func (c *int64Field) Max() Field {	
-	return c.fct("Max", "MAX(%s)")
+func (c *int64Field) Max() Field {
+  return c.fct("Max", "MAX(%s)")
 }
 
-func (c *int64Field) Min() Field {	
-	return c.fct("Min", "MIN(%s)")
+func (c *int64Field) Min() Field {
+  return c.fct("Min", "MIN(%s)")
 }
 
-func (c *int64Field) Ceil() Field {	
-	return c.fct("Ceil", "CEIL(%s)")
+func (c *int64Field) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
 }
 
-func (c *int64Field) Div(_0 interface{}) Field {	
-	return c.fct("Div", "%s / %v", _0)
+func (c *int64Field) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
 }
 
-func (c *int64Field) Cast(_0 interface{}) Field {	
-	return c.fct("Cast", "CAST(%s AS %s)", _0)
+func (c *int64Field) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
-func (c *int64Field) Md5() Field {	
-	return c.fct("Md5", "MD5(%s)")
+func (c *int64Field) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
 }
 
-func (c *int64Field) Lower() Field {	
-	return c.fct("Lower", "LOWER(%s)")
+func (c *int64Field) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
 }
 
-func (c *int64Field) Hex() Field {	
-	return c.fct("Hex", "HEX(%s)")
+func (c *int64Field) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *int64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *int64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullboolField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullBoolField interface {
+  TableField
+  
+  Eq(value sql.NullBool) Condition
+  IsEq(value NullBoolField) JoinCondition
+  
+  Gt(value sql.NullBool) Condition
+  IsGt(value NullBoolField) JoinCondition
+  
+  Ge(value sql.NullBool) Condition
+  IsGe(value NullBoolField) JoinCondition
+  
+  Lt(value sql.NullBool) Condition
+  IsLt(value NullBoolField) JoinCondition
+  
+  Le(value sql.NullBool) Condition
+  IsLe(value NullBoolField) JoinCondition
+  
+}
+
+func (c *nullboolField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullboolField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullboolField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullboolField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullboolField) As(alias string) Field {
+  return &nullboolField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullboolField) Alias() string {
+  return c.alias
+}
+
+func (c *nullboolField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullboolField) Name() string {
+  return c.name
+}
+
+func (c *nullboolField) Type() reflect.Type {
+  return typeNullBool
+}
+
+func (c *nullboolField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullboolField) Eq(pred sql.NullBool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullboolField) IsEq(pred NullBoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullboolField) Gt(pred sql.NullBool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullboolField) IsGt(pred NullBoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullboolField) Ge(pred sql.NullBool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullboolField) IsGe(pred NullBoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullboolField) Lt(pred sql.NullBool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullboolField) IsLt(pred NullBoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullboolField) Le(pred sql.NullBool) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullboolField) IsLe(pred NullBoolField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullBool(s Selectable, name string) NullBoolField {
+  return &nullboolField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullboolField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullboolField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullboolField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullboolField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullboolField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullboolField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullboolField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullboolField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullboolField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullboolField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullboolField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nulldateField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullDateField interface {
+  TableField
+  
+  Eq(value NullableDate) Condition
+  IsEq(value NullDateField) JoinCondition
+  
+  Gt(value NullableDate) Condition
+  IsGt(value NullDateField) JoinCondition
+  
+  Ge(value NullableDate) Condition
+  IsGe(value NullDateField) JoinCondition
+  
+  Lt(value NullableDate) Condition
+  IsLt(value NullDateField) JoinCondition
+  
+  Le(value NullableDate) Condition
+  IsLe(value NullDateField) JoinCondition
+  
+}
+
+func (c *nulldateField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nulldateField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nulldateField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nulldateField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nulldateField) As(alias string) Field {
+  return &nulldateField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nulldateField) Alias() string {
+  return c.alias
+}
+
+func (c *nulldateField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nulldateField) Name() string {
+  return c.name
+}
+
+func (c *nulldateField) Type() reflect.Type {
+  return typeNullDate
+}
+
+func (c *nulldateField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nulldateField) Eq(pred NullableDate) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nulldateField) IsEq(pred NullDateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nulldateField) Gt(pred NullableDate) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nulldateField) IsGt(pred NullDateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nulldateField) Ge(pred NullableDate) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nulldateField) IsGe(pred NullDateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nulldateField) Lt(pred NullableDate) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nulldateField) IsLt(pred NullDateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nulldateField) Le(pred NullableDate) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nulldateField) IsLe(pred NullDateField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullDate(s Selectable, name string) NullDateField {
+  return &nulldateField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nulldateField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nulldateField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nulldateField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nulldateField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nulldateField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nulldateField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nulldateField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nulldateField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nulldateField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nulldateField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nulldateField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nulldatetimeField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullDatetimeField interface {
+  TableField
+  
+  Eq(value NullableDatetime) Condition
+  IsEq(value NullDatetimeField) JoinCondition
+  
+  Gt(value NullableDatetime) Condition
+  IsGt(value NullDatetimeField) JoinCondition
+  
+  Ge(value NullableDatetime) Condition
+  IsGe(value NullDatetimeField) JoinCondition
+  
+  Lt(value NullableDatetime) Condition
+  IsLt(value NullDatetimeField) JoinCondition
+  
+  Le(value NullableDatetime) Condition
+  IsLe(value NullDatetimeField) JoinCondition
+  
+}
+
+func (c *nulldatetimeField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nulldatetimeField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nulldatetimeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nulldatetimeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nulldatetimeField) As(alias string) Field {
+  return &nulldatetimeField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nulldatetimeField) Alias() string {
+  return c.alias
+}
+
+func (c *nulldatetimeField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nulldatetimeField) Name() string {
+  return c.name
+}
+
+func (c *nulldatetimeField) Type() reflect.Type {
+  return typeNullDatetime
+}
+
+func (c *nulldatetimeField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nulldatetimeField) Eq(pred NullableDatetime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nulldatetimeField) IsEq(pred NullDatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nulldatetimeField) Gt(pred NullableDatetime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nulldatetimeField) IsGt(pred NullDatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nulldatetimeField) Ge(pred NullableDatetime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nulldatetimeField) IsGe(pred NullDatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nulldatetimeField) Lt(pred NullableDatetime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nulldatetimeField) IsLt(pred NullDatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nulldatetimeField) Le(pred NullableDatetime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nulldatetimeField) IsLe(pred NullDatetimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullDatetime(s Selectable, name string) NullDatetimeField {
+  return &nulldatetimeField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nulldatetimeField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nulldatetimeField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nulldatetimeField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nulldatetimeField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nulldatetimeField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nulldatetimeField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nulldatetimeField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nulldatetimeField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nulldatetimeField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nulldatetimeField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nulldatetimeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullfloat32Field struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullFloat32Field interface {
+  TableField
+  
+  Eq(value sql.NullFloat64) Condition
+  IsEq(value NullFloat32Field) JoinCondition
+  
+  Gt(value sql.NullFloat64) Condition
+  IsGt(value NullFloat32Field) JoinCondition
+  
+  Ge(value sql.NullFloat64) Condition
+  IsGe(value NullFloat32Field) JoinCondition
+  
+  Lt(value sql.NullFloat64) Condition
+  IsLt(value NullFloat32Field) JoinCondition
+  
+  Le(value sql.NullFloat64) Condition
+  IsLe(value NullFloat32Field) JoinCondition
+  
+}
+
+func (c *nullfloat32Field) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullfloat32Field) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullfloat32Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullfloat32Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullfloat32Field) As(alias string) Field {
+  return &nullfloat32Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullfloat32Field) Alias() string {
+  return c.alias
+}
+
+func (c *nullfloat32Field) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullfloat32Field) Name() string {
+  return c.name
+}
+
+func (c *nullfloat32Field) Type() reflect.Type {
+  return typeNullFloat32
+}
+
+func (c *nullfloat32Field) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullfloat32Field) Eq(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullfloat32Field) IsEq(pred NullFloat32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullfloat32Field) Gt(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullfloat32Field) IsGt(pred NullFloat32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullfloat32Field) Ge(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullfloat32Field) IsGe(pred NullFloat32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullfloat32Field) Lt(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullfloat32Field) IsLt(pred NullFloat32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullfloat32Field) Le(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullfloat32Field) IsLe(pred NullFloat32Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullFloat32(s Selectable, name string) NullFloat32Field {
+  return &nullfloat32Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullfloat32Field) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullfloat32Field) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullfloat32Field) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullfloat32Field) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullfloat32Field) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullfloat32Field) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullfloat32Field) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullfloat32Field) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullfloat32Field) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullfloat32Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullfloat32Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullfloat64Field struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullFloat64Field interface {
+  TableField
+  
+  Eq(value sql.NullFloat64) Condition
+  IsEq(value NullFloat64Field) JoinCondition
+  
+  Gt(value sql.NullFloat64) Condition
+  IsGt(value NullFloat64Field) JoinCondition
+  
+  Ge(value sql.NullFloat64) Condition
+  IsGe(value NullFloat64Field) JoinCondition
+  
+  Lt(value sql.NullFloat64) Condition
+  IsLt(value NullFloat64Field) JoinCondition
+  
+  Le(value sql.NullFloat64) Condition
+  IsLe(value NullFloat64Field) JoinCondition
+  
+}
+
+func (c *nullfloat64Field) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullfloat64Field) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullfloat64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullfloat64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullfloat64Field) As(alias string) Field {
+  return &nullfloat64Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullfloat64Field) Alias() string {
+  return c.alias
+}
+
+func (c *nullfloat64Field) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullfloat64Field) Name() string {
+  return c.name
+}
+
+func (c *nullfloat64Field) Type() reflect.Type {
+  return typeNullFloat64
+}
+
+func (c *nullfloat64Field) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullfloat64Field) Eq(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullfloat64Field) IsEq(pred NullFloat64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullfloat64Field) Gt(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullfloat64Field) IsGt(pred NullFloat64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullfloat64Field) Ge(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullfloat64Field) IsGe(pred NullFloat64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullfloat64Field) Lt(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullfloat64Field) IsLt(pred NullFloat64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullfloat64Field) Le(pred sql.NullFloat64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullfloat64Field) IsLe(pred NullFloat64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullFloat64(s Selectable, name string) NullFloat64Field {
+  return &nullfloat64Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullfloat64Field) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullfloat64Field) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullfloat64Field) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullfloat64Field) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullfloat64Field) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullfloat64Field) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullfloat64Field) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullfloat64Field) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullfloat64Field) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullfloat64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullfloat64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullblobField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullBlobField interface {
+  TableField
+  
+  Eq(value NullableBlob) Condition
+  IsEq(value NullBlobField) JoinCondition
+  
+  Gt(value NullableBlob) Condition
+  IsGt(value NullBlobField) JoinCondition
+  
+  Ge(value NullableBlob) Condition
+  IsGe(value NullBlobField) JoinCondition
+  
+  Lt(value NullableBlob) Condition
+  IsLt(value NullBlobField) JoinCondition
+  
+  Le(value NullableBlob) Condition
+  IsLe(value NullBlobField) JoinCondition
+  
+}
+
+func (c *nullblobField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullblobField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullblobField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullblobField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullblobField) As(alias string) Field {
+  return &nullblobField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullblobField) Alias() string {
+  return c.alias
+}
+
+func (c *nullblobField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullblobField) Name() string {
+  return c.name
+}
+
+func (c *nullblobField) Type() reflect.Type {
+  return typeNullBlob
+}
+
+func (c *nullblobField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullblobField) Eq(pred NullableBlob) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullblobField) IsEq(pred NullBlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullblobField) Gt(pred NullableBlob) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullblobField) IsGt(pred NullBlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullblobField) Ge(pred NullableBlob) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullblobField) IsGe(pred NullBlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullblobField) Lt(pred NullableBlob) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullblobField) IsLt(pred NullBlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullblobField) Le(pred NullableBlob) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullblobField) IsLe(pred NullBlobField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullBlob(s Selectable, name string) NullBlobField {
+  return &nullblobField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullblobField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullblobField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullblobField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullblobField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullblobField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullblobField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullblobField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullblobField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullblobField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullblobField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullblobField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullintField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullIntField interface {
+  TableField
+  
+  Eq(value sql.NullInt64) Condition
+  IsEq(value NullIntField) JoinCondition
+  
+  Gt(value sql.NullInt64) Condition
+  IsGt(value NullIntField) JoinCondition
+  
+  Ge(value sql.NullInt64) Condition
+  IsGe(value NullIntField) JoinCondition
+  
+  Lt(value sql.NullInt64) Condition
+  IsLt(value NullIntField) JoinCondition
+  
+  Le(value sql.NullInt64) Condition
+  IsLe(value NullIntField) JoinCondition
+  
+}
+
+func (c *nullintField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullintField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullintField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullintField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullintField) As(alias string) Field {
+  return &nullintField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullintField) Alias() string {
+  return c.alias
+}
+
+func (c *nullintField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullintField) Name() string {
+  return c.name
+}
+
+func (c *nullintField) Type() reflect.Type {
+  return typeNullInt
+}
+
+func (c *nullintField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullintField) Eq(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullintField) IsEq(pred NullIntField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullintField) Gt(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullintField) IsGt(pred NullIntField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullintField) Ge(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullintField) IsGe(pred NullIntField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullintField) Lt(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullintField) IsLt(pred NullIntField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullintField) Le(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullintField) IsLe(pred NullIntField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullInt(s Selectable, name string) NullIntField {
+  return &nullintField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullintField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullintField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullintField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullintField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullintField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullintField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullintField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullintField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullintField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullintField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullintField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullint64Field struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullInt64Field interface {
+  TableField
+  
+  Eq(value sql.NullInt64) Condition
+  IsEq(value NullInt64Field) JoinCondition
+  
+  Gt(value sql.NullInt64) Condition
+  IsGt(value NullInt64Field) JoinCondition
+  
+  Ge(value sql.NullInt64) Condition
+  IsGe(value NullInt64Field) JoinCondition
+  
+  Lt(value sql.NullInt64) Condition
+  IsLt(value NullInt64Field) JoinCondition
+  
+  Le(value sql.NullInt64) Condition
+  IsLe(value NullInt64Field) JoinCondition
+  
+}
+
+func (c *nullint64Field) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullint64Field) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullint64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullint64Field{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullint64Field) As(alias string) Field {
+  return &nullint64Field{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullint64Field) Alias() string {
+  return c.alias
+}
+
+func (c *nullint64Field) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullint64Field) Name() string {
+  return c.name
+}
+
+func (c *nullint64Field) Type() reflect.Type {
+  return typeNullInt64
+}
+
+func (c *nullint64Field) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullint64Field) Eq(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullint64Field) IsEq(pred NullInt64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullint64Field) Gt(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullint64Field) IsGt(pred NullInt64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullint64Field) Ge(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullint64Field) IsGe(pred NullInt64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullint64Field) Lt(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullint64Field) IsLt(pred NullInt64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullint64Field) Le(pred sql.NullInt64) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullint64Field) IsLe(pred NullInt64Field) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullInt64(s Selectable, name string) NullInt64Field {
+  return &nullint64Field{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullint64Field) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullint64Field) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullint64Field) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullint64Field) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullint64Field) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullint64Field) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullint64Field) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullint64Field) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullint64Field) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullint64Field) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullint64Field) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nullstringField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullStringField interface {
+  TableField
+  
+  Eq(value sql.NullString) Condition
+  IsEq(value NullStringField) JoinCondition
+  
+  Gt(value sql.NullString) Condition
+  IsGt(value NullStringField) JoinCondition
+  
+  Ge(value sql.NullString) Condition
+  IsGe(value NullStringField) JoinCondition
+  
+  Lt(value sql.NullString) Condition
+  IsLt(value NullStringField) JoinCondition
+  
+  Le(value sql.NullString) Condition
+  IsLe(value NullStringField) JoinCondition
+  
+}
+
+func (c *nullstringField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nullstringField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nullstringField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nullstringField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nullstringField) As(alias string) Field {
+  return &nullstringField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nullstringField) Alias() string {
+  return c.alias
+}
+
+func (c *nullstringField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nullstringField) Name() string {
+  return c.name
+}
+
+func (c *nullstringField) Type() reflect.Type {
+  return typeNullString
+}
+
+func (c *nullstringField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nullstringField) Eq(pred sql.NullString) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nullstringField) IsEq(pred NullStringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nullstringField) Gt(pred sql.NullString) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nullstringField) IsGt(pred NullStringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nullstringField) Ge(pred sql.NullString) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nullstringField) IsGe(pred NullStringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nullstringField) Lt(pred sql.NullString) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nullstringField) IsLt(pred NullStringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nullstringField) Le(pred sql.NullString) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nullstringField) IsLe(pred NullStringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullString(s Selectable, name string) NullStringField {
+  return &nullstringField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nullstringField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nullstringField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nullstringField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nullstringField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nullstringField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nullstringField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nullstringField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nullstringField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nullstringField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nullstringField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nullstringField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type nulltimeField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type NullTimeField interface {
+  TableField
+  
+  Eq(value NullableTime) Condition
+  IsEq(value NullTimeField) JoinCondition
+  
+  Gt(value NullableTime) Condition
+  IsGt(value NullTimeField) JoinCondition
+  
+  Ge(value NullableTime) Condition
+  IsGe(value NullTimeField) JoinCondition
+  
+  Lt(value NullableTime) Condition
+  IsLt(value NullTimeField) JoinCondition
+  
+  Le(value NullableTime) Condition
+  IsLe(value NullTimeField) JoinCondition
+  
+}
+
+func (c *nulltimeField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *nulltimeField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &nulltimeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &nulltimeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *nulltimeField) As(alias string) Field {
+  return &nulltimeField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *nulltimeField) Alias() string {
+  return c.alias
+}
+
+func (c *nulltimeField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *nulltimeField) Name() string {
+  return c.name
+}
+
+func (c *nulltimeField) Type() reflect.Type {
+  return typeNullTime
+}
+
+func (c *nulltimeField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *nulltimeField) Eq(pred NullableTime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *nulltimeField) IsEq(pred NullTimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *nulltimeField) Gt(pred NullableTime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *nulltimeField) IsGt(pred NullTimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *nulltimeField) Ge(pred NullableTime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *nulltimeField) IsGe(pred NullTimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *nulltimeField) Lt(pred NullableTime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *nulltimeField) IsLt(pred NullTimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *nulltimeField) Le(pred NullableTime) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *nulltimeField) IsLe(pred NullTimeField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func NullTime(s Selectable, name string) NullTimeField {
+  return &nulltimeField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *nulltimeField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *nulltimeField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *nulltimeField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *nulltimeField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *nulltimeField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *nulltimeField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *nulltimeField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *nulltimeField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *nulltimeField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *nulltimeField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *nulltimeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
+}
+
+
+
+
+type stringField struct {
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
+}
+
+type StringField interface {
+  TableField
+  
+  Eq(value string) Condition
+  IsEq(value StringField) JoinCondition
+  
+  Gt(value string) Condition
+  IsGt(value StringField) JoinCondition
+  
+  Ge(value string) Condition
+  IsGe(value StringField) JoinCondition
+  
+  Lt(value string) Condition
+  IsLt(value StringField) JoinCondition
+  
+  Le(value string) Condition
+  IsLe(value StringField) JoinCondition
+  
+}
+
+func (c *stringField) Function() FieldFunction {
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
+}
+
+func (c *stringField) fct(fun, expr string, args ...interface{}) Field {
+  if &c.fun == nil {
+    return &stringField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &stringField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
+}
+
+func (c *stringField) As(alias string) Field {
+  return &stringField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
+}
+
+func (c *stringField) Alias() string {
+  return c.alias
+}
+
+func (c *stringField) MaybeAlias() string {
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
+}
+
+func (c *stringField) Name() string {
+  return c.name
+}
+
+func (c *stringField) Type() reflect.Type {
+  return typeString
+}
+
+func (c *stringField) Parent() Selectable {
+  return c.selection
+}
+
+// --
+
+
+
+func (c *stringField) Eq(pred string) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+}
+
+func (c *stringField) IsEq(pred StringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+}
+
+
+
+func (c *stringField) Gt(pred string) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+}
+
+func (c *stringField) IsGt(pred StringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+}
+
+
+
+func (c *stringField) Ge(pred string) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+}
+
+func (c *stringField) IsGe(pred StringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+}
+
+
+
+func (c *stringField) Lt(pred string) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+}
+
+func (c *stringField) IsLt(pred StringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+}
+
+
+
+func (c *stringField) Le(pred string) Condition {
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+}
+
+func (c *stringField) IsLe(pred StringField) JoinCondition {
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+}
+
+
+
+// --
+
+func String(s Selectable, name string) StringField {
+  return &stringField{name: name, selection: s}
+}
+
+//////
+
+
+func (c *stringField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
+}
+
+func (c *stringField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
+}
+
+func (c *stringField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
+}
+
+func (c *stringField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
+}
+
+func (c *stringField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
+}
+
+func (c *stringField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
+}
+
+func (c *stringField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
+}
+
+func (c *stringField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
+}
+
+func (c *stringField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *stringField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *stringField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
 
 
 type timeField struct {
-	name string
-	selection Selectable
-	alias string
-	fun FieldFunction
+  name string
+  selection Selectable
+  alias string
+  fun FieldFunction
 }
 
 type TimeField interface {
-	TableField
-	
-	Eq(value time.Time) Condition
-	IsEq(value TimeField) JoinCondition
-	
-	Gt(value time.Time) Condition
-	IsGt(value TimeField) JoinCondition
-	
-	Ge(value time.Time) Condition
-	IsGe(value TimeField) JoinCondition
-	
-	Lt(value time.Time) Condition
-	IsLt(value TimeField) JoinCondition
-	
-	Le(value time.Time) Condition
-	IsLe(value TimeField) JoinCondition
-	
+  TableField
+  
+  Eq(value time.Time) Condition
+  IsEq(value TimeField) JoinCondition
+  
+  Gt(value time.Time) Condition
+  IsGt(value TimeField) JoinCondition
+  
+  Ge(value time.Time) Condition
+  IsGe(value TimeField) JoinCondition
+  
+  Lt(value time.Time) Condition
+  IsLt(value TimeField) JoinCondition
+  
+  Le(value time.Time) Condition
+  IsLe(value TimeField) JoinCondition
+  
 }
 
 func (c *timeField) Function() FieldFunction {
-	return FieldFunction{
-		Name:  c.fun.Name,
-		Expr:  c.fun.Expr,
-		Args:  c.fun.Args,
-		Child: c.fun.Child,
-	}
+  return FieldFunction{
+    Name:  c.fun.Name,
+    Expr:  c.fun.Expr,
+    Args:  c.fun.Args,
+    Child: c.fun.Child,
+  }
 }
 
 func (c *timeField) fct(fun, expr string, args ...interface{}) Field {
-	if &c.fun == nil {
-		return &timeField{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
-		}
-	} else {
-		return &timeField{
-			name:      c.name,
-			selection: c.selection,
-			fun:       FieldFunction{
-				Name:  fun,
-				Expr:  expr, 
-				Args:  args,
-				Child: &FieldFunction{
-					Name:  c.fun.Name,
-					Expr:  c.fun.Expr,
-					Args:  c.fun.Args,
-					Child: c.fun.Child,
-				},
-			},
-		}
-	}
+  if &c.fun == nil {
+    return &timeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{Name:fun, Expr:expr, Args: args},
+    }
+  } else {
+    return &timeField{
+      name:      c.name,
+      selection: c.selection,
+      fun:       FieldFunction{
+        Name:  fun,
+        Expr:  expr,
+        Args:  args,
+        Child: &FieldFunction{
+          Name:  c.fun.Name,
+          Expr:  c.fun.Expr,
+          Args:  c.fun.Args,
+          Child: c.fun.Child,
+        },
+      },
+    }
+  }
 }
 
 func (c *timeField) As(alias string) Field {
-	return &timeField{
-		name: c.name, 
-		selection: c.selection,
-		alias: alias,
-		fun: FieldFunction{
-			Name:  c.fun.Name,
-			Expr:  c.fun.Expr,
-			Args:  c.fun.Args,
-			Child: c.fun.Child,
-		},
-	}
+  return &timeField{
+    name: c.name,
+    selection: c.selection,
+    alias: alias,
+    fun: FieldFunction{
+      Name:  c.fun.Name,
+      Expr:  c.fun.Expr,
+      Args:  c.fun.Args,
+      Child: c.fun.Child,
+    },
+  }
 }
 
 func (c *timeField) Alias() string {
-	return c.alias
+  return c.alias
 }
 
 func (c *timeField) MaybeAlias() string {
-	if c.alias == "" {
-		return c.name
-	} else {
-		return c.alias
-	}
+  if c.alias == "" {
+    return c.name
+  } else {
+    return c.alias
+  }
 }
 
 func (c *timeField) Name() string {
-	return c.name
+  return c.name
+}
+
+func (c *timeField) Type() reflect.Type {
+  return typeTime
 }
 
 func (c *timeField) Parent() Selectable {
-	return c.selection
+  return c.selection
 }
 
 // --
@@ -834,51 +4601,51 @@ func (c *timeField) Parent() Selectable {
 
 
 func (c *timeField) Eq(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: EqPredicate}
 }
 
 func (c *timeField) IsEq(pred TimeField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: EqPredicate}
 }
 
 
 
 func (c *timeField) Gt(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GtPredicate}
 }
 
 func (c *timeField) IsGt(pred TimeField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GtPredicate}
 }
 
 
 
 func (c *timeField) Ge(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: GePredicate}
 }
 
 func (c *timeField) IsGe(pred TimeField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: GePredicate}
 }
 
 
 
 func (c *timeField) Lt(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LtPredicate}
 }
 
 func (c *timeField) IsLt(pred TimeField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LtPredicate}
 }
 
 
 
 func (c *timeField) Le(pred time.Time) Condition {
-	return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
+  return Condition{Binding: FieldBinding{Value: pred, Field: c}, Predicate: LePredicate}
 }
 
 func (c *timeField) IsLe(pred TimeField) JoinCondition {
-	return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
+  return JoinCondition{Lhs: c, Rhs: pred, Predicate: LePredicate}
 }
 
 
@@ -886,46 +4653,54 @@ func (c *timeField) IsLe(pred TimeField) JoinCondition {
 // --
 
 func Time(s Selectable, name string) TimeField {
-	return &timeField{name: name, selection: s}
+  return &timeField{name: name, selection: s}
 }
 
 //////
 
 
-func (c *timeField) Avg() Field {	
-	return c.fct("Avg", "AVG(%s)")
+func (c *timeField) Avg() Field {
+  return c.fct("Avg", "AVG(%s)")
 }
 
-func (c *timeField) Max() Field {	
-	return c.fct("Max", "MAX(%s)")
+func (c *timeField) Max() Field {
+  return c.fct("Max", "MAX(%s)")
 }
 
-func (c *timeField) Min() Field {	
-	return c.fct("Min", "MIN(%s)")
+func (c *timeField) Min() Field {
+  return c.fct("Min", "MIN(%s)")
 }
 
-func (c *timeField) Ceil() Field {	
-	return c.fct("Ceil", "CEIL(%s)")
+func (c *timeField) Ceil() Field {
+  return c.fct("Ceil", "CEIL(%s)")
 }
 
-func (c *timeField) Div(_0 interface{}) Field {	
-	return c.fct("Div", "%s / %v", _0)
+func (c *timeField) Div(_0 interface{}) Field {
+  return c.fct("Div", "%s / %v", _0)
 }
 
-func (c *timeField) Cast(_0 interface{}) Field {	
-	return c.fct("Cast", "CAST(%s AS %s)", _0)
+func (c *timeField) Cast(_0 interface{}) Field {
+  return c.fct("Cast", "CAST(%s AS %s)", _0)
 }
 
-func (c *timeField) Md5() Field {	
-	return c.fct("Md5", "MD5(%s)")
+func (c *timeField) Md5() Field {
+  return c.fct("Md5", "MD5(%s)")
 }
 
-func (c *timeField) Lower() Field {	
-	return c.fct("Lower", "LOWER(%s)")
+func (c *timeField) Lower() Field {
+  return c.fct("Lower", "LOWER(%s)")
 }
 
-func (c *timeField) Hex() Field {	
-	return c.fct("Hex", "HEX(%s)")
+func (c *timeField) Hex() Field {
+  return c.fct("Hex", "HEX(%s)")
+}
+
+func (c *timeField) Substr2(_0 interface{}) Field {
+  return c.fct("Substr2", "SUBSTR(%s, %v)", _0)
+}
+
+func (c *timeField) Substr3(_0,_1 interface{}) Field {
+  return c.fct("Substr3", "SUBSTR(%s, %v, %v)", _0,_1)
 }
 
 
