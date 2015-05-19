@@ -30,7 +30,8 @@ var Types = []TypeInfo{
 	TypeInfo{Prefix: "NullString", Literal: "sql.NullString"},
 	TypeInfo{Prefix: "NullTime", Literal: "NullableTime"}, // TODO(shutej): test
 	TypeInfo{Prefix: "String", Literal: "string"},
-	TypeInfo{Prefix: "Time", Literal: "time.Time"}, // TODO(shutej): test
+	TypeInfo{Prefix: "StringArray", Literal: "[]string"}, // TODO(benbardin): test
+	TypeInfo{Prefix: "Time", Literal: "time.Time"},       // TODO(shutej): test
 }
 
 type FunctionInfo struct {
