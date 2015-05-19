@@ -6,7 +6,7 @@ import (
 	"bytes"
 	"fmt"
 	log "github.com/cihub/seelog"
-	"github.com/relops/sqlc/meta"
+	"github.com/shutej/sqlc/meta"
 	"io/ioutil"
 	"os"
 	"strings"

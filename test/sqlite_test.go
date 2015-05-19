@@ -3,8 +3,8 @@ package test
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/relops/sqlc/sqlc"
-	"github.com/relops/sqlc/test/generic"
+	"github.com/shutej/sqlc/sqlc"
+	"github.com/shutej/sqlc/test/generic"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"

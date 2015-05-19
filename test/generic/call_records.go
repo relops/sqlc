@@ -3,8 +3,8 @@ package generic
 import (
 	"database/sql"
 	"fmt"
-	"github.com/relops/sqlc/sqlc"
-	. "github.com/relops/sqlc/test/generated/generic"
+	"github.com/shutej/sqlc/sqlc"
+	. "github.com/shutej/sqlc/test/generated/generic"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"

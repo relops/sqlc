@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/relops/sqlc/meta"
+	"github.com/shutej/sqlc/meta"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,10 +15,16 @@ import (
 	"time"
 )
 
+var boolean = regexp.MustCompile("BOOLEAN")
 var integer = regexp.MustCompile("INT")
 var int_64 = regexp.MustCompile("INTEGER|BIGINT")
-var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
-var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
+var float_32 = regexp.MustCompile("FLOAT")
+var float_64 = regexp.MustCompile("DOUBLE PRECISION|NUMERIC")
+var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TINYTEXT|TEXT|MEDIUMTEXT|LONGTEXT|CHAR")
+var datetime = regexp.MustCompile("TIMESTAMP|DATETIME")
+var date = regexp.MustCompile("DATE")
+var time_ = regexp.MustCompile("TIME")
+var blob = regexp.MustCompile("INET|TINYBLOB|BLOB|MEDIUMBLOB|LONGBLOB")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
 
 type Provenance struct {
@@ -101,6 +107,7 @@ func Generate(db *sql.DB, version string, opts *Options) error {
 	}
 
 	params := make(map[string]interface{})
+	params["Schema"] = opts.Schema
 	params["Tables"] = tables
 	params["Package"] = opts.Package
 	params["Types"] = meta.Types
@@ -163,22 +170,40 @@ func infoSchema(d Dialect, schema string, db *sql.DB) ([]TableMeta, error) {
 		fields := make([]FieldMeta, 0)
 
 		for rows.Next() {
-			var colName, colType sql.NullString
-			err = rows.Scan(&colName, &colType)
+			var colName, colType, colIsNullable sql.NullString
+			err = rows.Scan(&colName, &colType, &colIsNullable)
 			if err != nil {
 				return nil, err
 			}
 
 			var fieldType string
 
+			nullable := strings.ToUpper(colIsNullable.String) == "YES"
+
 			if int_64.MatchString(colType.String) {
 				fieldType = "Int64"
 			} else if integer.MatchString(colType.String) {
 				fieldType = "Int"
+			} else if float_64.MatchString(colType.String) {
+				fieldType = "Float64"
+			} else if float_32.MatchString(colType.String) {
+				fieldType = "Float32"
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
-			} else if ts.MatchString(colType.String) {
+			} else if datetime.MatchString(colType.String) {
+				fieldType = "Datetime"
+			} else if date.MatchString(colType.String) {
+				fieldType = "Date"
+			} else if time_.MatchString(colType.String) {
 				fieldType = "Time"
+			} else if boolean.MatchString(colType.String) {
+				fieldType = "Bool"
+			} else if blob.MatchString(colType.String) {
+				fieldType = "Blob"
+			}
+
+			if nullable {
+				fieldType = "Null" + fieldType
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}
@@ -222,16 +247,34 @@ func sqlite(db *sql.DB) ([]TableMeta, error) {
 				return nil, err
 			}
 
+			nullable := !notNull.Bool
+
 			var fieldType string
 
 			if int_64.MatchString(colType.String) {
 				fieldType = "Int64"
 			} else if integer.MatchString(colType.String) {
 				fieldType = "Int"
+			} else if float_64.MatchString(colType.String) {
+				fieldType = "Float64"
+			} else if float_32.MatchString(colType.String) {
+				fieldType = "Float32"
 			} else if varchar.MatchString(colType.String) {
 				fieldType = "String"
-			} else if ts.MatchString(colType.String) {
+			} else if datetime.MatchString(colType.String) {
 				fieldType = "Time"
+			} else if date.MatchString(colType.String) {
+				fieldType = "Date"
+			} else if time_.MatchString(colType.String) {
+				fieldType = "Time"
+			} else if boolean.MatchString(colType.String) {
+				fieldType = "Bool"
+			} else if blob.MatchString(colType.String) {
+				fieldType = "Blob"
+			}
+
+			if nullable {
+				fieldType = "Null" + fieldType
 			}
 
 			field := FieldMeta{Name: colName.String, Type: fieldType}
@@ -259,7 +302,7 @@ const infoTablesTmpl = `
 `
 
 const infoColumnsTmpl = `
-	SELECT column_name, UPPER(data_type)
-	FROM information_schema.columns 
+	SELECT column_name, UPPER(data_type), is_nullable
+	FROM information_schema.columns
 	WHERE table_schema = %s and table_name = %s;
 `
