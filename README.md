@@ -133,7 +133,7 @@ Select(bar.Md5().Hex().Lower()).From(foo).String(d)
 Joins
 -----
 
-There is basic support for support for joins:
+There is basic support for joins:
 
 ```go
 // Renders `SELECT foo.bar, quux.col FROM foo JOIN quux 
