@@ -15,10 +15,10 @@ import (
 	"time"
 )
 
-var integer = regexp.MustCompile("INT")
-var int_64 = regexp.MustCompile("INTEGER|BIGINT")
-var varchar = regexp.MustCompile("VARCHAR|CHARACTER VARYING|TEXT")
-var ts = regexp.MustCompile("TIMESTAMP|DATETIME")
+var integer = regexp.MustCompile("(?i)INT")
+var int_64 = regexp.MustCompile("(?i)INTEGER|BIGINT")
+var varchar = regexp.MustCompile("(?i)VARCHAR|CHARACTER VARYING|TEXT")
+var ts = regexp.MustCompile("(?i)TIMESTAMP|DATETIME")
 var dbType = regexp.MustCompile("mysql|postgres|sqlite")
 
 type Provenance struct {
